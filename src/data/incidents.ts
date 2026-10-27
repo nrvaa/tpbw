@@ -7,7 +7,7 @@ export const INCIDENT_FEATURE_ENABLED = false;
 export interface Incident {
   id: number;
   tanggal: string; // YYYY-MM-DD
-  sppgId: number; // merujuk SPPG.id di src/data/sppg.ts
+  candidateId: string; // merujuk SPPG.candidateId di src/data/sppg.ts (stabil, bukan nomor urut)
   sppgNama: string;
   wilayah: string;
   jenis: 'Keracunan' | 'Keluhan' | 'Gangguan Distribusi';

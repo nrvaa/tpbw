@@ -79,16 +79,17 @@ import { incidentsEnabled } from '../data/incidents';
   import { incidentList, incidentsEnabled, type Incident } from '../data/incidents';
   import { wilayahCounts, statusCounts, statusInfo, wilayahColor, shortWilayah, mapsUrl, escapeHtml, formatCoord } from '../data/summary';
 
-  type MarkerEntry = { id: number; marker: any; sppg: SPPG };
+  // Kunci titik = candidateId (stabil, tidak bergantung urutan CSV).
+  type MarkerEntry = { id: string; marker: any; sppg: SPPG };
 
   let currentMap: any = null;
   let markersLayer: any = null;
   let currentMarkers: MarkerEntry[] = [];
-  let selectedSPPGId: number | null = null;
+  let selectedSPPGId: string | null = null;
 
   const BANDUNG_CENTER = [-6.9175, 107.6191];
   const byId = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T | null;
-  const incidentsFor = (id: number): Incident[] => (incidentsEnabled ? incidentList.filter(i => i.sppgId === id) : []);
+  const incidentsFor = (id: string): Incident[] => (incidentsEnabled ? incidentList.filter(i => i.candidateId === id) : []);
   const scrollToId = (id: string) => byId(id)?.scrollIntoView({ behavior: 'smooth' });
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -276,7 +277,7 @@ import { incidentsEnabled } from '../data/incidents';
 
   function markerColor(s: SPPG) {
     if (incidentsEnabled) {
-      const inc = incidentsFor(s.id);
+      const inc = incidentsFor(s.candidateId);
       if (inc.some(i => i.jenis === 'Keracunan')) return '#ef4444';
       if (inc.length) return '#f97316';
     }
@@ -315,7 +316,7 @@ import { incidentsEnabled } from '../data/incidents';
       marker.bindPopup(popupHtml(sppg), { maxWidth: 300 });
       marker.on('click', () => showQuickInfo(sppg));
       marker.addTo(markersLayer);
-      currentMarkers.push({ id: sppg.id, marker, sppg });
+      currentMarkers.push({ id: sppg.candidateId, marker, sppg });
     });
 
     if (currentMarkers.length) {
@@ -324,7 +325,7 @@ import { incidentsEnabled } from '../data/incidents';
   }
 
   function showQuickInfo(sppg: SPPG) {
-    selectedSPPGId = sppg.id;
+    selectedSPPGId = sppg.candidateId;
     const drawer = byId('map-quick-info');
     const nameEl = byId('quick-sppg-name');
     const addrEl = byId('quick-sppg-address');
@@ -347,7 +348,7 @@ import { incidentsEnabled } from '../data/incidents';
     const alertBox = byId('quick-incident-alert');
     const alertText = byId('quick-incident-text');
     if (alertBox && alertText) {
-      const inc = incidentsFor(sppg.id);
+      const inc = incidentsFor(sppg.candidateId);
       alertBox.classList.toggle('hidden', inc.length === 0);
       if (inc.length) alertText.textContent = `[${inc[inc.length - 1].jenis}] ${inc[inc.length - 1].deskripsi}`;
     }
@@ -368,18 +369,18 @@ import { incidentsEnabled } from '../data/incidents';
       if (wilayahVal !== 'all' && s.wilayah !== wilayahVal) return false;
       if (statusVal !== 'all' && s.statusValidasi !== statusVal) return false;
       if (incidentsEnabled && incidentVal !== 'all') {
-        const inc = incidentsFor(s.id);
+        const inc = incidentsFor(s.candidateId);
         return incidentVal === 'has-incident' ? inc.length > 0 : inc.some(i => i.jenis === incidentVal);
       }
       return true;
     });
 
-    if (selectedSPPGId !== null && !filtered.some(s => s.id === selectedSPPGId)) hideQuickInfo();
+    if (selectedSPPGId !== null && !filtered.some(s => s.candidateId === selectedSPPGId)) hideQuickInfo();
     renderMapMarkers(filtered);
   }
 
   // Fokuskan peta ke satu titik. Filter peta di-reset bila titiknya sedang tersembunyi.
-  function focusMarker(id: number) {
+  function focusMarker(id: string) {
     if (!currentMap) return;
     let target = currentMarkers.find(m => m.id === id);
     if (!target) {
@@ -413,7 +414,7 @@ import { incidentsEnabled } from '../data/incidents';
         .slice(0, 8);
       dropdown.innerHTML = hits.length
         ? hits.map(s => `
-            <button type="button" role="option" data-id="${s.id}" class="map-search-hit w-full text-left px-3 py-2 hover:bg-paper-hover focus:bg-paper-hover focus:outline-none">
+                            <button type="button" role="option" data-id="${escapeHtml(s.candidateId)}" class="map-search-hit w-full text-left px-3 py-2 hover:bg-paper-hover focus:bg-paper-hover focus:outline-none">
               <span class="block text-xs font-semibold text-white">${escapeHtml(s.nama)}</span>
               <span class="block text-[11px] text-ink-muted">${escapeHtml(s.kecamatan)} · ${escapeHtml(shortWilayah(s.wilayah))}</span>
             </button>`).join('')
@@ -436,7 +437,7 @@ import { incidentsEnabled } from '../data/incidents';
       const hit = (e.target as HTMLElement).closest<HTMLElement>('.map-search-hit');
       if (!hit) return;
       close();
-      focusMarker(Number(hit.dataset.id));
+      focusMarker(hit.dataset.id || '');
     });
     document.addEventListener('click', e => {
       if (!(e.target as HTMLElement).closest('#map-geocoding-input, #btn-geocoding-search, #geocoding-results-dropdown')) close();
@@ -545,7 +546,7 @@ import { incidentsEnabled } from '../data/incidents';
     document.querySelectorAll<HTMLElement>('.focus-on-map-btn').forEach(btn => {
       btn.addEventListener('click', e => {
         e.stopPropagation();
-        focusMarker(Number(btn.dataset.id));
+        focusMarker(btn.dataset.id || '');
       });
     });
 
@@ -672,7 +673,7 @@ import { incidentsEnabled } from '../data/incidents';
     lastFocused?.focus();
   }
 
-  function bindModalMapAction(id: number) {
+  function bindModalMapAction(id: string) {
     const btn = byId('modal-action-map-btn');
     if (!btn) return;
     btn.onclick = () => {
@@ -682,8 +683,8 @@ import { incidentsEnabled } from '../data/incidents';
   }
 
   // Isi modal sama dengan popup: hanya atribut geografis + asal data.
-  function openSPPGModal(id: number) {
-    const sppg = sppgList.find(s => s.id === id);
+  function openSPPGModal(id: string) {
+    const sppg = sppgList.find(s => s.candidateId === id);
     const eyebrow = byId('modal-eyebrow');
     const title = byId('modal-title');
     const body = byId('modal-body');
@@ -728,11 +729,11 @@ import { incidentsEnabled } from '../data/incidents';
           Buka Google Maps
         </a>
 
-        ${incidentsEnabled ? incidentHistoryHtml(incidentsFor(sppg.id)) : ''}
+        ${incidentsEnabled ? incidentHistoryHtml(incidentsFor(sppg.candidateId)) : ''}
       </div>
     `;
 
-    bindModalMapAction(sppg.id);
+    bindModalMapAction(sppg.candidateId);
     openModal();
   }
 
@@ -781,7 +782,7 @@ import { incidentsEnabled } from '../data/incidents';
       </div>
     `;
 
-    bindModalMapAction(inc.sppgId);
+    bindModalMapAction(inc.candidateId);
     openModal();
   }
 </script>

@@ -6,7 +6,7 @@
 export type StatusValidasi = 'belum_diverifikasi' | 'perlu_review' | 'terverifikasi';
 
 export interface SPPG {
-  id: number;
+  // Identitas tetap dari kolom candidate_id. Tidak bergantung pada urutan baris CSV.
   candidateId: string;
   nama: string;
   wilayah: string;
@@ -24,7 +24,6 @@ export interface SPPG {
 
 export const sppgList: SPPG[] = [
   {
-    "id": 1,
     "candidateId": "cd5c2ccef6a0",
     "nama": "SPPG BANDUNG CANGKUANG 2 (SENTANI 2)",
     "wilayah": "Kabupaten Bandung",
@@ -40,7 +39,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 2,
     "candidateId": "68919fa19d26",
     "nama": "SPPG Tanjungsari, Cangkuang",
     "wilayah": "Kabupaten Bandung",
@@ -56,7 +54,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 3,
     "candidateId": "43bcb5e23e2b",
     "nama": "SPPG KOPO",
     "wilayah": "Kabupaten Bandung",
@@ -72,7 +69,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 4,
     "candidateId": "0c28a4f4fc2d",
     "nama": "SPPG Bandung Pasirjambu Cibodas",
     "wilayah": "Kabupaten Bandung",
@@ -88,7 +84,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 5,
     "candidateId": "7df86cd50754",
     "nama": "SPPG BANDUNG SOREANG CINGCIN",
     "wilayah": "Kabupaten Bandung",
@@ -104,7 +99,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 6,
     "candidateId": "8913b1aec9be",
     "nama": "SPPG Bandung Soreang Cingcin 5",
     "wilayah": "Kabupaten Bandung",
@@ -120,7 +114,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 7,
     "candidateId": "069c2fae09c1",
     "nama": "SPPG BANDUNG SOREANG KARAMATMULYA 2",
     "wilayah": "Kabupaten Bandung",
@@ -136,7 +129,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 8,
     "candidateId": "29c60633f700",
     "nama": "SPPG Bandung Soreang Parungserab",
     "wilayah": "Kabupaten Bandung",
@@ -152,7 +144,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 9,
     "candidateId": "1d69fdeedd34",
     "nama": "SPPG Bandung Soreang Sadu",
     "wilayah": "Kabupaten Bandung",
@@ -168,7 +159,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 10,
     "candidateId": "219508f16320",
     "nama": "SPPG CINGCIN - SOREANG",
     "wilayah": "Kabupaten Bandung",
@@ -184,7 +174,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 11,
     "candidateId": "d05c9b5acb9b",
     "nama": "SPPG CINGCIN 2 SOREANG",
     "wilayah": "Kabupaten Bandung",
@@ -200,7 +189,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 12,
     "candidateId": "260b8f81c264",
     "nama": "SPPG Polda Jabar 3",
     "wilayah": "Kabupaten Bandung",
@@ -216,7 +204,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 13,
     "candidateId": "67385e8286f0",
     "nama": "SPPG POLRESTA BANDUNG 1",
     "wilayah": "Kabupaten Bandung",
@@ -232,7 +219,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 14,
     "candidateId": "f735282ed021",
     "nama": "SPPG Soreang Parungserab 2",
     "wilayah": "Kabupaten Bandung",
@@ -248,7 +234,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 15,
     "candidateId": "894dbb7c6e75",
     "nama": "SPPG SOREANG SENTANI 04",
     "wilayah": "Kabupaten Bandung",
@@ -264,7 +249,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 16,
     "candidateId": "31ec02393089",
     "nama": "SPPG Sukajadi Soreang",
     "wilayah": "Kabupaten Bandung",
@@ -280,7 +264,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 17,
     "candidateId": "b1e2f48c6a5c",
     "nama": "SPPG Sukanagara",
     "wilayah": "Kabupaten Bandung",
@@ -296,7 +279,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 18,
     "candidateId": "dd905b276e6f",
     "nama": "SPPG Sukarame",
     "wilayah": "Kabupaten Bandung",
@@ -312,7 +294,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 19,
     "candidateId": "e6982af9b5aa",
     "nama": "SPPG Kota Bandung Andir Ciroyom",
     "wilayah": "Kota Bandung",
@@ -328,7 +309,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 20,
     "candidateId": "8443f424af14",
     "nama": "SPPG Kota Bandung Babakan Ciparay Cirangrang",
     "wilayah": "Kota Bandung",
@@ -344,7 +324,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 21,
     "candidateId": "bb062d28688c",
     "nama": "SPPG Kota Bandung Batununggal Cibangkong",
     "wilayah": "Kota Bandung",
@@ -360,7 +339,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 22,
     "candidateId": "fe0a43c686e8",
     "nama": "SPPG CIKUTRA 2",
     "wilayah": "Kota Bandung",
@@ -376,7 +354,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 23,
     "candidateId": "828ca66bcf68",
     "nama": "Dapur SPPG KOTA Bandung Cicendo,Husein Sastranegara 3 & 4",
     "wilayah": "Kota Bandung",
@@ -392,7 +369,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 24,
     "candidateId": "18e6e8533dfd",
     "nama": "SPPG Arjuna Cicendo",
     "wilayah": "Kota Bandung",
@@ -408,7 +384,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 25,
     "candidateId": "6b8baf4536c7",
     "nama": "SPPG Husen Sastranegara 7",
     "wilayah": "Kota Bandung",
@@ -424,7 +399,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 26,
     "candidateId": "f23257ff9303",
     "nama": "SPPG JATAYU CICENDO 05",
     "wilayah": "Kota Bandung",
@@ -440,7 +414,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 27,
     "candidateId": "f5f66c03e4b2",
     "nama": "SPPG KOTA BANDUNG CICENDO HUSEIN SASTRANEGARA 1",
     "wilayah": "Kota Bandung",
@@ -456,7 +429,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 28,
     "candidateId": "4f9e4906b64c",
     "nama": "SPPG KOTA BANDUNG CICENDO HUSEIN SASTRANEGARA 5",
     "wilayah": "Kota Bandung",
@@ -472,7 +444,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 29,
     "candidateId": "fd31485b8816",
     "nama": "SPPG KOTA BANDUNG HUSEIN SASTRANEGARA 02",
     "wilayah": "Kota Bandung",
@@ -488,7 +459,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 30,
     "candidateId": "02720fcdc0d4",
     "nama": "SPPG Kota Bandung, Cicendo Pasirkaliki 2",
     "wilayah": "Kota Bandung",
@@ -504,7 +474,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 31,
     "candidateId": "580d55faa41b",
     "nama": "SPPG PAJAJARAN 2 BALADEWA",
     "wilayah": "Kota Bandung",
@@ -520,7 +489,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 32,
     "candidateId": "f4890d7592fe",
     "nama": "SPPG Pajajaran Cicendo 03",
     "wilayah": "Kota Bandung",
@@ -536,7 +504,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 33,
     "candidateId": "16099a6b4df9",
     "nama": "SPPG Sukaraja, Cicendo",
     "wilayah": "Kota Bandung",
@@ -552,7 +519,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 34,
     "candidateId": "81c0b848af28",
     "nama": "Sppg yayasan sejahtera Gizi lestari kec cicendo",
     "wilayah": "Kota Bandung",
@@ -568,7 +534,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 35,
     "candidateId": "272135b64708",
     "nama": "SPPG Kota Cimahi Cimahi Utara Pasirkaliki 2",
     "wilayah": "Kota Bandung",
@@ -584,7 +549,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 36,
     "candidateId": "604c5cc4349e",
     "nama": "SPPG Coblong Dago 2",
     "wilayah": "Kota Bandung",
@@ -600,7 +564,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 37,
     "candidateId": "d57d975c9067",
     "nama": "SPPG COBLONG SEKELOA 02",
     "wilayah": "Kota Bandung",
@@ -616,7 +579,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 38,
     "candidateId": "b25d427fbd74",
     "nama": "SPPG DAGO COBLONG 001",
     "wilayah": "Kota Bandung",
@@ -632,7 +594,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 39,
     "candidateId": "6d6400015853",
     "nama": "SPPG KOTA BANDUNG COBLONG LEBAK GEDE",
     "wilayah": "Kota Bandung",
@@ -648,7 +609,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 40,
     "candidateId": "a98295163acb",
     "nama": "SPPG KOTA BANDUNG COBLONG SEKELOA 1",
     "wilayah": "Kota Bandung",
@@ -664,7 +624,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 41,
     "candidateId": "8a591e516365",
     "nama": "SPPG LEBAKGEDE COBLONG",
     "wilayah": "Kota Bandung",
@@ -680,7 +639,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 42,
     "candidateId": "a91fd692f718",
     "nama": "SPPG Kota Bandung Sukajadi Pasteur",
     "wilayah": "Kota Bandung",
@@ -696,7 +654,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 43,
     "candidateId": "d20bc2eb632e",
     "nama": "SPPG KOTA BANDUNG SUKAJADI SUKABUNGAH",
     "wilayah": "Kota Bandung",
@@ -712,7 +669,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 44,
     "candidateId": "26b9262b2924",
     "nama": "SPPG SUKAGALIH SUKAJADI 009",
     "wilayah": "Kota Bandung",
@@ -728,7 +684,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 45,
     "candidateId": "93c0aeffd6a7",
     "nama": "SPPG CIBEUREUM 1 KOTA CIMAHI",
     "wilayah": "Kota Cimahi",
@@ -744,7 +699,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 46,
     "candidateId": "432706fa5bcd",
     "nama": "SPPG CIBEUREUM 4 KOTA CIMAHI",
     "wilayah": "Kota Cimahi",
@@ -760,7 +714,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 47,
     "candidateId": "12ad77a19af5",
     "nama": "DAPUR SPPG KOTA CIMAHI CIMAHI TENGAH CIMAHI 5",
     "wilayah": "Kota Cimahi",
@@ -776,7 +729,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 48,
     "candidateId": "4cc81bc8cae7",
     "nama": "SPPG Baros 05 (MBG)",
     "wilayah": "Kota Cimahi",
@@ -792,7 +744,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 49,
     "candidateId": "f486858ccf53",
     "nama": "SPPG Baros Cimahi tengah 006",
     "wilayah": "Kota Cimahi",
@@ -808,7 +759,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 50,
     "candidateId": "4f0a18f30e6a",
     "nama": "SPPG CIGUGUR TENGAH",
     "wilayah": "Kota Cimahi",
@@ -824,7 +774,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 51,
     "candidateId": "b6c859e268cf",
     "nama": "SPPG CIMAHI 03",
     "wilayah": "Kota Cimahi",
@@ -840,7 +789,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 52,
     "candidateId": "357448beb70b",
     "nama": "SPPG Karangmekar 3",
     "wilayah": "Kota Cimahi",
@@ -856,7 +804,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 53,
     "candidateId": "087cfad00b2e",
     "nama": "SPPG KOTA CIMAHI CIMAHI TENGAH CIMAHI 2",
     "wilayah": "Kota Cimahi",
@@ -872,7 +819,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 54,
     "candidateId": "3103100c6ac1",
     "nama": "SPPG Padasuka 08 Cimahi",
     "wilayah": "Kota Cimahi",
@@ -888,7 +834,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 55,
     "candidateId": "f1442b9c448c",
     "nama": "SPPG Padasuka, Cimahi Tengah",
     "wilayah": "Kota Cimahi",
@@ -904,7 +849,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 56,
     "candidateId": "cae89bd3075c",
     "nama": "SPPG CIBABAT (ALESHA)",
     "wilayah": "Kota Cimahi",
@@ -920,7 +864,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 57,
     "candidateId": "65843315b506",
     "nama": "SPPG CIBABAT 2",
     "wilayah": "Kota Cimahi",
@@ -936,7 +879,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 58,
     "candidateId": "df3e1b332eda",
     "nama": "SPPG Cimahi Utara Cibabat 4",
     "wilayah": "Kota Cimahi",
@@ -952,7 +894,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 59,
     "candidateId": "69231223d246",
     "nama": "SPPG CIMAHI UTARA CITEREUP 3",
     "wilayah": "Kota Cimahi",
@@ -968,7 +909,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 60,
     "candidateId": "5647004b0f92",
     "nama": "SPPG CIPAGERAN",
     "wilayah": "Kota Cimahi",
@@ -984,7 +924,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 61,
     "candidateId": "4819aa9a3e00",
     "nama": "SPPG CITEUREUP 04",
     "wilayah": "Kota Cimahi",
@@ -1000,7 +939,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 62,
     "candidateId": "0567a4c7235d",
     "nama": "SPPG CITEUREUP 2 KOTA CIMAHI",
     "wilayah": "Kota Cimahi",
@@ -1016,7 +954,6 @@ export const sppgList: SPPG[] = [
     "fileAsal": "sppg_pilot.csv"
   },
   {
-    "id": 63,
     "candidateId": "9724dfccc74b",
     "nama": "SPPG SANGKURIANG BARAT - CIPAGERAN",
     "wilayah": "Kota Cimahi",
