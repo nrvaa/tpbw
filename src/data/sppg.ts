@@ -1,40 +1,25 @@
+// File ini dihasilkan oleh scripts/convert_data.js dari "sppg_kandidat_bersih (1).csv".
+// Jangan diedit manual; perbaiki CSV lalu jalankan `npm run import:data`.
+// Seluruh baris adalah KANDIDAT hasil ekstraksi Google Maps (pilot) dan belum
+// diverifikasi independen. Bukan data resmi BGN. Lihat README.md bagian "Data".
+
+export type StatusValidasi = 'belum_diverifikasi' | 'perlu_review' | 'terverifikasi';
+
 export interface SPPG {
   id: number;
   candidateId: string;
   nama: string;
-  wilayah: "Kota Bandung" | "Kabupaten Bandung" | "Kota Cimahi" | "Kabupaten Bandung Barat" | "Kabupaten Sumedang";
+  wilayah: string;
   kecamatan: string;
   alamat: string;
   lat: number;
   lng: number;
   linkMaps: string;
-  status: "Aktif" | "Sementara Tidak Aktif" | "Dalam Evaluasi";
-  statusValidasi: string;
+  statusValidasi: StatusValidasi;
   catatanReview: string;
   sumber: string;
   placeId: string;
-  kapasitas: number;
-  penerima: number;
-  sekolahMitra: number;
-  jenisPenerima: string;
-  pengelola: string;
-  telepon: string;
-  bergabung: string;
-  catatanGizi: string;
-}
-
-export interface Incident {
-  id: number;
-  tanggal: string;
-  sppgId: number;
-  sppgNama: string;
-  wilayah: string;
-  jenis: "Keracunan" | "Keluhan" | "Gangguan Distribusi";
-  tingkatUrgensi: "Tinggi" | "Sedang" | "Rendah";
-  deskripsi: string;
-  terdampak: number;
-  status: "Ditangani" | "Dalam Penanganan" | "Belum Ditangani";
-  tindakan: string;
+  fileAsal: string;
 }
 
 export const sppgList: SPPG[] = [
@@ -48,19 +33,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.051728,
     "lng": 107.554615,
     "linkMaps": "https://www.google.com/maps/place/SPPG+BANDUNG+CANGKUANG+2+%28SENTANI+2%29/data=!4m7!3m6!1s0x2e68ed001c9f97c3:0x865dbd8834d271ed!8m2!3d-7.0517276!4d107.5546151!16s%2Fg%2F11yszd69d1!19sChIJw5efHADtaC4R7XHSNIi9XYY?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJw5efHADtaC4R7XHSNIi9XYY",
-    "kapasitas": 410,
-    "penerima": 373,
-    "sekolahMitra": 6,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit BANDUNG CANGKUANG 2 (SENTANI 2)",
-    "telepon": "0812-1137-2089",
-    "bergabung": "Februari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 2,
@@ -72,19 +49,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.037057,
     "lng": 107.563528,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Tanjungsari,+Cangkuang/data=!4m7!3m6!1s0x2e68ed00393be9dd:0x1a6b1f7232fb4749!8m2!3d-7.0370573!4d107.5635278!16s%2Fg%2F11n4mv92s3!19sChIJ3ek7OQDtaC4RSUf7MnIfaxo?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJ3ek7OQDtaC4RSUf7MnIfaxo",
-    "kapasitas": 440,
-    "penerima": 378,
-    "sekolahMitra": 4,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit Tanjungsari, Cangkuang",
-    "telepon": "0812-1274-2178",
-    "bergabung": "Maret 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 3,
@@ -96,19 +65,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.008394,
     "lng": 107.525122,
     "linkMaps": "https://www.google.com/maps/place/SPPG+KOPO/data=!4m7!3m6!1s0x2e68ef0041da8b75:0xea7a0cda81705cff!8m2!3d-7.008394!4d107.525122!16s%2Fg%2F11yjb90ff_!19sChIJdYvaQQDvaC4R_1xwgdoMeuo?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJdYvaQQDvaC4R_1xwgdoMeuo",
-    "kapasitas": 470,
-    "penerima": 437,
-    "sekolahMitra": 7,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit KOPO",
-    "telepon": "0812-1411-2267",
-    "bergabung": "April 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 4,
@@ -120,19 +81,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.102191,
     "lng": 107.488356,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Bandung+Pasirjambu+Cibodas/data=!4m7!3m6!1s0x2e68934cd4e585dd:0x1f0847c316b95ed7!8m2!3d-7.1021911!4d107.4883565!16s%2Fg%2F11ntnj31s7!19sChIJ3YXl1EyTaC4R1165FsNHCB8?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJ3YXl1EyTaC4R1165FsNHCB8",
-    "kapasitas": 500,
-    "penerima": 440,
-    "sekolahMitra": 5,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit Bandung Pasirjambu Cibodas",
-    "telepon": "0812-1548-2356",
-    "bergabung": "Mei 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 5,
@@ -144,19 +97,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.025627,
     "lng": 107.546122,
     "linkMaps": "https://www.google.com/maps/place/SPPG+BANDUNG+SOREANG+CINGCIN/data=!4m7!3m6!1s0x2e68ed004e4a97ad:0x935c76368b6162ae!8m2!3d-7.0256274!4d107.5461222!16s%2Fg%2F11z8gp5f_z!19sChIJrZdKTgDtaC4RrmJhizZ2XJM?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJrZdKTgDtaC4RrmJhizZ2XJM",
-    "kapasitas": 540,
-    "penerima": 513,
-    "sekolahMitra": 3,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit BANDUNG SOREANG CINGCIN",
-    "telepon": "0812-1685-2445",
-    "bergabung": "Juni 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 6,
@@ -168,19 +113,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.030152,
     "lng": 107.530718,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Bandung+Soreang+Cingcin+5/data=!4m7!3m6!1s0x2e68ed938fd4bbbd:0x5a838fabedbdea8f!8m2!3d-7.0301517!4d107.5307177!16s%2Fg%2F11nptygltx!19sChIJvbvUj5PtaC4Rj-q97auPg1o?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJvbvUj5PtaC4Rj-q97auPg1o",
-    "kapasitas": 570,
-    "penerima": 513,
-    "sekolahMitra": 6,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit Bandung Soreang Cingcin 5",
-    "telepon": "0812-1822-2534",
-    "bergabung": "Januari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 7,
@@ -192,19 +129,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.037496,
     "lng": 107.516077,
     "linkMaps": "https://www.google.com/maps/place/SPPG+BANDUNG+SOREANG+KARAMATMULYA+2/data=!4m7!3m6!1s0x2e68ed0069a726e3:0x9dedbf9b78668f6a!8m2!3d-7.0374958!4d107.5160771!16s%2Fg%2F11ntkq05q5!19sChIJ4yanaQDtaC4Rao9meJu_7Z0?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJ4yanaQDtaC4Rao9meJu_7Z0",
-    "kapasitas": 600,
-    "penerima": 510,
-    "sekolahMitra": 4,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit BANDUNG SOREANG KARAMATMULYA 2",
-    "telepon": "0812-1959-2623",
-    "bergabung": "Februari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 8,
@@ -216,19 +145,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.013892,
     "lng": 107.528738,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Bandung+Soreang+Parungserab/data=!4m7!3m6!1s0x2e68ed753514325f:0x59ec73bc275f7647!8m2!3d-7.0138922!4d107.528738!16s%2Fg%2F11mktnws4l!19sChIJXzIUNXXtaC4RR3ZfJ7xz7Fk?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJXzIUNXXtaC4RR3ZfJ7xz7Fk",
-    "kapasitas": 630,
-    "penerima": 580,
-    "sekolahMitra": 7,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit Bandung Soreang Parungserab",
-    "telepon": "0812-2096-2712",
-    "bergabung": "Maret 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 9,
@@ -240,19 +161,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.029103,
     "lng": 107.510955,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Bandung+Soreang+Sadu/data=!4m7!3m6!1s0x2e68ed0050aa1607:0x630060e9c0410312!8m2!3d-7.0291028!4d107.5109546!16s%2Fg%2F11n39sv95q!19sChIJBxaqUADtaC4REgNBwOlgAGM?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Dalam Evaluasi",
     "statusValidasi": "perlu_review",
     "catatanReview": "Kabupaten/kota ditafsir dari teks alamat, perlu konfirmasi",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJBxaqUADtaC4REgNBwOlgAGM",
-    "kapasitas": 390,
-    "penerima": 0,
-    "sekolahMitra": 0,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit Bandung Soreang Sadu",
-    "telepon": "0812-2233-2801",
-    "bergabung": "April 2025",
-    "catatanGizi": "Kabupaten/kota ditafsir dari teks alamat, perlu konfirmasi"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 10,
@@ -264,19 +177,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.024136,
     "lng": 107.537741,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CINGCIN+-+SOREANG/data=!4m7!3m6!1s0x2e68ed0008f24839:0x7509c2f4be6c407b!8m2!3d-7.0241363!4d107.5377413!16s%2Fg%2F11yvb486kz!19sChIJOUjyCADtaC4Re0BsvvTCCXU?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJOUjyCADtaC4Re0BsvvTCCXU",
-    "kapasitas": 420,
-    "penerima": 395,
-    "sekolahMitra": 3,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit CINGCIN - SOREANG",
-    "telepon": "0812-2370-2890",
-    "bergabung": "Mei 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 11,
@@ -288,19 +193,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.021119,
     "lng": 107.541276,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CINGCIN+2+SOREANG/data=!4m7!3m6!1s0x2e68ed00068f5d59:0x5f8ee0b7abe815b3!8m2!3d-7.0211185!4d107.5412761!16s%2Fg%2F11njn5g0xm!19sChIJWV2PBgDtaC4RsxXoq7fgjl8?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJWV2PBgDtaC4RsxXoq7fgjl8",
-    "kapasitas": 450,
-    "penerima": 401,
-    "sekolahMitra": 6,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit CINGCIN 2 SOREANG",
-    "telepon": "0812-2507-2979",
-    "bergabung": "Juni 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 12,
@@ -312,19 +209,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.027928,
     "lng": 107.516529,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Polda+Jabar+3/data=!4m7!3m6!1s0x2e68ed005b05a797:0xac42180ca01c1426!8m2!3d-7.0279278!4d107.5165287!16s%2Fg%2F11z77t5gq5!19sChIJl6cFWwDtaC4RJhQcoAwYQqw?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Dalam Evaluasi",
     "statusValidasi": "perlu_review",
     "catatanReview": "Titik berdekatan (16.6 m) dengan SPPG POLRESTA BANDUNG 1; jangan digabung otomatis",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJl6cFWwDtaC4RJhQcoAwYQqw",
-    "kapasitas": 480,
-    "penerima": 0,
-    "sekolahMitra": 0,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit Polda Jabar 3",
-    "telepon": "0812-2644-3068",
-    "bergabung": "Januari 2025",
-    "catatanGizi": "Titik berdekatan (16.6 m) dengan SPPG POLRESTA BANDUNG 1; jangan digabung otomatis"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 13,
@@ -336,19 +225,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.028061,
     "lng": 107.516461,
     "linkMaps": "https://www.google.com/maps/place/SPPG+POLRESTA+BANDUNG+1/data=!4m7!3m6!1s0x2e68ed000844de53:0xe6eac8d278a78b0c!8m2!3d-7.0280612!4d107.516461!16s%2Fg%2F11ms08_gy5!19sChIJU95ECADtaC4RDIuneNLI6uY?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Dalam Evaluasi",
     "statusValidasi": "perlu_review",
     "catatanReview": "Titik berdekatan (16.6 m) dengan SPPG Polda Jabar 3; jangan digabung otomatis",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJU95ECADtaC4RDIuneNLI6uY",
-    "kapasitas": 510,
-    "penerima": 0,
-    "sekolahMitra": 0,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit POLRESTA BANDUNG 1",
-    "telepon": "0812-2781-3157",
-    "bergabung": "Februari 2025",
-    "catatanGizi": "Titik berdekatan (16.6 m) dengan SPPG Polda Jabar 3; jangan digabung otomatis"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 14,
@@ -360,19 +241,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.012276,
     "lng": 107.531221,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Soreang+Parungserab+2/data=!4m7!3m6!1s0x2e68ef00536fa71b:0x387da33b74b4b488!8m2!3d-7.0122757!4d107.5312214!16s%2Fg%2F11nc5qk9fl!19sChIJG6dvUwDvaC4RiLS0dDujfTg?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJG6dvUwDvaC4RiLS0dDujfTg",
-    "kapasitas": 540,
-    "penerima": 464,
-    "sekolahMitra": 5,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit Soreang Parungserab 2",
-    "telepon": "0812-2918-3246",
-    "bergabung": "Maret 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 15,
@@ -384,19 +257,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.022622,
     "lng": 107.522364,
     "linkMaps": "https://www.google.com/maps/place/SPPG+SOREANG+SENTANI+04/data=!4m7!3m6!1s0x2e68ed0042d35d15:0x854f64bb161ffe88!8m2!3d-7.0226216!4d107.5223639!16s%2Fg%2F11njls9b33!19sChIJFV3TQgDtaC4RiP4fFrtkT4U?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJFV3TQgDtaC4RiP4fFrtkT4U",
-    "kapasitas": 580,
-    "penerima": 539,
-    "sekolahMitra": 3,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit SOREANG SENTANI 04",
-    "telepon": "0812-3055-3335",
-    "bergabung": "April 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 16,
@@ -408,19 +273,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.05843,
     "lng": 107.499629,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Sukajadi+Soreang/data=!4m7!3m6!1s0x2e6893002a969cc3:0x2c2f062037099d1d!8m2!3d-7.0584296!4d107.4996291!16s%2Fg%2F11y_dcv24p!19sChIJw5yWKgCTaC4RHZ0JNyAGLyw?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJw5yWKgCTaC4RHZ0JNyAGLyw",
-    "kapasitas": 610,
-    "penerima": 537,
-    "sekolahMitra": 6,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit Sukajadi Soreang",
-    "telepon": "0812-3192-3424",
-    "bergabung": "Mei 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 17,
@@ -432,19 +289,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.061754,
     "lng": 107.517158,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Sukanagara/data=!4m7!3m6!1s0x2e68ed005ba5c501:0xd7306d38815686f5!8m2!3d-7.0617535!4d107.517158!16s%2Fg%2F11zbbq0hbl!19sChIJAcWlWwDtaC4R9YZWgThtMNc?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJAcWlWwDtaC4R9YZWgThtMNc",
-    "kapasitas": 640,
-    "penerima": 608,
-    "sekolahMitra": 4,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit Sukanagara",
-    "telepon": "0812-3329-3513",
-    "bergabung": "Juni 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 18,
@@ -456,19 +305,11 @@ export const sppgList: SPPG[] = [
     "lat": -7.026083,
     "lng": 107.542591,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Sukarame/data=!4m7!3m6!1s0x2e68ed0004095ef5:0xa0ec91b4bd22391!8m2!3d-7.0260826!4d107.5425911!16s%2Fg%2F11z7f57l4w!19sChIJ9V4JBADtaC4RkSPSSxvJDgo?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJ9V4JBADtaC4RkSPSSxvJDgo",
-    "kapasitas": 400,
-    "penerima": 360,
-    "sekolahMitra": 7,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit Sukarame",
-    "telepon": "0812-3466-3602",
-    "bergabung": "Januari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 19,
@@ -480,19 +321,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.913915,
     "lng": 107.579267,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Kota+Bandung+Andir+Ciroyom/data=!4m7!3m6!1s0x2e68e70030bd5d07:0xa8c5c2f75eb3ae01!8m2!3d-6.9139149!4d107.5792673!16s%2Fg%2F11z02wpzn0!19sChIJB129MADnaC4RAa6zXvfCxag?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJB129MADnaC4RAa6zXvfCxag",
-    "kapasitas": 430,
-    "penerima": 366,
-    "sekolahMitra": 5,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit Kota Bandung Andir Ciroyom",
-    "telepon": "0812-3603-3691",
-    "bergabung": "Februari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 20,
@@ -504,19 +337,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.955459,
     "lng": 107.583432,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Kota+Bandung+Babakan+Ciparay+Cirangrang/data=!4m7!3m6!1s0x2e68e9001fb77fb9:0x9c26f0626226b690!8m2!3d-6.9554592!4d107.5834322!16s%2Fg%2F11zkkp50fh!19sChIJuX-3HwDpaC4RkLYmYmLwJpw?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJuX-3HwDpaC4RkLYmYmLwJpw",
-    "kapasitas": 460,
-    "penerima": 423,
-    "sekolahMitra": 3,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit Kota Bandung Babakan Ciparay Cirangrang",
-    "telepon": "0812-3740-3780",
-    "bergabung": "Maret 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 21,
@@ -528,19 +353,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.923929,
     "lng": 107.631125,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Kota+Bandung+Batununggal+Cibangkong/data=!4m7!3m6!1s0x2e68e70004077223:0x1f5641f756472924!8m2!3d-6.9239292!4d107.6311253!16s%2Fg%2F11z627pmfx!19sChIJI3IHBADnaC4RJClHVvdBVh8?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJI3IHBADnaC4RJClHVvdBVh8",
-    "kapasitas": 490,
-    "penerima": 426,
-    "sekolahMitra": 6,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit Kota Bandung Batununggal Cibangkong",
-    "telepon": "0812-3877-3869",
-    "bergabung": "April 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 22,
@@ -552,19 +369,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.899902,
     "lng": 107.635536,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CIKUTRA+2/data=!4m7!3m6!1s0x2e68e7005cef62e3:0xf745ea99c2fa37cd!8m2!3d-6.8999016!4d107.6355362!16s%2Fg%2F11yl3wp0mz!19sChIJ42LvXADnaC4RzTf6wpnqRfc?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJ42LvXADnaC4RzTf6wpnqRfc",
-    "kapasitas": 520,
-    "penerima": 489,
-    "sekolahMitra": 4,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit CIKUTRA 2",
-    "telepon": "0812-4014-3958",
-    "bergabung": "Mei 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 23,
@@ -576,19 +385,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.904244,
     "lng": 107.580821,
     "linkMaps": "https://www.google.com/maps/place/Dapur+SPPG+KOTA+Bandung+Cicendo,Husein+Sastranegara+3+%26+4/data=!4m7!3m6!1s0x2e68e70036f66531:0x8d4e74e6d1c95d24!8m2!3d-6.9042444!4d107.5808214!16s%2Fg%2F11xyl7rjlt!19sChIJMWX2NgDnaC4RJF3J0eZ0To0?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJMWX2NgDnaC4RJF3J0eZ0To0",
-    "kapasitas": 550,
-    "penerima": 490,
-    "sekolahMitra": 7,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit KOTA Bandung Cicendo,Husein Sastranegara 3 & 4",
-    "telepon": "0812-4151-4047",
-    "bergabung": "Juni 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 24,
@@ -600,19 +401,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.910195,
     "lng": 107.59387,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Arjuna+Cicendo/data=!4m7!3m6!1s0x2e68e70066800213:0x97687b07070ef22d!8m2!3d-6.9101954!4d107.5938697!16s%2Fg%2F11z6320l0s!19sChIJEwKAZgDnaC4RLfIOBwd7aJc?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJEwKAZgDnaC4RLfIOBwd7aJc",
-    "kapasitas": 580,
-    "penerima": 487,
-    "sekolahMitra": 5,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit Arjuna Cicendo",
-    "telepon": "0812-4288-4136",
-    "bergabung": "Januari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 25,
@@ -624,19 +417,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.910773,
     "lng": 107.586599,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Husen+Sastranegara+7/data=!4m7!3m6!1s0x2e68e70060dd3a47:0x12b387e0482d7b68!8m2!3d-6.9107728!4d107.5865993!16s%2Fg%2F11mydc3jfv!19sChIJRzrdYADnaC4RaHstSOCHsxI?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJRzrdYADnaC4RaHstSOCHsxI",
-    "kapasitas": 620,
-    "penerima": 564,
-    "sekolahMitra": 3,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit Husen Sastranegara 7",
-    "telepon": "0812-4425-4225",
-    "bergabung": "Februari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 26,
@@ -648,19 +433,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.909406,
     "lng": 107.584203,
     "linkMaps": "https://www.google.com/maps/place/SPPG+JATAYU+CICENDO+05/data=!4m7!3m6!1s0x2e68e700523a2b95:0x43252ca9b0582ffb!8m2!3d-6.9094063!4d107.5842032!16s%2Fg%2F11n3_rp3q5!19sChIJlSs6UgDnaC4R-y9YsKksJUM?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Dalam Evaluasi",
     "statusValidasi": "perlu_review",
     "catatanReview": "Titik berdekatan (18.5 m) dengan SPPG KOTA BANDUNG CICENDO HUSEIN SASTRANEGARA 5; jangan digabung otomatis",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJlSs6UgDnaC4R-y9YsKksJUM",
-    "kapasitas": 650,
-    "penerima": 0,
-    "sekolahMitra": 0,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit JATAYU CICENDO 05",
-    "telepon": "0812-4562-4314",
-    "bergabung": "Maret 2025",
-    "catatanGizi": "Titik berdekatan (18.5 m) dengan SPPG KOTA BANDUNG CICENDO HUSEIN SASTRANEGARA 5; jangan digabung otomatis"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 27,
@@ -672,19 +449,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.904523,
     "lng": 107.577392,
     "linkMaps": "https://www.google.com/maps/place/SPPG+KOTA+BANDUNG+CICENDO+HUSEIN+SASTRANEGARA+1/data=!4m7!3m6!1s0x2e68e7cf4e240a3d:0x2a456010326e01c8!8m2!3d-6.9045226!4d107.5773919!16s%2Fg%2F11zj1jk9xj!19sChIJPQokTs_naC4RyAFuMhBgRSo?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJPQokTs_naC4RyAFuMhBgRSo",
-    "kapasitas": 410,
-    "penerima": 381,
-    "sekolahMitra": 4,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit KOTA BANDUNG CICENDO HUSEIN SASTRANEGARA 1",
-    "telepon": "0812-4699-4403",
-    "bergabung": "April 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 28,
@@ -696,19 +465,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.909254,
     "lng": 107.584272,
     "linkMaps": "https://www.google.com/maps/place/SPPG+KOTA+BANDUNG+CICENDO+HUSEIN+SASTRANEGARA+5/data=!4m7!3m6!1s0x2e68e70059f5da2b:0x8a6e1bb78bbba0a!8m2!3d-6.9092537!4d107.5842718!16s%2Fg%2F11z7ckhv5b!19sChIJK9r1WQDnaC4RCrq7eLvhpgg?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Dalam Evaluasi",
     "statusValidasi": "perlu_review",
     "catatanReview": "Titik berdekatan (18.5 m) dengan SPPG JATAYU CICENDO 05; jangan digabung otomatis",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJK9r1WQDnaC4RCrq7eLvhpgg",
-    "kapasitas": 440,
-    "penerima": 0,
-    "sekolahMitra": 0,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit KOTA BANDUNG CICENDO HUSEIN SASTRANEGARA 5",
-    "telepon": "0812-4836-4492",
-    "bergabung": "Mei 2025",
-    "catatanGizi": "Titik berdekatan (18.5 m) dengan SPPG JATAYU CICENDO 05; jangan digabung otomatis"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 29,
@@ -720,19 +481,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.905565,
     "lng": 107.577454,
     "linkMaps": "https://www.google.com/maps/place/SPPG+KOTA+BANDUNG+HUSEIN+SASTRANEGARA+02/data=!4m7!3m6!1s0x2e68e700016230cf:0x9476c45ba2f71669!8m2!3d-6.905565!4d107.5774541!16s%2Fg%2F11zbdnc1kw!19sChIJzzBiAQDnaC4RaRb3olvEdpQ?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJzzBiAQDnaC4RaRb3olvEdpQ",
-    "kapasitas": 470,
-    "penerima": 447,
-    "sekolahMitra": 5,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit KOTA BANDUNG HUSEIN SASTRANEGARA 02",
-    "telepon": "0812-4973-4581",
-    "bergabung": "Juni 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 30,
@@ -744,19 +497,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.908626,
     "lng": 107.598262,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Kota+Bandung,+Cicendo+Pasirkaliki+2/data=!4m7!3m6!1s0x2e68e7005da7bb79:0xb8db60c677f21a53!8m2!3d-6.9086258!4d107.598262!16s%2Fg%2F11mrmglzbc!19sChIJebunXQDnaC4RUxryd8Zg27g?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJebunXQDnaC4RUxryd8Zg27g",
-    "kapasitas": 500,
-    "penerima": 450,
-    "sekolahMitra": 3,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit Kota Bandung, Cicendo Pasirkaliki 2",
-    "telepon": "0812-5110-4670",
-    "bergabung": "Januari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 31,
@@ -768,19 +513,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.90281,
     "lng": 107.590704,
     "linkMaps": "https://www.google.com/maps/place/SPPG+PAJAJARAN+2+BALADEWA/data=!4m7!3m6!1s0x2e68e7007c5dc97d:0x97afea61f0e21f9b!8m2!3d-6.9028095!4d107.5907038!16s%2Fg%2F11z73tcsrt!19sChIJfcldfADnaC4Rmx_i8GHqr5c?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJfcldfADnaC4Rmx_i8GHqr5c",
-    "kapasitas": 530,
-    "penerima": 451,
-    "sekolahMitra": 6,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit PAJAJARAN 2 BALADEWA",
-    "telepon": "0812-5247-4759",
-    "bergabung": "Februari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 32,
@@ -792,19 +529,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.906702,
     "lng": 107.604053,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Pajajaran+Cicendo+03/data=!4m7!3m6!1s0x2e68e700636ee181:0x5579adab92f025a9!8m2!3d-6.9067016!4d107.6040526!16s%2Fg%2F11xz0s3r26!19sChIJgeFuYwDnaC4RqSXwkquteVU?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJgeFuYwDnaC4RqSXwkquteVU",
-    "kapasitas": 560,
-    "penerima": 515,
-    "sekolahMitra": 4,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit Pajajaran Cicendo 03",
-    "telepon": "0812-5384-4848",
-    "bergabung": "Maret 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 33,
@@ -816,19 +545,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.893168,
     "lng": 107.562797,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Sukaraja,+Cicendo/data=!4m7!3m6!1s0x2e68e50076c75c91:0x7da4a0296c9301d4!8m2!3d-6.8931681!4d107.5627968!16s%2Fg%2F11mf0_t7_h!19sChIJkVzHdgDlaC4R1AGTbCmgpH0?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJkVzHdgDlaC4R1AGTbCmgpH0",
-    "kapasitas": 590,
-    "penerima": 513,
-    "sekolahMitra": 7,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit Sukaraja, Cicendo",
-    "telepon": "0812-5521-4937",
-    "bergabung": "April 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 34,
@@ -840,19 +561,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.895658,
     "lng": 107.587688,
     "linkMaps": "https://www.google.com/maps/place/Sppg+yayasan+sejahtera+Gizi+lestari+kec+cicendo/data=!4m7!3m6!1s0x2e68e7006e17b5e3:0x78651da1addcaedc!8m2!3d-6.8956581!4d107.5876884!16s%2Fg%2F11yz8mbw8w!19sChIJ47UXbgDnaC4R3K7craEdZXg?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJ47UXbgDnaC4R3K7craEdZXg",
-    "kapasitas": 620,
-    "penerima": 583,
-    "sekolahMitra": 5,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit yayasan sejahtera Gizi lestari kec cicendo",
-    "telepon": "0812-5658-5026",
-    "bergabung": "Mei 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 35,
@@ -864,19 +577,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.888973,
     "lng": 107.569097,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Kota+Cimahi+Cimahi+Utara+Pasirkaliki+2/data=!4m7!3m6!1s0x2e68e5005d333815:0x4862875613083f1c!8m2!3d-6.8889735!4d107.5690968!16s%2Fg%2F11zbcyg_s7!19sChIJFTgzXQDlaC4RHD8IE1aHYkg?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Dalam Evaluasi",
     "statusValidasi": "perlu_review",
     "catatanReview": "Nama menyebut Kota Cimahi tetapi kota pada alamat berbeda",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJFTgzXQDlaC4RHD8IE1aHYkg",
-    "kapasitas": 390,
-    "penerima": 0,
-    "sekolahMitra": 0,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit Kota Cimahi Cimahi Utara Pasirkaliki 2",
-    "telepon": "0812-5795-5115",
-    "bergabung": "Juni 2025",
-    "catatanGizi": "Nama menyebut Kota Cimahi tetapi kota pada alamat berbeda"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 36,
@@ -888,19 +593,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.874861,
     "lng": 107.618741,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Coblong+Dago+2/data=!4m7!3m6!1s0x2e68e727f020e071:0xd2c488ecb61d5749!8m2!3d-6.8748607!4d107.618741!16s%2Fg%2F11z1zpwlcc!19sChIJceAg8CfnaC4RSVcdtuyIxNI?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJceAg8CfnaC4RSVcdtuyIxNI",
-    "kapasitas": 420,
-    "penerima": 353,
-    "sekolahMitra": 6,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit Coblong Dago 2",
-    "telepon": "0812-5932-5204",
-    "bergabung": "Januari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 37,
@@ -912,19 +609,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.883652,
     "lng": 107.621837,
     "linkMaps": "https://www.google.com/maps/place/SPPG+COBLONG+SEKELOA+02/data=!4m7!3m6!1s0x2e68e7003aa745bb:0x3db2903647bad274!8m2!3d-6.8836524!4d107.6218375!16s%2Fg%2F11ygp4sgzv!19sChIJu0WnOgDnaC4RdNK6RzaQsj0?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJu0WnOgDnaC4RdNK6RzaQsj0",
-    "kapasitas": 450,
-    "penerima": 409,
-    "sekolahMitra": 4,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit COBLONG SEKELOA 02",
-    "telepon": "0812-6069-5293",
-    "bergabung": "Februari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 38,
@@ -936,19 +625,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.869867,
     "lng": 107.620534,
     "linkMaps": "https://www.google.com/maps/place/SPPG+DAGO+COBLONG+001/data=!4m7!3m6!1s0x2e68e7001752abe3:0x95cc6108404019d8!8m2!3d-6.8698675!4d107.6205336!16s%2Fg%2F11nk081l9d!19sChIJ46tSFwDnaC4R2BlAQAhhzJU?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJ46tSFwDnaC4R2BlAQAhhzJU",
-    "kapasitas": 480,
-    "penerima": 413,
-    "sekolahMitra": 7,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit DAGO COBLONG 001",
-    "telepon": "0812-6206-5382",
-    "bergabung": "Maret 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 39,
@@ -960,19 +641,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.897841,
     "lng": 107.613736,
     "linkMaps": "https://www.google.com/maps/place/SPPG+KOTA+BANDUNG+COBLONG+LEBAK+GEDE/data=!4m7!3m6!1s0x2e68e755b50742b3:0xa6c98495c7a819f2!8m2!3d-6.8978415!4d107.6137357!16s%2Fg%2F11ywntjb7r!19sChIJs0IHtVXnaC4R8hmox5WEyaY?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJs0IHtVXnaC4R8hmox5WEyaY",
-    "kapasitas": 510,
-    "penerima": 474,
-    "sekolahMitra": 5,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit KOTA BANDUNG COBLONG LEBAK GEDE",
-    "telepon": "0812-6343-5471",
-    "bergabung": "April 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 40,
@@ -984,19 +657,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.887937,
     "lng": 107.619122,
     "linkMaps": "https://www.google.com/maps/place/SPPG+KOTA+BANDUNG+COBLONG+SEKELOA+1/data=!4m7!3m6!1s0x2e68e700013bdbf9:0x3f855144ae93e6d8!8m2!3d-6.8879366!4d107.6191222!16s%2Fg%2F11njmczx14!19sChIJ-ds7AQDnaC4R2OaTrkRRhT8?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJ-ds7AQDnaC4R2OaTrkRRhT8",
-    "kapasitas": 540,
-    "penerima": 475,
-    "sekolahMitra": 3,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit KOTA BANDUNG COBLONG SEKELOA 1",
-    "telepon": "0812-6480-5560",
-    "bergabung": "Mei 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 41,
@@ -1008,19 +673,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.887066,
     "lng": 107.614804,
     "linkMaps": "https://www.google.com/maps/place/SPPG+LEBAKGEDE+COBLONG/data=!4m7!3m6!1s0x2e68e7e8c1fed9ad:0x3341a6812c4f0dc2!8m2!3d-6.887066!4d107.6148041!16s%2Fg%2F11y55rt85g!19sChIJrdn-wejnaC4Rwg1PLIGmQTM?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJrdn-wejnaC4Rwg1PLIGmQTM",
-    "kapasitas": 570,
-    "penerima": 542,
-    "sekolahMitra": 6,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit LEBAKGEDE COBLONG",
-    "telepon": "0812-6617-5649",
-    "bergabung": "Juni 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 42,
@@ -1032,19 +689,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.892946,
     "lng": 107.598884,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Kota+Bandung+Sukajadi+Pasteur/data=!4m7!3m6!1s0x2e68e70019ae35a3:0x6087b6964d17fea2!8m2!3d-6.8929464!4d107.5988843!16s%2Fg%2F11msllzvvw!19sChIJozWuGQDnaC4Rov4XTZa2h2A?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJozWuGQDnaC4Rov4XTZa2h2A",
-    "kapasitas": 600,
-    "penerima": 540,
-    "sekolahMitra": 4,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit Kota Bandung Sukajadi Pasteur",
-    "telepon": "0812-6754-5738",
-    "bergabung": "Januari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 43,
@@ -1056,19 +705,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.894626,
     "lng": 107.591094,
     "linkMaps": "https://www.google.com/maps/place/SPPG+KOTA+BANDUNG+SUKAJADI+SUKABUNGAH/data=!4m7!3m6!1s0x2e68e7006c28e2e1:0xce5adaf40420812f!8m2!3d-6.8946258!4d107.591094!16s%2Fg%2F11z77gh9f_!19sChIJ4eIobADnaC4RL4EgBPTaWs4?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJ4eIobADnaC4RL4EgBPTaWs4",
-    "kapasitas": 630,
-    "penerima": 536,
-    "sekolahMitra": 7,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit KOTA BANDUNG SUKAJADI SUKABUNGAH",
-    "telepon": "0812-6891-5827",
-    "bergabung": "Februari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 44,
@@ -1080,19 +721,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.891423,
     "lng": 107.58302,
     "linkMaps": "https://www.google.com/maps/place/SPPG+SUKAGALIH+SUKAJADI+009/data=!4m7!3m6!1s0x2e68e70073256255:0x24ad027f81310d72!8m2!3d-6.8914229!4d107.58302!16s%2Fg%2F11nj6qyg1r!19sChIJVWIlcwDnaC4Rcg0xgX8CrSQ?authuser=0&hl=id&g_ep=EgoyMDI2MTAxMS4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJVWIlcwDnaC4Rcg0xgX8CrSQ",
-    "kapasitas": 390,
-    "penerima": 359,
-    "sekolahMitra": 5,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit SUKAGALIH SUKAJADI 009",
-    "telepon": "0812-7028-5916",
-    "bergabung": "Maret 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 45,
@@ -1104,19 +737,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.909448,
     "lng": 107.558902,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CIBEUREUM+1+KOTA+CIMAHI/data=!4m7!3m6!1s0x2e68e5001fd7a08d:0xdcb5aa90513a8c9b!8m2!3d-6.9094481!4d107.5589023!16s%2Fg%2F11zd3xw6fv!19sChIJjaDXHwDlaC4Rm4w6UZCqtdw?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJjaDXHwDlaC4Rm4w6UZCqtdw",
-    "kapasitas": 430,
-    "penerima": 374,
-    "sekolahMitra": 3,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit CIBEUREUM 1 KOTA CIMAHI",
-    "telepon": "0812-7165-6005",
-    "bergabung": "April 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 46,
@@ -1128,19 +753,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.909236,
     "lng": 107.556912,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CIBEUREUM+4+KOTA+CIMAHI/data=!4m7!3m6!1s0x2e68e500192a1399:0x81d2b463514ea389!8m2!3d-6.9092365!4d107.5569123!16s%2Fg%2F11xs7v1lh3!19sChIJmRMqGQDlaC4RiaNOUWO00oE?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJmRMqGQDlaC4RiaNOUWO00oE",
-    "kapasitas": 460,
-    "penerima": 432,
-    "sekolahMitra": 6,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit CIBEUREUM 4 KOTA CIMAHI",
-    "telepon": "0812-7302-6094",
-    "bergabung": "Mei 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 47,
@@ -1152,19 +769,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.874096,
     "lng": 107.546729,
     "linkMaps": "https://www.google.com/maps/place/DAPUR+SPPG+KOTA+CIMAHI+CIMAHI+TENGAH+CIMAHI+5/data=!4m7!3m6!1s0x2e68e50060880417:0x5c46ff2fcefe4f33!8m2!3d-6.8740956!4d107.5467295!16s%2Fg%2F11npqgvptx!19sChIJFwSIYADlaC4RM0_-zi__Rlw?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJFwSIYADlaC4RM0_-zi__Rlw",
-    "kapasitas": 490,
-    "penerima": 436,
-    "sekolahMitra": 4,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit KOTA CIMAHI CIMAHI TENGAH CIMAHI 5",
-    "telepon": "0812-7439-6183",
-    "bergabung": "Juni 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 48,
@@ -1176,19 +785,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.892053,
     "lng": 107.537611,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Baros+05+%28MBG%29/data=!4m7!3m6!1s0x2e68e50025e5740d:0xdb265991e6f49171!8m2!3d-6.8920533!4d107.5376109!16s%2Fg%2F11mltff14m!19sChIJDXTlJQDlaC4RcZH05pFZJts?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJDXTlJQDlaC4RcZH05pFZJts",
-    "kapasitas": 520,
-    "penerima": 437,
-    "sekolahMitra": 7,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit Baros 05 (MBG)",
-    "telepon": "0812-7576-6272",
-    "bergabung": "Januari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 49,
@@ -1200,19 +801,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.893303,
     "lng": 107.537774,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Baros+Cimahi+tengah+006/data=!4m7!3m6!1s0x2e68e50031831251:0x5c88b2201c602404!8m2!3d-6.8933027!4d107.5377739!16s%2Fg%2F11z39znn6w!19sChIJURKDMQDlaC4RBCRgHCCyiFw?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJURKDMQDlaC4RBCRgHCCyiFw",
-    "kapasitas": 550,
-    "penerima": 500,
-    "sekolahMitra": 5,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit Baros Cimahi tengah 006",
-    "telepon": "0812-7713-6361",
-    "bergabung": "Februari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 50,
@@ -1224,19 +817,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.880043,
     "lng": 107.550356,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CIGUGUR+TENGAH/data=!4m7!3m6!1s0x2e68e5000d472455:0xc2c2dd31b98b9aee!8m2!3d-6.8800432!4d107.5503559!16s%2Fg%2F11njr4zzg6!19sChIJVSRHDQDlaC4R7pqLuTHdwsI?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJVSRHDQDlaC4R7pqLuTHdwsI",
-    "kapasitas": 580,
-    "penerima": 499,
-    "sekolahMitra": 3,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit CIGUGUR TENGAH",
-    "telepon": "0812-7850-6450",
-    "bergabung": "Maret 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 51,
@@ -1248,19 +833,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.873493,
     "lng": 107.544288,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CIMAHI+03/data=!4m7!3m6!1s0x2e68e50027ae82a7:0xce50b42b1c578d0d!8m2!3d-6.873493!4d107.5442882!16s%2Fg%2F11yr3whkgm!19sChIJp4KuJwDlaC4RDY1XHCu0UM4?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJp4KuJwDlaC4RDY1XHCu0UM4",
-    "kapasitas": 610,
-    "penerima": 567,
-    "sekolahMitra": 6,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit CIMAHI 03",
-    "telepon": "0812-7987-6539",
-    "bergabung": "April 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 52,
@@ -1272,19 +849,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.881661,
     "lng": 107.531876,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Karangmekar+3/data=!4m7!3m6!1s0x2e68e5007e74099b:0xf1989cdd652426cd!8m2!3d-6.8816615!4d107.5318763!16s%2Fg%2F11mlcyvmk_!19sChIJmwl0fgDlaC4RzSYkZd2cmPE?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJmwl0fgDlaC4RzSYkZd2cmPE",
-    "kapasitas": 640,
-    "penerima": 563,
-    "sekolahMitra": 4,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit Karangmekar 3",
-    "telepon": "0812-8124-6628",
-    "bergabung": "Mei 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 53,
@@ -1296,19 +865,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.871392,
     "lng": 107.541756,
     "linkMaps": "https://www.google.com/maps/place/SPPG+KOTA+CIMAHI+CIMAHI+TENGAH+CIMAHI+2/data=!4m7!3m6!1s0x2e68e5025f501d2f:0x4a6b783ad66fd726!8m2!3d-6.8713923!4d107.5417563!16s%2Fg%2F11yymwrl0t!19sChIJLx1QXwLlaC4RJtdv1jp4a0o?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJLx1QXwLlaC4RJtdv1jp4a0o",
-    "kapasitas": 400,
-    "penerima": 380,
-    "sekolahMitra": 7,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit KOTA CIMAHI CIMAHI TENGAH CIMAHI 2",
-    "telepon": "0812-8261-6717",
-    "bergabung": "Juni 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 54,
@@ -1320,19 +881,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.877996,
     "lng": 107.529897,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Padasuka+08+Cimahi/data=!4m7!3m6!1s0x2e68e58e28eae91b:0xbb24cd1d8243c0bf!8m2!3d-6.877996!4d107.5298966!16s%2Fg%2F11ytrfckqb!19sChIJG-nqKI7laC4Rv8BDgh3NJLs?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJG-nqKI7laC4Rv8BDgh3NJLs",
-    "kapasitas": 430,
-    "penerima": 387,
-    "sekolahMitra": 5,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit Padasuka 08 Cimahi",
-    "telepon": "0812-8398-6806",
-    "bergabung": "Januari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 55,
@@ -1344,19 +897,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.877465,
     "lng": 107.525395,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Padasuka,+Cimahi+Tengah/data=!4m7!3m6!1s0x2e68e52bb0eddaa9:0xf1414120e840eb94!8m2!3d-6.8774655!4d107.5253953!16s%2Fg%2F11xz2vy9xj!19sChIJqdrtsCvlaC4RlOtA6CBBQfE?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJqdrtsCvlaC4RlOtA6CBBQfE",
-    "kapasitas": 470,
-    "penerima": 400,
-    "sekolahMitra": 3,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit Padasuka, Cimahi Tengah",
-    "telepon": "0812-8535-6895",
-    "bergabung": "Februari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 56,
@@ -1368,19 +913,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.88101,
     "lng": 107.560475,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CIBABAT+%28ALESHA%29/data=!4m7!3m6!1s0x2e68e50074b48c53:0xbf4a8b90d2c50af1!8m2!3d-6.8810105!4d107.560475!16s%2Fg%2F11n3z_zfnl!19sChIJU4y0dADlaC4R8QrF0pCLSr8?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJU4y0dADlaC4R8QrF0pCLSr8",
-    "kapasitas": 500,
-    "penerima": 460,
-    "sekolahMitra": 6,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit CIBABAT (ALESHA)",
-    "telepon": "0812-8672-6984",
-    "bergabung": "Maret 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 57,
@@ -1392,19 +929,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.881331,
     "lng": 107.556059,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CIBABAT+2/data=!4m7!3m6!1s0x2e68e50015c94955:0x626f47cf02e7945d!8m2!3d-6.8813313!4d107.5560588!16s%2Fg%2F11ymkr6zzc!19sChIJVUnJFQDlaC4RXZTnAs9Hb2I?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJVUnJFQDlaC4RXZTnAs9Hb2I",
-    "kapasitas": 530,
-    "penerima": 461,
-    "sekolahMitra": 4,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit CIBABAT 2",
-    "telepon": "0812-8809-7073",
-    "bergabung": "April 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 58,
@@ -1416,19 +945,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.867388,
     "lng": 107.546418,
     "linkMaps": "https://www.google.com/maps/place/SPPG+Cimahi+Utara+Cibabat+4/data=!4m7!3m6!1s0x2e68e500575a82e9:0x199de57b5aa61d4d!8m2!3d-6.8673879!4d107.5464183!16s%2Fg%2F11yj7fplpg!19sChIJ6YJaVwDlaC4RTR2mWnvlnRk?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJ6YJaVwDlaC4RTR2mWnvlnRk",
-    "kapasitas": 560,
-    "penerima": 526,
-    "sekolahMitra": 7,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit Cimahi Utara Cibabat 4",
-    "telepon": "0812-8946-7162",
-    "bergabung": "Mei 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 59,
@@ -1440,19 +961,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.870076,
     "lng": 107.550858,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CIMAHI+UTARA+CITEREUP+3/data=!4m7!3m6!1s0x2e68e5007b1bd615:0x12c963116758e424!8m2!3d-6.870076!4d107.5508581!16s%2Fg%2F11yhzjr5cj!19sChIJFdYbewDlaC4RJORYZxFjyRI?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJFdYbewDlaC4RJORYZxFjyRI",
-    "kapasitas": 590,
-    "penerima": 525,
-    "sekolahMitra": 5,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit CIMAHI UTARA CITEREUP 3",
-    "telepon": "0812-9083-7251",
-    "bergabung": "Juni 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 60,
@@ -1464,19 +977,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.859722,
     "lng": 107.54486,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CIPAGERAN/data=!4m7!3m6!1s0x2e68e500427fa331:0x2f46f9b873efc456!8m2!3d-6.8597222!4d107.5448602!16s%2Fg%2F11y08gttm5!19sChIJMaN_QgDlaC4RVsTvc7j5Ri8?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJMaN_QgDlaC4RVsTvc7j5Ri8",
-    "kapasitas": 620,
-    "penerima": 521,
-    "sekolahMitra": 3,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit CIPAGERAN",
-    "telepon": "0812-9220-7340",
-    "bergabung": "Januari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 61,
@@ -1488,19 +993,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.866279,
     "lng": 107.547515,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CITEUREUP+04/data=!4m7!3m6!1s0x2e68e50025ae82e7:0xb25df5b84c6bd041!8m2!3d-6.8662786!4d107.5475155!16s%2Fg%2F11y0xml2v1!19sChIJ54KuJQDlaC4RQdBrTLj1XbI?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJ54KuJQDlaC4RQdBrTLj1XbI",
-    "kapasitas": 380,
-    "penerima": 346,
-    "sekolahMitra": 6,
-    "jenisPenerima": "SD/MI, SMP/MTs",
-    "pengelola": "Dapur MBG Unit CITEUREUP 04",
-    "telepon": "0812-9357-7429",
-    "bergabung": "Februari 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 62,
@@ -1512,19 +1009,11 @@ export const sppgList: SPPG[] = [
     "lat": -6.882649,
     "lng": 107.559997,
     "linkMaps": "https://www.google.com/maps/place/SPPG+CITEUREUP+2+KOTA+CIMAHI/data=!4m7!3m6!1s0x2e68e5652c0d900b:0x87156fc97888f86b!8m2!3d-6.8826488!4d107.5599966!16s%2Fg%2F11ntfzdz6w!19sChIJC5ANLGXlaC4Ra_iIeMlvFYc?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJC5ANLGXlaC4Ra_iIeMlvFYc",
-    "kapasitas": 410,
-    "penerima": 353,
-    "sekolahMitra": 4,
-    "jenisPenerima": "SD/MI, Pondok Pesantren",
-    "pengelola": "Dapur MBG Unit CITEUREUP 2 KOTA CIMAHI",
-    "telepon": "0812-9494-7518",
-    "bergabung": "Maret 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   },
   {
     "id": 63,
@@ -1536,301 +1025,10 @@ export const sppgList: SPPG[] = [
     "lat": -6.865016,
     "lng": 107.537829,
     "linkMaps": "https://www.google.com/maps/place/SPPG+SANGKURIANG+BARAT+-+CIPAGERAN/data=!4m7!3m6!1s0x2e68e500280c7c91:0x122aeefffb4e0de5!8m2!3d-6.8650162!4d107.5378292!16s%2Fg%2F11yvt4zyhy!19sChIJkXwMKADlaC4R5Q1O-__uKhI?authuser=0&hl=id&g_ep=EgoyMDI2MTAwNy4wIJJjKgBIAVAD&rclk=1",
-    "status": "Aktif",
     "statusValidasi": "belum_diverifikasi",
     "catatanReview": "",
     "sumber": "Google Maps (pilot, perlu izin/verifikasi independen)",
     "placeId": "ChIJkXwMKADlaC4R5Q1O-__uKhI",
-    "kapasitas": 440,
-    "penerima": 409,
-    "sekolahMitra": 7,
-    "jenisPenerima": "SD/MI, SMP/MTs, SMA",
-    "pengelola": "Dapur MBG Unit SANGKURIANG BARAT - CIPAGERAN",
-    "telepon": "0812-9631-7607",
-    "bergabung": "April 2025",
-    "catatanGizi": "Terverifikasi pada direktori titik layanan gizi Bandung Raya"
+    "fileAsal": "sppg_pilot.csv"
   }
 ];
-
-export const incidentList: Incident[] = [
-  {
-    "id": 1,
-    "tanggal": "2025-03-15",
-    "sppgId": 5,
-    "sppgNama": "SPPG BANDUNG SOREANG CINGCIN",
-    "wilayah": "Kabupaten Bandung",
-    "jenis": "Keracunan",
-    "tingkatUrgensi": "Tinggi",
-    "deskripsi": "12 siswa SD mengalami mual dan pusing 1 jam pasca konsumsi tumis buncis. Diduga kontaminasi silang pada peralatan potong dapur.",
-    "terdampak": 12,
-    "status": "Ditangani",
-    "tindakan": "Pemeriksaan medis di Puskesmas setempat, seluruh siswa pulih dalam 24 jam. Sterilisasi ulang dapur total."
-  },
-  {
-    "id": 2,
-    "tanggal": "2025-04-02",
-    "sppgId": 3,
-    "sppgNama": "SPPG KOPO",
-    "wilayah": "Kabupaten Bandung",
-    "jenis": "Keracunan",
-    "tingkatUrgensi": "Tinggi",
-    "deskripsi": "8 siswa SMP mengalami muntah dan diare akibat lauk olahan ayam yang disimpan di atas suhu aman selama 4 jam.",
-    "terdampak": 8,
-    "status": "Ditangani",
-    "tindakan": "Penanganan cepat UGD RSUD terdekat, pergantian supplier bahan baku dan pengetatan cold storage."
-  },
-  {
-    "id": 3,
-    "tanggal": "2025-05-20",
-    "sppgId": 20,
-    "sppgNama": "SPPG Kota Bandung Babakan Ciparay Cirangrang",
-    "wilayah": "Kota Bandung",
-    "jenis": "Keracunan",
-    "tingkatUrgensi": "Rendah",
-    "deskripsi": "3 siswa mengalami ruam gatal akibat alergi telur puyuh yang belum terdata di rekam medis sekolah binaan.",
-    "terdampak": 3,
-    "status": "Ditangani",
-    "tindakan": "Pemberian antihistamin oleh petugas UKS, sinkronisasi riwayat alergi siswa diperbarui ke sistem SPPG."
-  },
-  {
-    "id": 4,
-    "tanggal": "2025-06-10",
-    "sppgId": 25,
-    "sppgNama": "SPPG Husen Sastranegara 7",
-    "wilayah": "Kota Bandung",
-    "jenis": "Keracunan",
-    "tingkatUrgensi": "Tinggi",
-    "deskripsi": "Nasi pulen terindikasi basi karena uap panas terperangkap dalam wadah tertutup kedap selama 3 jam di suhu ruang.",
-    "terdampak": 15,
-    "status": "Ditangani",
-    "tindakan": "Pertolongan pertama medis Puskesmas, penggantian seluruh boks dengan ventilasi uap otomatis."
-  },
-  {
-    "id": 5,
-    "tanggal": "2025-07-08",
-    "sppgId": 37,
-    "sppgNama": "SPPG COBLONG SEKELOA 02",
-    "wilayah": "Kota Bandung",
-    "jenis": "Keracunan",
-    "tingkatUrgensi": "Tinggi",
-    "deskripsi": "20 santri pondok pesantren mengalami gejala intoleransi laktosa pasca pembagian susu pasteurisasi segar.",
-    "terdampak": 20,
-    "status": "Ditangani",
-    "tindakan": "Penanganan cepat Dinkes setempat, penyediaan susu kedelai khusus bagi santri intoleran."
-  },
-  {
-    "id": 6,
-    "tanggal": "2025-08-14",
-    "sppgId": 48,
-    "sppgNama": "SPPG Baros 05 (MBG)",
-    "wilayah": "Kota Cimahi",
-    "jenis": "Keracunan",
-    "tingkatUrgensi": "Tinggi",
-    "deskripsi": "4 siswa mengalami mual ringan diduga akibat kualitas air bilas yang belum melewati filter sinar ultraviolet.",
-    "terdampak": 4,
-    "status": "Dalam Penanganan",
-    "tindakan": "Puskesmas mengambil sampel air uji laboratorium mikrobiologi; SPPG wajib menggunakan air galon bermerek."
-  },
-  {
-    "id": 7,
-    "tanggal": "2025-02-18",
-    "sppgId": 1,
-    "sppgNama": "SPPG BANDUNG CANGKUANG 2 (SENTANI 2)",
-    "wilayah": "Kabupaten Bandung",
-    "jenis": "Keluhan",
-    "tingkatUrgensi": "Rendah",
-    "deskripsi": "Komite sekolah dan orang tua mengeluhkan variasi menu makanan berulang selama dua pekan berturut-turut.",
-    "terdampak": 50,
-    "status": "Ditangani",
-    "tindakan": "Nutrisionis merombak siklus menu menjadi 20 variasi harian dengan tema kuliner nusantara seimbang."
-  },
-  {
-    "id": 8,
-    "tanggal": "2025-03-05",
-    "sppgId": 10,
-    "sppgNama": "SPPG CINGCIN - SOREANG",
-    "wilayah": "Kabupaten Bandung",
-    "jenis": "Keluhan",
-    "tingkatUrgensi": "Sedang",
-    "deskripsi": "Porsi karbohidrat dan protein dinilai pihak guru terlalu sedikit untuk kebutuhan siswa kelas 5 dan 6.",
-    "terdampak": 80,
-    "status": "Ditangani",
-    "tindakan": "Pemberlakuan diferensiasi porsi bertingkat: Kelas Rendah (1-3) dan Kelas Tinggi (4-6) dengan standar kalori."
-  },
-  {
-    "id": 9,
-    "tanggal": "2025-04-22",
-    "sppgId": 4,
-    "sppgNama": "SPPG Bandung Pasirjambu Cibodas",
-    "wilayah": "Kabupaten Bandung",
-    "jenis": "Keluhan",
-    "tingkatUrgensi": "Sedang",
-    "deskripsi": "Makanan tiba dalam kondisi dingin karena jarak tempuh pengiriman melebihi 40 menit tanpa thermal box.",
-    "terdampak": 120,
-    "status": "Ditangani",
-    "tindakan": "Pengadaan 10 unit box thermal berinsulasi tinggi, rute distribusi dipecah menjadi 2 armada terpisah."
-  },
-  {
-    "id": 10,
-    "tanggal": "2025-05-11",
-    "sppgId": 22,
-    "sppgNama": "SPPG CIKUTRA 2",
-    "wilayah": "Kota Bandung",
-    "jenis": "Keluhan",
-    "tingkatUrgensi": "Rendah",
-    "deskripsi": "Aroma sisa makanan pada wadah pakai ulang (lunch box plastik) dikeluhkan oleh para siswa.",
-    "terdampak": 30,
-    "status": "Ditangani",
-    "tindakan": "Peralihan ke teknologi steam sterilization suhu tinggi di instalasi pencucian sentral."
-  },
-  {
-    "id": 11,
-    "tanggal": "2025-06-03",
-    "sppgId": 51,
-    "sppgNama": "SPPG CIMAHI 03",
-    "wilayah": "Kota Cimahi",
-    "jenis": "Keluhan",
-    "tingkatUrgensi": "Sedang",
-    "deskripsi": "Tidak terdapat porsi buah potong segar selama 3 hari berturut-turut pada paket makanan bergizi gratis.",
-    "terdampak": 65,
-    "status": "Dalam Penanganan",
-    "tindakan": "Klaim ganti rugi ke rekanan pedagang buah lokal dan audit kepatuhan manifest menu harian."
-  },
-  {
-    "id": 12,
-    "tanggal": "2025-07-19",
-    "sppgId": 39,
-    "sppgNama": "SPPG KOTA BANDUNG COBLONG LEBAK GEDE",
-    "wilayah": "Kota Bandung",
-    "jenis": "Keluhan",
-    "tingkatUrgensi": "Sedang",
-    "deskripsi": "Siswa vegetarian dan yang memiliki intoleransi alergi tertentu tidak disediakan menu pengganti sesuai form skrining.",
-    "terdampak": 15,
-    "status": "Belum Ditangani",
-    "tindakan": "Menunggu persetujuan anggaran menu khusus diet kustom dari koordinator wilayah."
-  },
-  {
-    "id": 13,
-    "tanggal": "2025-08-05",
-    "sppgId": 57,
-    "sppgNama": "SPPG CIBABAT 2",
-    "wilayah": "Kota Cimahi",
-    "jenis": "Keluhan",
-    "tingkatUrgensi": "Rendah",
-    "deskripsi": "Kemasan saus pelengkap bocor membasahi sayur matang di dalam sekat boks makan.",
-    "terdampak": 40,
-    "status": "Dalam Penanganan",
-    "tindakan": "Penggantian wadah kompartemen sekat anti-bocor (leak-proof multi-tray container)."
-  },
-  {
-    "id": 14,
-    "tanggal": "2025-02-25",
-    "sppgId": 15,
-    "sppgNama": "SPPG SOREANG SENTANI 04",
-    "wilayah": "Kabupaten Bandung",
-    "jenis": "Gangguan Distribusi",
-    "tingkatUrgensi": "Tinggi",
-    "deskripsi": "Keterlambatan pengantaran 2 jam akibat kemacetan parah di jalur arteri Soreang, siswa terpaksa makan siang terlambat.",
-    "terdampak": 615,
-    "status": "Ditangani",
-    "tindakan": "Jadwal keberangkatan armada dimajukan menjadi pukul 09.30 WIB dengan rute jalan alternatif."
-  },
-  {
-    "id": 15,
-    "tanggal": "2025-03-17",
-    "sppgId": 21,
-    "sppgNama": "SPPG Kota Bandung Batununggal Cibangkong",
-    "wilayah": "Kota Bandung",
-    "jenis": "Gangguan Distribusi",
-    "tingkatUrgensi": "Tinggi",
-    "deskripsi": "Mobil boks pengiriman mogok di jalan tol Pasir Koja, mengakibatkan 2 sekolah tertunda penerimaannya.",
-    "terdampak": 200,
-    "status": "Ditangani",
-    "tindakan": "Penyediaan armada cadangan siaga (on-call backup van) yang siap berangkat dalam 15 menit."
-  },
-  {
-    "id": 16,
-    "tanggal": "2025-04-14",
-    "sppgId": 46,
-    "sppgNama": "SPPG CIBEUREUM 4 KOTA CIMAHI",
-    "wilayah": "Kota Cimahi",
-    "jenis": "Gangguan Distribusi",
-    "tingkatUrgensi": "Tinggi",
-    "deskripsi": "Genangan banjir setinggi 50cm di rel perlintasan memutus akses ke 3 SDN sasaran penerima manfaat.",
-    "terdampak": 470,
-    "status": "Ditangani",
-    "tindakan": "Pengalihan rute distribusi menggunakan jalur lingkar alternatif dengan armada sepeda motor boks."
-  },
-  {
-    "id": 17,
-    "tanggal": "2025-05-08",
-    "sppgId": 23,
-    "sppgNama": "Dapur SPPG KOTA Bandung Cicendo,Husein Sastranegara 3 & 4",
-    "wilayah": "Kota Bandung",
-    "jenis": "Gangguan Distribusi",
-    "tingkatUrgensi": "Sedang",
-    "deskripsi": "Dua kurir pengantar mengalami kecelakaan ringan dan sakit mendadak secara bersamaan di hari yang sama.",
-    "terdampak": 90,
-    "status": "Ditangani",
-    "tindakan": "Kerjasama dengan pool kurir mitra cadangan tersertifikasi standar higienitas MBG."
-  },
-  {
-    "id": 18,
-    "tanggal": "2025-06-25",
-    "sppgId": 2,
-    "sppgNama": "SPPG Tanjungsari, Cangkuang",
-    "wilayah": "Kabupaten Bandung",
-    "jenis": "Gangguan Distribusi",
-    "tingkatUrgensi": "Tinggi",
-    "deskripsi": "Pohon tumbang menutup akses jalan desa menuju 2 madrasah di kawasan perbukitan.",
-    "terdampak": 150,
-    "status": "Ditangani",
-    "tindakan": "Koordinasi bersama BPBD dan aparat setempat untuk pembersihan rute dan drop point darurat."
-  },
-  {
-    "id": 19,
-    "tanggal": "2025-07-22",
-    "sppgId": 52,
-    "sppgNama": "SPPG Karangmekar 3",
-    "wilayah": "Kota Cimahi",
-    "jenis": "Gangguan Distribusi",
-    "tingkatUrgensi": "Sedang",
-    "deskripsi": "Sinkronisasi aplikasi manifest pengiriman error akibat kendala server lokal, data alamat sekolah tertukar.",
-    "terdampak": 300,
-    "status": "Ditangani",
-    "tindakan": "Pemberlakuan manifest cetak fisik (paper backup) wajib di setiap armada pengantar."
-  },
-  {
-    "id": 20,
-    "tanggal": "2025-08-20",
-    "sppgId": 32,
-    "sppgNama": "SPPG Pajajaran Cicendo 03",
-    "wilayah": "Kota Bandung",
-    "jenis": "Gangguan Distribusi",
-    "tingkatUrgensi": "Tinggi",
-    "deskripsi": "Penutupan jalur flyover dan aksi demonstrasi massa menyebabkan keterlambatan 90 menit menuju sekolah mitra.",
-    "terdampak": 460,
-    "status": "Belum Ditangani",
-    "tindakan": "Membuat nota kesepahaman jalur hijau prioritas darurat MBG dengan Dishub setempat."
-  }
-];
-
-export const totalKapasitas = sppgList.reduce((acc, s) => acc + s.kapasitas, 0);
-export const totalPenerima = sppgList.reduce((acc, s) => acc + s.penerima, 0);
-export const totalSekolah = sppgList.reduce((acc, s) => acc + s.sekolahMitra, 0);
-export const keracunanCount = incidentList.filter(i => i.jenis === "Keracunan").length;
-export const keluhanCount = incidentList.filter(i => i.jenis === "Keluhan").length;
-export const gangguanCount = incidentList.filter(i => i.jenis === "Gangguan Distribusi").length;
-
-export const sppgSummary = {
-  totalSPPG: sppgList.length,
-  sppgAktif: sppgList.filter(s => s.status === "Aktif").length,
-  sppgEvaluasi: sppgList.filter(s => s.status === "Dalam Evaluasi").length,
-  totalKapasitas,
-  totalPenerima,
-  totalSekolahMitra: totalSekolah,
-  totalKejadian: incidentList.length,
-  kasusKeracunan: keracunanCount,
-  kasusKeluhan: keluhanCount,
-  kasusDistribusi: gangguanCount,
-};

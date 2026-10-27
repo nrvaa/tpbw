@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "import:data": "node scripts/convert_data.js",
+    "test": "node --test scripts/convert_data.test.js"
   },
   "dependencies": {
     "astro": "^5.4.0",

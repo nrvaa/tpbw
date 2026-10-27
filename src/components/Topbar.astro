@@ -1,4 +1,5 @@
 ---
+import { summary } from '../data/summary';
 ---
 
 <header class="h-20 border-b border-rule bg-paper-2/85 backdrop-blur-xl sticky top-0 z-30 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
@@ -19,21 +20,21 @@
     <div>
       <h1 class="text-base sm:text-lg lg:text-xl font-display font-bold text-white tracking-tight flex items-center gap-2">
         <span>Sistem Pemetaan SPPG Bandung Raya</span>
-        <span class="hidden sm:inline-flex text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">MBG 2025</span>
+        <span class="hidden sm:inline-flex text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">Dataset Pilot</span>
       </h1>
-      <p class="text-xs text-ink-muted hidden md:block">Integrasi data lokasi unit gizi & pemantauan data kejadian terpadu se-Bandung Raya</p>
+      <p class="text-xs text-ink-muted hidden md:block">Sebaran {summary.totalKandidat} titik kandidat SPPG di {summary.totalWilayah} kab/kota, {summary.totalKecamatan} kecamatan</p>
     </div>
   </div>
 
   <div class="flex items-center gap-2.5 sm:gap-3">
     <!-- Global Quick Search with a11y & Clear button -->
     <div class="relative hidden sm:block w-48 md:w-64">
-      <label for="global-search-input" class="sr-only">Cari SPPG, wilayah, atau insiden</label>
+      <label for="global-search-input" class="sr-only">Cari SPPG, kecamatan, atau wilayah</label>
       <input 
         type="search" 
         id="global-search-input"
-        placeholder="Cari SPPG, wilayah, insiden..." 
-        aria-label="Cari SPPG, wilayah, atau insiden"
+        placeholder="Cari SPPG, kecamatan..." 
+        aria-label="Cari SPPG, kecamatan, atau wilayah"
         class="w-full bg-paper border border-rule rounded-xl pl-9 pr-8 py-2 text-xs text-ink placeholder:text-ink-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/40 transition-all font-body"
       />
       <svg class="w-4 h-4 text-ink-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
@@ -51,11 +52,11 @@
       </button>
     </div>
 
-    <!-- Live Telemetry Pill -->
-    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-paper border border-rule text-xs font-mono" role="status" aria-live="polite">
-      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true"></span>
-      <span class="text-ink-muted hidden lg:inline">Status:</span>
-      <span class="text-emerald-400 font-semibold">Online</span>
+    <!-- Sumber data: file statis, diperbarui manual -->
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-paper border border-rule text-xs font-mono" title="Data dimuat dari file statis dan diperbarui manual">
+      <span class="w-2 h-2 rounded-full bg-amber-400" aria-hidden="true"></span>
+      <span class="text-ink-muted hidden lg:inline">Data:</span>
+      <span class="text-amber-300 font-semibold">Pembaruan Manual</span>
     </div>
 
     <!-- Quick Action to Map -->

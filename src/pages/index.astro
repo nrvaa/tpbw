@@ -8,90 +8,89 @@ import ChartsSection from '../components/ChartsSection.astro';
 import IncidentSection from '../components/IncidentSection.astro';
 import SPPGGrid from '../components/SPPGGrid.astro';
 import DetailModal from '../components/DetailModal.astro';
-import { sppgList, incidentList } from '../data/sppg';
+import { incidentsEnabled } from '../data/incidents';
 ---
 
 <Layout>
-  <!-- Sidebar Navigation -->
   <Sidebar />
 
-  <!-- Main Content Area -->
   <div class="flex-1 lg:pl-64 flex flex-col min-h-screen min-w-0">
     <Topbar />
 
-    <main class="flex-1 p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl mx-auto w-full">
-      
-      <!-- Telemetry Overview Banner -->
+    <main id="main-content" tabindex="-1" class="flex-1 p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl mx-auto w-full focus:outline-none">
+
       <section id="section-overview" class="space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-rule pb-4">
           <div>
-            <h2 class="text-xl font-display font-extrabold text-white tracking-tight">Ringkasan Operasional Bandung Raya</h2>
-            <p class="text-xs text-ink-muted">Pemantauan Satuan Pelayanan Pemenuhan Gizi (SPPG) Program Makan Bergizi Gratis</p>
+            <h2 class="text-xl font-display font-extrabold text-white tracking-tight">Ringkasan Sebaran Kandidat SPPG Bandung Raya</h2>
+            <p class="text-xs text-ink-muted">Pemetaan titik Satuan Pelayanan Pemenuhan Gizi (SPPG) Program Makan Bergizi Gratis</p>
           </div>
           <div class="flex items-center gap-2">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium bg-paper border border-rule text-ink-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Sinkronisasi: Real-time
+              <span class="w-2 h-2 rounded-full bg-amber-400" aria-hidden="true"></span>
+              Data Lokal · Pembaruan Manual
             </span>
           </div>
         </div>
 
-        <!-- Metric Stat Cards -->
         <StatCards />
       </section>
 
-      <!-- Interactive Map Section -->
       <section id="map-wrapper" class="scroll-mt-24">
         <MapSection />
       </section>
 
-      <!-- Analytics Charts Section -->
       <section id="analytics-wrapper" class="scroll-mt-24 space-y-4">
         <div class="border-b border-rule pb-3">
-          <h2 class="text-lg font-display font-bold text-white tracking-tight">Analitik Wilayah & Tren Kejadian</h2>
-          <p class="text-xs text-ink-muted">Distribusi beban dapur gizi serta pemantauan waktu insiden</p>
+          <h2 class="text-lg font-display font-bold text-white tracking-tight">Analitik Sebaran Wilayah</h2>
+          <p class="text-xs text-ink-muted">Jumlah titik kandidat per kab/kota dan status verifikasi datanya</p>
         </div>
         <ChartsSection />
       </section>
 
-      <!-- Incidents Table Section -->
-      <section id="incidents-wrapper" class="scroll-mt-24">
-        <IncidentSection />
-      </section>
+      {incidentsEnabled && (
+        <section id="incidents-wrapper" class="scroll-mt-24">
+          <IncidentSection />
+        </section>
+      )}
 
-      <!-- SPPG Directory Cards Section -->
       <section id="directory-wrapper" class="scroll-mt-24">
         <SPPGGrid />
       </section>
 
-      <!-- Footer Info -->
       <footer class="pt-8 pb-12 border-t border-rule text-xs text-ink-muted flex flex-col sm:flex-row items-center justify-between gap-4 font-mono">
         <div>
-          <span>© 2025 Sistem Pemetaan SPPG se-Bandung Raya · Kelompok 14</span>
+          <span>Sistem Pemetaan SPPG se-Bandung Raya · Kelompok 14</span>
         </div>
-        <div class="flex items-center gap-4 text-[11px]">
-          <span>Program Makan Bergizi Gratis (MBG)</span>
-          <span>•</span>
-          <span>Astro v5 + Tailwind CSS v4 + Leaflet GIS</span>
+        <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px]">
+          <span>Data: kandidat hasil ekstraksi Google Maps (pilot), belum diverifikasi BGN</span>
+          <span aria-hidden="true">•</span>
+          <span>Astro v5 + Tailwind CSS v4 + Leaflet</span>
         </div>
       </footer>
     </main>
   </div>
 
-  <!-- Detail Modal Component -->
   <DetailModal />
 </Layout>
 
 <script>
-  import { sppgList, incidentList } from '../data/sppg';
+  import { sppgList, type SPPG } from '../data/sppg';
+  import { incidentList, incidentsEnabled, type Incident } from '../data/incidents';
+  import { wilayahCounts, statusCounts, statusInfo, wilayahColor, shortWilayah, mapsUrl, escapeHtml, formatCoord } from '../data/summary';
 
-  // State Management
+  type MarkerEntry = { id: number; marker: any; sppg: SPPG };
+
   let currentMap: any = null;
   let markersLayer: any = null;
-  let currentMarkers: any[] = [];
+  let currentMarkers: MarkerEntry[] = [];
   let selectedSPPGId: number | null = null;
 
-  // Wait for DOM
+  const BANDUNG_CENTER = [-6.9175, 107.6191];
+  const byId = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T | null;
+  const incidentsFor = (id: number): Incident[] => (incidentsEnabled ? incidentList.filter(i => i.sppgId === id) : []);
+  const scrollToId = (id: string) => byId(id)?.scrollIntoView({ behavior: 'smooth' });
+
   document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initLeafletMap();
@@ -101,835 +100,688 @@ import { sppgList, incidentList } from '../data/sppg';
     initSearch();
   });
 
-  // 1. Navigation & Scroll Spy
+  // 1. Navigasi
   function initNavigation() {
     const navButtons = document.querySelectorAll('.nav-btn');
-    const mobileToggle = document.getElementById('mobile-sidebar-toggle');
-    const sidebar = document.getElementById('app-sidebar');
-    const backdrop = document.getElementById('sidebar-backdrop');
-    const quickPanBtn = document.getElementById('quick-pan-map-btn');
+    const mobileToggle = byId('mobile-sidebar-toggle');
+    const sidebar = byId('app-sidebar');
+    const backdrop = byId('sidebar-backdrop');
 
-    // Mobile sidebar toggle
-    if (mobileToggle && sidebar && backdrop) {
-      mobileToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('-translate-x-full');
-        backdrop.classList.toggle('hidden');
-      });
-      backdrop.addEventListener('click', () => {
-        sidebar.classList.add('-translate-x-full');
-        backdrop.classList.add('hidden');
-      });
-    }
+    const setSidebar = (open: boolean) => {
+      if (!sidebar || !backdrop) return;
+      sidebar.classList.toggle('-translate-x-full', !open);
+      backdrop.classList.toggle('hidden', !open);
+      mobileToggle?.setAttribute('aria-expanded', String(open));
+    };
 
-    // Scroll to sections
+    mobileToggle?.addEventListener('click', () => setSidebar(sidebar?.classList.contains('-translate-x-full') ?? false));
+    backdrop?.addEventListener('click', () => setSidebar(false));
+
+    const sectionFor: Record<string, string> = {
+      overview: 'section-overview',
+      map: 'map-wrapper',
+      incidents: 'incidents-wrapper',
+      directory: 'directory-wrapper',
+      analytics: 'analytics-wrapper',
+    };
+
     navButtons.forEach(btn => {
       btn.addEventListener('click', () => {
-        const target = btn.getAttribute('data-nav');
         navButtons.forEach(b => {
           b.classList.remove('bg-accent/15', 'text-accent', 'border', 'border-accent/20');
           b.classList.add('text-ink-2');
+          b.removeAttribute('aria-current');
         });
         btn.classList.add('bg-accent/15', 'text-accent', 'border', 'border-accent/20');
         btn.classList.remove('text-ink-2');
+        btn.setAttribute('aria-current', 'page');
 
-        // Close mobile sidebar if open
-        if (sidebar && backdrop && !backdrop.classList.contains('hidden')) {
-          sidebar.classList.add('-translate-x-full');
-          backdrop.classList.add('hidden');
-        }
-
-        let sectionEl: HTMLElement | null = null;
-        if (target === 'overview') sectionEl = document.getElementById('section-overview');
-        if (target === 'map') sectionEl = document.getElementById('map-wrapper');
-        if (target === 'incidents') sectionEl = document.getElementById('incidents-wrapper');
-        if (target === 'directory') sectionEl = document.getElementById('directory-wrapper');
-        if (target === 'analytics') sectionEl = document.getElementById('analytics-wrapper');
-
-        if (sectionEl) {
-          sectionEl.scrollIntoView({ behavior: 'smooth' });
-        }
+        if (backdrop && !backdrop.classList.contains('hidden')) setSidebar(false);
+        const target = sectionFor[btn.getAttribute('data-nav') || ''];
+        if (target) scrollToId(target);
       });
     });
 
-    if (quickPanBtn) {
-      quickPanBtn.addEventListener('click', () => {
-        const mapEl = document.getElementById('map-wrapper');
-        if (mapEl) mapEl.scrollIntoView({ behavior: 'smooth' });
-      });
-    }
+    byId('quick-pan-map-btn')?.addEventListener('click', () => scrollToId('map-wrapper'));
 
-    // Region pill filters in sidebar
+    // Filter wilayah cepat di sidebar
     const regionPills = document.querySelectorAll('.region-pill-btn');
     regionPills.forEach(pill => {
       pill.addEventListener('click', () => {
         regionPills.forEach(p => {
           p.classList.remove('active', 'bg-accent/20', 'text-accent', 'border-accent/30');
           p.classList.add('bg-paper', 'text-ink-muted');
+          p.setAttribute('aria-pressed', 'false');
         });
         pill.classList.add('active', 'bg-accent/20', 'text-accent', 'border-accent/30');
         pill.classList.remove('bg-paper', 'text-ink-muted');
+        pill.setAttribute('aria-pressed', 'true');
 
         const selectedWilayah = pill.getAttribute('data-wilayah') || 'all';
-        
-        // Sync map filter
-        const mapWilayahSelect = document.getElementById('map-select-wilayah') as HTMLSelectElement;
-        if (mapWilayahSelect) {
-          mapWilayahSelect.value = selectedWilayah;
+        const mapSelect = byId<HTMLSelectElement>('map-select-wilayah');
+        if (mapSelect) {
+          mapSelect.value = selectedWilayah;
           updateMapMarkers();
         }
-
-        // Sync directory filter
-        const sppgWilayahSelect = document.getElementById('sppg-filter-wilayah') as HTMLSelectElement;
-        if (sppgWilayahSelect) {
-          sppgWilayahSelect.value = selectedWilayah;
+        const dirSelect = byId<HTMLSelectElement>('sppg-filter-wilayah');
+        if (dirSelect) {
+          dirSelect.value = selectedWilayah;
           filterDirectory();
         }
-
-        // Scroll to map
-        const mapEl = document.getElementById('map-wrapper');
-        if (mapEl) mapEl.scrollIntoView({ behavior: 'smooth' });
+        setSidebar(false);
+        scrollToId('map-wrapper');
       });
     });
 
-    // Telemetry & Stat Card interactive shortcuts
+    // Kartu ringkasan (role="button"): klik, Enter, dan Spasi
     document.querySelectorAll('[data-stat-target]').forEach(el => {
-      el.addEventListener('click', () => {
-        const target = el.getAttribute('data-stat-target');
-        let sectionEl: HTMLElement | null = null;
-        if (target === 'analytics') sectionEl = document.getElementById('analytics-wrapper');
-        if (target === 'directory') sectionEl = document.getElementById('directory-wrapper');
-        if (target === 'incidents') sectionEl = document.getElementById('incidents-wrapper');
-        if (target === 'map') sectionEl = document.getElementById('map-wrapper');
-        if (sectionEl) sectionEl.scrollIntoView({ behavior: 'smooth' });
-      });
-    });
-
-    document.querySelectorAll('[data-stat-incident-filter]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const jenis = btn.getAttribute('data-stat-incident-filter');
-        const jenisSelect = document.getElementById('incident-filter-jenis') as HTMLSelectElement;
-        if (jenisSelect && jenis) {
-          jenisSelect.value = jenis;
-          jenisSelect.dispatchEvent(new Event('change'));
+      const go = () => {
+        const target = sectionFor[el.getAttribute('data-stat-target') || ''];
+        if (target) scrollToId(target);
+      };
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', e => {
+        const key = (e as KeyboardEvent).key;
+        if (key === 'Enter' || key === ' ') {
+          e.preventDefault();
+          go();
         }
-        const sectionEl = document.getElementById('incidents-wrapper');
-        if (sectionEl) sectionEl.scrollIntoView({ behavior: 'smooth' });
       });
     });
   }
 
-  // 2. Leaflet Map Initialization
+  // 2. Peta Leaflet
   function initLeafletMap() {
-    const mapContainer = document.getElementById('leaflet-map');
+    const mapContainer = byId('leaflet-map');
     if (!mapContainer || typeof (window as any).L === 'undefined') {
       setTimeout(initLeafletMap, 200);
       return;
     }
-
     const L = (window as any).L;
 
-    // Center Bandung Raya coordinates
-    const bandungCenter = [-6.9175, 107.6191];
-    
-    currentMap = L.map('leaflet-map', {
-      center: bandungCenter,
-      zoom: 11,
-      zoomControl: true,
-      attributionControl: true
+    currentMap = L.map('leaflet-map', { center: BANDUNG_CENTER, zoom: 11, zoomControl: true, attributionControl: true });
+
+    const osmAttr = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors';
+    const tiles: Record<string, any> = {
+      dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: `${osmAttr} &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a>`,
+        maxZoom: 19,
+        subdomains: 'abcd',
+      }),
+      osm: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: osmAttr, maxZoom: 19 }),
+      satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri',
+        maxZoom: 19,
+      }),
+    };
+    let activeTile = tiles.dark.addTo(currentMap);
+
+    const tileSelect = byId<HTMLSelectElement>('map-select-tile');
+    tileSelect?.addEventListener('change', () => {
+      const next = tiles[tileSelect.value];
+      if (!next || next === activeTile) return;
+      currentMap.removeLayer(activeTile);
+      activeTile = next.addTo(currentMap);
     });
 
-    // Dark Tile Layer (CartoDB Dark Matter)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_4oqq_1_6432e1ac4153b1217ab5d340', {
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://openstreetmap.org">OSM</a> contributors',
-      maxZoom: 19,
-      subdomains: 'abcd'
-    }).addTo(currentMap);
-
     markersLayer = L.layerGroup().addTo(currentMap);
-
     renderMapMarkers(sppgList);
 
-    // Reset center button
-    const resetBtn = document.getElementById('map-reset-btn');
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        currentMap.flyTo(bandungCenter, 11, { duration: 1.2 });
-      });
-    }
+    byId('map-reset-btn')?.addEventListener('click', () => {
+      if (currentMarkers.length) {
+        currentMap.flyToBounds(L.featureGroup(currentMarkers.map(m => m.marker)).getBounds().pad(0.12), { duration: 1.2 });
+      } else {
+        currentMap.flyTo(BANDUNG_CENTER, 11, { duration: 1.2 });
+      }
+    });
 
-    // Map filters
-    const wilayahSelect = document.getElementById('map-select-wilayah');
-    const statusSelect = document.getElementById('map-select-status');
-    const incidentSelect = document.getElementById('map-select-incident');
+    byId('map-select-wilayah')?.addEventListener('change', updateMapMarkers);
+    byId('map-select-status')?.addEventListener('change', updateMapMarkers);
+    byId('map-select-incident')?.addEventListener('change', updateMapMarkers);
 
-    if (wilayahSelect) wilayahSelect.addEventListener('change', updateMapMarkers);
-    if (statusSelect) statusSelect.addEventListener('change', updateMapMarkers);
-    if (incidentSelect) incidentSelect.addEventListener('change', updateMapMarkers);
+    byId('quick-close-btn')?.addEventListener('click', hideQuickInfo);
+    byId('quick-view-full-btn')?.addEventListener('click', () => {
+      if (selectedSPPGId !== null) openSPPGModal(selectedSPPGId);
+    });
 
-    // Quick drawer close
-    const quickCloseBtn = document.getElementById('quick-close-btn');
-    const quickDrawer = document.getElementById('map-quick-info');
-    if (quickCloseBtn && quickDrawer) {
-      quickCloseBtn.addEventListener('click', () => {
-        quickDrawer.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
-      });
-    }
-
-    // Quick drawer full dossier button
-    const quickFullBtn = document.getElementById('quick-view-full-btn');
-    if (quickFullBtn) {
-      quickFullBtn.addEventListener('click', () => {
-        if (selectedSPPGId) {
-          openSPPGModal(selectedSPPGId);
-        }
-      });
-    }
+    initMapSearch();
   }
 
-  function renderMapMarkers(list: typeof sppgList) {
+  // Popup hanya berisi atribut geografis dari dataset. Semua teks di-escape.
+  function popupHtml(s: SPPG) {
+    const st = statusInfo(s.statusValidasi);
+    return `
+      <div class="p-1 space-y-2 text-xs" style="min-width: 220px">
+        <div class="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5">
+          <span class="font-mono text-[10px] text-emerald-400 font-semibold">${escapeHtml(s.wilayah)}</span>
+          <span class="text-[10px] px-1.5 py-0.5 rounded font-mono ${st.badge}">${escapeHtml(st.label)}</span>
+        </div>
+        <h4 class="font-bold text-white text-sm leading-snug">${escapeHtml(s.nama)}</h4>
+        <dl class="space-y-1 text-[11px]">
+          <div><dt class="text-gray-400 inline">Kecamatan: </dt><dd class="text-gray-200 inline">${escapeHtml(s.kecamatan || 'Tidak diketahui')}</dd></div>
+          <div><dt class="text-gray-400 inline">Alamat: </dt><dd class="text-gray-200 inline leading-tight">${escapeHtml(s.alamat || 'Tidak tersedia')}</dd></div>
+        </dl>
+        <div class="grid grid-cols-2 gap-2 bg-black/40 p-2 rounded-lg text-center font-mono text-[11px]">
+          <div><span class="text-gray-400 block text-[9px]">Latitude</span><strong class="text-white">${formatCoord(s.lat)}</strong></div>
+          <div><span class="text-gray-400 block text-[9px]">Longitude</span><strong class="text-white">${formatCoord(s.lng)}</strong></div>
+        </div>
+        <a href="${escapeHtml(mapsUrl(s))}" target="_blank" rel="noopener noreferrer"
+           class="block w-full mt-2 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-center font-semibold text-xs transition-colors"
+           style="color: #fff">
+          Buka Google Maps
+        </a>
+      </div>
+    `;
+  }
+
+  function markerColor(s: SPPG) {
+    if (incidentsEnabled) {
+      const inc = incidentsFor(s.id);
+      if (inc.some(i => i.jenis === 'Keracunan')) return '#ef4444';
+      if (inc.length) return '#f97316';
+    }
+    return statusInfo(s.statusValidasi).marker;
+  }
+
+  function renderMapMarkers(list: SPPG[]) {
     if (!currentMap || !markersLayer) return;
     const L = (window as any).L;
 
     markersLayer.clearLayers();
     currentMarkers = [];
 
-    const activeCountBadge = document.getElementById('active-marker-count');
-    if (activeCountBadge) {
-      activeCountBadge.textContent = `${list.length} Titik`;
-    }
+    const badge = byId('active-marker-count');
+    if (badge) badge.textContent = `${list.length} Titik`;
 
     list.forEach(sppg => {
-      const relatedIncidents = incidentList.filter(i => i.sppgId === sppg.id);
-      const hasKeracunan = relatedIncidents.some(i => i.jenis === "Keracunan");
-      const hasKeluhan = relatedIncidents.some(i => i.jenis === "Keluhan");
-      const hasDistribusi = relatedIncidents.some(i => i.jenis === "Gangguan Distribusi");
+      if (!Number.isFinite(sppg.lat) || !Number.isFinite(sppg.lng)) return;
 
-      // Custom marker styling
-      let markerColor = '#10b981'; // green default
-      let pulseClass = '';
-
-      if (sppg.status !== 'Aktif') {
-        markerColor = '#64748b'; // slate/gray
-      } else if (hasKeracunan) {
-        markerColor = '#ef4444'; // red
-        pulseClass = 'pulse-red';
-      } else if (hasKeluhan) {
-        markerColor = '#f59e0b'; // amber
-      } else if (hasDistribusi) {
-        markerColor = '#3b82f6'; // blue
-      }
-
-      const iconHtml = `
-        <div class="relative flex items-center justify-center">
-          <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-125 cursor-pointer ${pulseClass}" style="background-color: ${markerColor}; border: 2.5px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
-            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            </svg>
-          </div>
-        </div>
-      `;
-
-      const customIcon = L.divIcon({
+      const icon = L.divIcon({
         className: 'custom-leaflet-marker',
-        html: iconHtml,
+        html: `
+          <div class="relative flex items-center justify-center">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center transition-transform hover:scale-125 cursor-pointer" style="background-color: ${markerColor(sppg)}; border: 2.5px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              </svg>
+            </div>
+          </div>`,
         iconSize: [32, 32],
         iconAnchor: [16, 16],
-        popupAnchor: [0, -18]
+        popupAnchor: [0, -18],
       });
 
-      const marker = L.marker([sppg.lat, sppg.lng], { icon: customIcon });
-
-      // Rich Popup
-      const popupContent = `
-        <div class="p-1 space-y-2 text-xs">
-          <div class="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5">
-            <span class="font-mono text-[10px] text-emerald-400 font-semibold">${sppg.wilayah}</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-white font-mono">${sppg.status}</span>
-          </div>
-          <h4 class="font-bold text-white text-sm leading-snug">${sppg.nama}</h4>
-          <p class="text-gray-300 text-[11px] leading-tight">${sppg.alamat}</p>
-          <div class="grid grid-cols-2 gap-2 bg-black/40 p-2 rounded-lg text-center font-mono text-[11px]">
-            <div><span class="text-gray-400 block text-[9px]">Kapasitas</span><strong class="text-white">${sppg.kapasitas}</strong></div>
-            <div><span class="text-gray-400 block text-[9px]">Penerima</span><strong class="text-emerald-400">${sppg.penerima}</strong></div>
-          </div>
-          ${relatedIncidents.length > 0 ? `
-            <div class="p-1.5 rounded bg-rose-500/20 border border-rose-500/30 text-rose-300 text-[10px]">
-              <strong>${relatedIncidents.length} Catatan Kejadian</strong>
-            </div>
-          ` : ''}
-          <button class="w-full mt-2 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-colors" onclick="window.triggerOpenSPPG(${sppg.id})">
-            Buka Dossier SPPG →
-          </button>
-        </div>
-      `;
-
-      marker.bindPopup(popupContent, { maxWidth: 280 });
-
-      // Marker click also triggers Quick Floating Drawer
-      marker.on('click', () => {
-        showQuickInfo(sppg, relatedIncidents);
-      });
-
+      const marker = L.marker([sppg.lat, sppg.lng], { icon, title: sppg.nama, alt: sppg.nama, keyboard: true });
+      marker.bindPopup(popupHtml(sppg), { maxWidth: 300 });
+      marker.on('click', () => showQuickInfo(sppg));
       marker.addTo(markersLayer);
       currentMarkers.push({ id: sppg.id, marker, sppg });
     });
 
-    if (list.length > 0 && currentMarkers.length > 0) {
-      const group = L.featureGroup(currentMarkers.map(m => m.marker));
-      currentMap.fitBounds(group.getBounds().pad(0.12));
+    if (currentMarkers.length) {
+      currentMap.fitBounds(L.featureGroup(currentMarkers.map(m => m.marker)).getBounds().pad(0.12));
     }
   }
 
-  function showQuickInfo(sppg: any, incidents: any[]) {
+  function showQuickInfo(sppg: SPPG) {
     selectedSPPGId = sppg.id;
-    const quickDrawer = document.getElementById('map-quick-info');
-    const nameEl = document.getElementById('quick-sppg-name');
-    const addrEl = document.getElementById('quick-sppg-address');
-    const capEl = document.getElementById('quick-sppg-cap');
-    const recEl = document.getElementById('quick-sppg-rec');
-    const statusBadge = document.getElementById('quick-sppg-status-badge');
-    const alertBox = document.getElementById('quick-incident-alert');
-    const alertText = document.getElementById('quick-incident-text');
-
-    if (!quickDrawer || !nameEl || !addrEl || !capEl || !recEl) return;
+    const drawer = byId('map-quick-info');
+    const nameEl = byId('quick-sppg-name');
+    const addrEl = byId('quick-sppg-address');
+    if (!drawer || !nameEl || !addrEl) return;
 
     nameEl.textContent = sppg.nama;
-    addrEl.textContent = sppg.alamat;
-    capEl.textContent = `${sppg.kapasitas} porsi`;
-    recEl.textContent = `${sppg.penerima} porsi`;
+    addrEl.textContent = sppg.alamat || 'Alamat tidak tersedia';
+    const kecEl = byId('quick-sppg-kec');
+    if (kecEl) kecEl.textContent = sppg.kecamatan || 'Tidak diketahui';
+    const coordEl = byId('quick-sppg-coord');
+    if (coordEl) coordEl.textContent = `${formatCoord(sppg.lat)}, ${formatCoord(sppg.lng)}`;
 
-    if (statusBadge) {
-      statusBadge.textContent = sppg.status;
-      statusBadge.className = `text-[10px] font-mono px-2 py-0.5 rounded font-semibold ${
-        sppg.status === 'Aktif' ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' :
-        sppg.status === 'Dalam Evaluasi' ? 'bg-amber-500/15 text-amber-400 border border-amber-500/20' :
-        'bg-gray-500/15 text-gray-400 border border-gray-500/20'
-      }`;
+    const badge = byId('quick-sppg-status-badge');
+    if (badge) {
+      const st = statusInfo(sppg.statusValidasi);
+      badge.textContent = st.label;
+      badge.className = `text-[10px] font-mono px-2 py-0.5 rounded-full font-semibold ${st.badge}`;
     }
 
+    const alertBox = byId('quick-incident-alert');
+    const alertText = byId('quick-incident-text');
     if (alertBox && alertText) {
-      if (incidents.length > 0) {
-        alertBox.classList.remove('hidden');
-        const latest = incidents[incidents.length - 1];
-        alertText.textContent = `[${latest.jenis}] ${latest.deskripsi}`;
-      } else {
-        alertBox.classList.add('hidden');
-      }
+      const inc = incidentsFor(sppg.id);
+      alertBox.classList.toggle('hidden', inc.length === 0);
+      if (inc.length) alertText.textContent = `[${inc[inc.length - 1].jenis}] ${inc[inc.length - 1].deskripsi}`;
     }
 
-    quickDrawer.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+    drawer.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+  }
+
+  function hideQuickInfo() {
+    byId('map-quick-info')?.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
   }
 
   function updateMapMarkers() {
-    const wilayahVal = (document.getElementById('map-select-wilayah') as HTMLSelectElement)?.value || 'all';
-    const statusVal = (document.getElementById('map-select-status') as HTMLSelectElement)?.value || 'all';
-    const incidentVal = (document.getElementById('map-select-incident') as HTMLSelectElement)?.value || 'all';
+    const wilayahVal = byId<HTMLSelectElement>('map-select-wilayah')?.value || 'all';
+    const statusVal = byId<HTMLSelectElement>('map-select-status')?.value || 'all';
+    const incidentVal = byId<HTMLSelectElement>('map-select-incident')?.value || 'all';
 
-    let filtered = sppgList.filter(s => {
-      const matchWilayah = wilayahVal === 'all' || s.wilayah === wilayahVal;
-      const matchStatus = statusVal === 'all' || s.status === statusVal;
-
-      let matchIncident = true;
-      if (incidentVal === 'has-incident') {
-        matchIncident = incidentList.some(i => i.sppgId === s.id);
-      } else if (incidentVal !== 'all') {
-        matchIncident = incidentList.some(i => i.sppgId === s.id && i.jenis === incidentVal);
+    const filtered = sppgList.filter(s => {
+      if (wilayahVal !== 'all' && s.wilayah !== wilayahVal) return false;
+      if (statusVal !== 'all' && s.statusValidasi !== statusVal) return false;
+      if (incidentsEnabled && incidentVal !== 'all') {
+        const inc = incidentsFor(s.id);
+        return incidentVal === 'has-incident' ? inc.length > 0 : inc.some(i => i.jenis === incidentVal);
       }
-
-      return matchWilayah && matchStatus && matchIncident;
+      return true;
     });
 
+    if (selectedSPPGId !== null && !filtered.some(s => s.id === selectedSPPGId)) hideQuickInfo();
     renderMapMarkers(filtered);
   }
 
-  // 3. Chart.js Initialization
+  // Fokuskan peta ke satu titik. Filter peta di-reset bila titiknya sedang tersembunyi.
+  function focusMarker(id: number) {
+    if (!currentMap) return;
+    let target = currentMarkers.find(m => m.id === id);
+    if (!target) {
+      ['map-select-wilayah', 'map-select-status', 'map-select-incident'].forEach(sel => {
+        const el = byId<HTMLSelectElement>(sel);
+        if (el) el.value = 'all';
+      });
+      updateMapMarkers();
+      target = currentMarkers.find(m => m.id === id);
+    }
+    if (!target) return;
+    scrollToId('map-wrapper');
+    currentMap.flyTo([target.sppg.lat, target.sppg.lng], 16, { duration: 1.2 });
+    currentMap.once('moveend', () => target!.marker.openPopup());
+    showQuickInfo(target.sppg);
+  }
+
+  // Pencarian titik di dataset lokal (nama, kecamatan, alamat). Tidak memanggil API eksternal.
+  function initMapSearch() {
+    const input = byId<HTMLInputElement>('map-geocoding-input');
+    const btn = byId('btn-geocoding-search');
+    const dropdown = byId('geocoding-results-dropdown');
+    if (!input || !dropdown) return;
+
+    const close = () => dropdown.classList.add('hidden');
+    const run = () => {
+      const q = input.value.toLowerCase().trim();
+      if (!q) return close();
+      const hits = sppgList
+        .filter(s => `${s.nama} ${s.kecamatan} ${s.alamat} ${s.wilayah}`.toLowerCase().includes(q))
+        .slice(0, 8);
+      dropdown.innerHTML = hits.length
+        ? hits.map(s => `
+            <button type="button" role="option" data-id="${s.id}" class="map-search-hit w-full text-left px-3 py-2 hover:bg-paper-hover focus:bg-paper-hover focus:outline-none">
+              <span class="block text-xs font-semibold text-white">${escapeHtml(s.nama)}</span>
+              <span class="block text-[11px] text-ink-muted">${escapeHtml(s.kecamatan)} · ${escapeHtml(shortWilayah(s.wilayah))}</span>
+            </button>`).join('')
+        : `<p class="px-3 py-2 text-xs text-ink-muted">Tidak ada titik yang cocok.</p>`;
+      dropdown.classList.remove('hidden');
+    };
+
+    input.addEventListener('input', run);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Escape') close();
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const first = dropdown.querySelector<HTMLElement>('.map-search-hit');
+        if (first) first.click();
+        else run();
+      }
+    });
+    btn?.addEventListener('click', run);
+    dropdown.addEventListener('click', e => {
+      const hit = (e.target as HTMLElement).closest<HTMLElement>('.map-search-hit');
+      if (!hit) return;
+      close();
+      focusMarker(Number(hit.dataset.id));
+    });
+    document.addEventListener('click', e => {
+      if (!(e.target as HTMLElement).closest('#map-geocoding-input, #btn-geocoding-search, #geocoding-results-dropdown')) close();
+    });
+  }
+
+  // 3. Grafik: semua angka dihitung dari dataset
   function initCharts() {
     if (typeof (window as any).Chart === 'undefined') {
       setTimeout(initCharts, 200);
       return;
     }
     const Chart = (window as any).Chart;
-
-    // Common theme settings
     Chart.defaults.color = '#94a3b8';
     Chart.defaults.font.family = 'Inter, sans-serif';
+    const grid = { color: 'rgba(255, 255, 255, 0.05)' };
 
-    // Chart 1: Bar Chart Sebaran SPPG & Kapasitas per Wilayah
-    const canvasWilayah = document.getElementById('chart-wilayah') as HTMLCanvasElement;
+    const canvasWilayah = byId<HTMLCanvasElement>('chart-wilayah');
     if (canvasWilayah) {
-      const regions = ["Kota Bandung", "Kab. Bandung", "Kota Cimahi", "Bandung Barat", "Sumedang"];
-      const counts = [10, 7, 3, 4, 3];
-      const portions = [4800, 3350, 1450, 1940, 1540];
-
+      const regions = wilayahCounts.map(([w]) => w);
       new Chart(canvasWilayah, {
         type: 'bar',
         data: {
-          labels: regions,
-          datasets: [
-            {
-              label: 'Jumlah SPPG',
-              data: counts,
-              backgroundColor: 'rgba(59, 130, 246, 0.75)',
-              borderColor: '#3b82f6',
-              borderWidth: 1.5,
-              borderRadius: 6,
-              yAxisID: 'y'
-            },
-            {
-              label: 'Penerima Harian (x100)',
-              data: portions.map(p => Math.round(p / 100)),
-              backgroundColor: 'rgba(16, 185, 129, 0.75)',
-              borderColor: '#10b981',
-              borderWidth: 1.5,
-              borderRadius: 6,
-              yAxisID: 'y'
-            }
-          ]
+          labels: regions.map(shortWilayah),
+          datasets: statusCounts.map(([s]) => ({
+            label: statusInfo(s).label,
+            data: regions.map(w => sppgList.filter(x => x.wilayah === w && x.statusValidasi === s).length),
+            backgroundColor: statusInfo(s).marker + 'cc',
+            borderColor: statusInfo(s).marker,
+            borderWidth: 1.5,
+            borderRadius: 6,
+          })),
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top',
-              labels: { boxWidth: 12, font: { size: 11 } }
-            }
-          },
+          plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
           scales: {
-            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } }
-          }
-        }
+            x: { stacked: true, grid },
+            y: { stacked: true, grid, beginAtZero: true, ticks: { stepSize: 5, precision: 0 }, title: { display: true, text: 'Jumlah titik' } },
+          },
+        },
       });
     }
 
-    // Chart 2: Doughnut Chart Rasio Insiden
-    const canvasIncident = document.getElementById('chart-incident-ratio') as HTMLCanvasElement;
-    if (canvasIncident) {
-      new Chart(canvasIncident, {
+    const canvasStatus = byId<HTMLCanvasElement>('chart-status-validasi');
+    if (canvasStatus) {
+      new Chart(canvasStatus, {
         type: 'doughnut',
         data: {
-          labels: ['Keracunan (6)', 'Keluhan (7)', 'Gangguan Distribusi (7)'],
+          labels: statusCounts.map(([s, n]) => `${statusInfo(s).label} (${n})`),
           datasets: [{
-            data: [6, 7, 7],
-            backgroundColor: [
-              'rgba(239, 68, 68, 0.85)',
-              'rgba(245, 158, 11, 0.85)',
-              'rgba(59, 130, 246, 0.85)'
-            ],
+            data: statusCounts.map(([, n]) => n),
+            backgroundColor: statusCounts.map(([s]) => statusInfo(s).marker + 'd9'),
             borderColor: '#161b27',
-            borderWidth: 3
-          }]
+            borderWidth: 3,
+          }],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           cutout: '72%',
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: { boxWidth: 10, font: { size: 11 } }
-            }
-          }
-        }
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } },
+        },
       });
     }
 
-    // Chart 3: Monthly Trends Line Chart
-    const canvasTrends = document.getElementById('chart-monthly-trends') as HTMLCanvasElement;
-    if (canvasTrends) {
-      new Chart(canvasTrends, {
-        type: 'line',
+    const canvasIncident = byId<HTMLCanvasElement>('chart-incident-ratio');
+    if (incidentsEnabled && canvasIncident) {
+      const jenis = ['Keracunan', 'Keluhan', 'Gangguan Distribusi'] as const;
+      new Chart(canvasIncident, {
+        type: 'doughnut',
         data: {
-          labels: ['Feb 2025', 'Mar 2025', 'Apr 2025', 'Mei 2025', 'Jun 2025', 'Jul 2025', 'Agu 2025'],
-          datasets: [
-            {
-              label: 'Keracunan',
-              data: [0, 1, 1, 1, 1, 1, 1],
-              borderColor: '#ef4444',
-              backgroundColor: 'rgba(239, 68, 68, 0.15)',
-              tension: 0.35,
-              fill: true,
-              borderWidth: 2
-            },
-            {
-              label: 'Keluhan',
-              data: [1, 1, 1, 1, 1, 1, 1],
-              borderColor: '#f59e0b',
-              backgroundColor: 'rgba(245, 158, 11, 0.1)',
-              tension: 0.35,
-              fill: true,
-              borderWidth: 2
-            },
-            {
-              label: 'Gangguan Distribusi',
-              data: [1, 1, 1, 1, 1, 1, 1],
-              borderColor: '#3b82f6',
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              tension: 0.35,
-              fill: true,
-              borderWidth: 2
-            }
-          ]
+          labels: jenis.map(j => `${j} (${incidentList.filter(i => i.jenis === j).length})`),
+          datasets: [{
+            data: jenis.map(j => incidentList.filter(i => i.jenis === j).length),
+            backgroundColor: ['rgba(239, 68, 68, 0.85)', 'rgba(245, 158, 11, 0.85)', 'rgba(59, 130, 246, 0.85)'],
+            borderColor: '#161b27',
+            borderWidth: 3,
+          }],
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-            y: {
-              grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { stepSize: 1 }
-            }
-          }
-        }
+        options: { responsive: true, maintainAspectRatio: false, cutout: '72%' },
       });
     }
   }
 
-  // 4. Incident Filters & Table Logic
+  // 4. Filter direktori (dan tabel kejadian bila fitur aktif)
   function initFilters() {
-    const searchInput = document.getElementById('incident-search-input') as HTMLInputElement;
-    const jenisSelect = document.getElementById('incident-filter-jenis') as HTMLSelectElement;
-    const wilayahSelect = document.getElementById('incident-filter-wilayah') as HTMLSelectElement;
-    const statusSelect = document.getElementById('incident-filter-status') as HTMLSelectElement;
+    const sppgSearch = byId<HTMLInputElement>('sppg-search-input');
+    const sppgWilayah = byId<HTMLSelectElement>('sppg-filter-wilayah');
+    const sppgStatus = byId<HTMLSelectElement>('sppg-filter-status');
 
-    function applyIncidentFilters() {
-      const q = (searchInput?.value || '').toLowerCase().trim();
-      const jenis = jenisSelect?.value || 'all';
-      const wilayah = wilayahSelect?.value || 'all';
-      const status = statusSelect?.value || 'all';
+    sppgSearch?.addEventListener('input', filterDirectory);
+    sppgWilayah?.addEventListener('change', filterDirectory);
+    sppgStatus?.addEventListener('change', filterDirectory);
 
-      const rows = document.querySelectorAll('.incident-row') as NodeListOf<HTMLElement>;
-      rows.forEach(row => {
-        const rowJenis = row.getAttribute('data-jenis');
-        const rowWilayah = row.getAttribute('data-wilayah');
-        const rowStatus = row.getAttribute('data-status');
-        const textContent = row.textContent?.toLowerCase() || '';
+    const resetDirectory = () => {
+      if (sppgSearch) sppgSearch.value = '';
+      if (sppgWilayah) sppgWilayah.value = 'all';
+      if (sppgStatus) sppgStatus.value = 'all';
+      filterDirectory();
+    };
+    byId('sppg-reset-filters-btn')?.addEventListener('click', resetDirectory);
+    byId('sppg-empty-reset-btn')?.addEventListener('click', resetDirectory);
 
-        const matchQ = !q || textContent.includes(q);
-        const matchJenis = jenis === 'all' || rowJenis === jenis;
-        const matchWilayah = wilayah === 'all' || rowWilayah === wilayah;
-        const matchStatus = status === 'all' || rowStatus === status;
-
-        if (matchQ && matchJenis && matchWilayah && matchStatus) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
-        }
-      });
-    }
-
-    if (searchInput) searchInput.addEventListener('input', applyIncidentFilters);
-    if (jenisSelect) jenisSelect.addEventListener('change', applyIncidentFilters);
-    if (wilayahSelect) wilayahSelect.addEventListener('change', applyIncidentFilters);
-    if (statusSelect) statusSelect.addEventListener('change', applyIncidentFilters);
-
-    // Row click opens incident modal
-    document.querySelectorAll('.view-incident-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    document.querySelectorAll<HTMLElement>('.focus-on-map-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
         e.stopPropagation();
-        const id = parseInt(btn.getAttribute('data-id') || '0', 10);
-        openIncidentModal(id);
+        focusMarker(Number(btn.dataset.id));
       });
     });
 
-    document.querySelectorAll('.incident-row').forEach(row => {
-      row.addEventListener('click', () => {
-        const id = parseInt(row.getAttribute('data-id') || '0', 10);
-        openIncidentModal(id);
-      });
-    });
-
-    // Directory filters
-    const sppgSearch = document.getElementById('sppg-search-input') as HTMLInputElement;
-    const sppgWilayah = document.getElementById('sppg-filter-wilayah') as HTMLSelectElement;
-    const sppgStatus = document.getElementById('sppg-filter-status') as HTMLSelectElement;
-
-    if (sppgSearch) sppgSearch.addEventListener('input', filterDirectory);
-    if (sppgWilayah) sppgWilayah.addEventListener('change', filterDirectory);
-    if (sppgStatus) sppgStatus.addEventListener('change', filterDirectory);
-
-    // Directory Pan-To-Map and Dossier buttons
-    document.querySelectorAll('.focus-on-map-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const lat = parseFloat(btn.getAttribute('data-lat') || '0');
-        const lng = parseFloat(btn.getAttribute('data-lng') || '0');
-        const id = parseInt(btn.getAttribute('data-id') || '0', 10);
-
-        if (currentMap && lat && lng) {
-          const mapEl = document.getElementById('map-wrapper');
-          if (mapEl) mapEl.scrollIntoView({ behavior: 'smooth' });
-          currentMap.flyTo([lat, lng], 14, { duration: 1.5 });
-
-          const target = currentMarkers.find(m => m.id === id);
-          if (target) {
-            target.marker.openPopup();
-            showQuickInfo(target.sppg, incidentList.filter(i => i.sppgId === id));
-          }
-        }
-      });
-    });
-
-    document.querySelectorAll('.open-sppg-dossier-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = parseInt(btn.getAttribute('data-id') || '0', 10);
-        openSPPGModal(id);
-      });
-    });
+    if (incidentsEnabled) initIncidentFilters();
   }
 
   function filterDirectory() {
-    const q = (document.getElementById('sppg-search-input') as HTMLInputElement)?.value.toLowerCase().trim() || '';
-    const wilayah = (document.getElementById('sppg-filter-wilayah') as HTMLSelectElement)?.value || 'all';
-    const status = (document.getElementById('sppg-filter-status') as HTMLSelectElement)?.value || 'all';
+    const q = byId<HTMLInputElement>('sppg-search-input')?.value.toLowerCase().trim() || '';
+    const wilayah = byId<HTMLSelectElement>('sppg-filter-wilayah')?.value || 'all';
+    const status = byId<HTMLSelectElement>('sppg-filter-status')?.value || 'all';
 
-    const cards = document.querySelectorAll('.sppg-card') as NodeListOf<HTMLElement>;
-    cards.forEach(card => {
-      const cardNama = (card.getAttribute('data-nama') || '').toLowerCase();
-      const cardWilayah = card.getAttribute('data-wilayah') || '';
-      const cardStatus = card.getAttribute('data-status') || '';
-      const textContent = card.textContent?.toLowerCase() || '';
-
-      const matchQ = !q || cardNama.includes(q) || textContent.includes(q);
-      const matchWilayah = wilayah === 'all' || cardWilayah === wilayah;
-      const matchStatus = status === 'all' || cardStatus === status;
-
-      if (matchQ && matchWilayah && matchStatus) {
-        card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
-      }
+    let visible = 0;
+    document.querySelectorAll<HTMLElement>('.sppg-card').forEach(card => {
+      const match =
+        (!q || (card.textContent || '').toLowerCase().includes(q)) &&
+        (wilayah === 'all' || card.dataset.wilayah === wilayah) &&
+        (status === 'all' || card.dataset.status === status);
+      card.style.display = match ? 'flex' : 'none';
+      if (match) visible++;
     });
+
+    const total = sppgList.length;
+    const badge = byId('sppg-count-badge');
+    if (badge) badge.textContent = visible === total ? `${total} Titik` : `${visible} dari ${total} Titik`;
+    byId('sppg-empty-state')?.classList.toggle('hidden', visible > 0);
+    byId('sppg-cards-container')?.classList.toggle('hidden', visible === 0);
   }
 
-  // 5. Global Search
-  function initSearch() {
-    const globalInput = document.getElementById('global-search-input') as HTMLInputElement;
-    if (!globalInput) return;
+  function initIncidentFilters() {
+    const searchInput = byId<HTMLInputElement>('incident-search-input');
+    const selects = ['incident-filter-jenis', 'incident-filter-wilayah', 'incident-filter-status'].map(id => byId<HTMLSelectElement>(id));
+    const [jenisSel, wilayahSel, statusSel] = selects;
 
-    globalInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const val = globalInput.value.trim();
-        if (!val) return;
-
-        // Search directory first
-        const sppgSearch = document.getElementById('sppg-search-input') as HTMLInputElement;
-        if (sppgSearch) {
-          sppgSearch.value = val;
-          filterDirectory();
-        }
-
-        // Search incident
-        const incSearch = document.getElementById('incident-search-input') as HTMLInputElement;
-        if (incSearch) {
-          incSearch.value = val;
-          const ev = new Event('input');
-          incSearch.dispatchEvent(ev);
-        }
-
-        // Scroll to directory
-        const dirEl = document.getElementById('directory-wrapper');
-        if (dirEl) dirEl.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  }
-
-  // 6. Modal Functions
-  function initModalHandlers() {
-    const modal = document.getElementById('detail-modal');
-    const closeBtn = document.getElementById('modal-close-btn');
-    const closeActionBtn = document.getElementById('modal-close-action-btn');
-
-    const closeModal = () => {
-      if (modal) modal.classList.add('hidden');
-    };
-
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (closeActionBtn) closeActionBtn.addEventListener('click', closeModal);
-    if (modal) {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
+    const apply = () => {
+      const q = (searchInput?.value || '').toLowerCase().trim();
+      let visible = 0;
+      document.querySelectorAll<HTMLElement>('.incident-row').forEach(row => {
+        const match =
+          (!q || (row.textContent || '').toLowerCase().includes(q)) &&
+          (!jenisSel || jenisSel.value === 'all' || row.dataset.jenis === jenisSel.value) &&
+          (!wilayahSel || wilayahSel.value === 'all' || row.dataset.wilayah === wilayahSel.value) &&
+          (!statusSel || statusSel.value === 'all' || row.dataset.status === statusSel.value);
+        row.style.display = match ? '' : 'none';
+        if (match) visible++;
       });
-    }
+      byId('incident-empty-state')?.classList.toggle('hidden', visible > 0);
+    };
+    const reset = () => {
+      if (searchInput) searchInput.value = '';
+      selects.forEach(s => s && (s.value = 'all'));
+      apply();
+    };
 
-    // Expose trigger to window for popup buttons
-    (window as any).triggerOpenSPPG = (id: number) => {
-      openSPPGModal(id);
+    searchInput?.addEventListener('input', apply);
+    selects.forEach(s => s?.addEventListener('change', apply));
+    byId('incident-reset-filters-btn')?.addEventListener('click', reset);
+    byId('incident-empty-reset-btn')?.addEventListener('click', reset);
+
+    document.querySelectorAll<HTMLElement>('.incident-row').forEach(row => {
+      const open = () => openIncidentModal(Number(row.dataset.id));
+      row.addEventListener('click', open);
+      row.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          open();
+        }
+      });
+    });
+  }
+
+  // 5. Pencarian global (topbar) diteruskan ke direktori
+  function initSearch() {
+    const input = byId<HTMLInputElement>('global-search-input');
+    const clearBtn = byId('global-search-clear');
+    const dirSearch = byId<HTMLInputElement>('sppg-search-input');
+    if (!input) return;
+
+    const sync = () => {
+      clearBtn?.classList.toggle('hidden', !input.value);
+      if (dirSearch) {
+        dirSearch.value = input.value.trim();
+        filterDirectory();
+      }
+    };
+
+    input.addEventListener('input', () => clearBtn?.classList.toggle('hidden', !input.value));
+    input.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' || !input.value.trim()) return;
+      sync();
+      scrollToId('directory-wrapper');
+    });
+    clearBtn?.addEventListener('click', () => {
+      input.value = '';
+      sync();
+      input.focus();
+    });
+  }
+
+  // 6. Modal detail
+  let lastFocused: HTMLElement | null = null;
+
+  function initModalHandlers() {
+    const modal = byId('detail-modal');
+    byId('modal-close-btn')?.addEventListener('click', closeModal);
+    byId('modal-close-action-btn')?.addEventListener('click', closeModal);
+    modal?.addEventListener('click', e => {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) closeModal();
+    });
+  }
+
+  function openModal() {
+    const modal = byId('detail-modal');
+    if (!modal) return;
+    lastFocused = document.activeElement as HTMLElement | null;
+    modal.classList.remove('hidden');
+    byId('modal-close-btn')?.focus();
+  }
+
+  function closeModal() {
+    byId('detail-modal')?.classList.add('hidden');
+    lastFocused?.focus();
+  }
+
+  function bindModalMapAction(id: number) {
+    const btn = byId('modal-action-map-btn');
+    if (!btn) return;
+    btn.onclick = () => {
+      byId('detail-modal')?.classList.add('hidden');
+      focusMarker(id);
     };
   }
 
+  // Isi modal sama dengan popup: hanya atribut geografis + asal data.
   function openSPPGModal(id: number) {
     const sppg = sppgList.find(s => s.id === id);
-    if (!sppg) return;
+    const eyebrow = byId('modal-eyebrow');
+    const title = byId('modal-title');
+    const body = byId('modal-body');
+    if (!sppg || !eyebrow || !title || !body) return;
 
-    const modal = document.getElementById('detail-modal');
-    const eyebrow = document.getElementById('modal-eyebrow');
-    const title = document.getElementById('modal-title');
-    const body = document.getElementById('modal-body');
-    const mapActionBtn = document.getElementById('modal-action-map-btn');
+    const st = statusInfo(sppg.statusValidasi);
+    const row = (label: string, value: string, mono = false) =>
+      `<p><strong class="text-white">${label}:</strong> <span class="text-ink-2${mono ? ' font-mono' : ''}">${escapeHtml(value)}</span></p>`;
 
-    if (!modal || !eyebrow || !title || !body) return;
-
-    eyebrow.textContent = `Dossier SPPG · ${sppg.wilayah}`;
+    eyebrow.textContent = `Detail Lokasi · ${sppg.wilayah}`;
     title.textContent = sppg.nama;
-
-    const incidents = incidentList.filter(i => i.sppgId === sppg.id);
-
     body.innerHTML = `
       <div class="space-y-4">
-        <!-- Status & Key Attributes -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-paper p-3.5 rounded-xl border border-rule font-mono text-center">
-          <div><span class="text-ink-muted text-[10px] block">Status</span><strong class="text-emerald-400 text-xs">${sppg.status}</strong></div>
-          <div><span class="text-ink-muted text-[10px] block">Kapasitas</span><strong class="text-white text-xs">${sppg.kapasitas} porsi</strong></div>
-          <div><span class="text-ink-muted text-[10px] block">Penerima</span><strong class="text-white text-xs">${sppg.penerima} siswa</strong></div>
-          <div><span class="text-ink-muted text-[10px] block">Sekolah</span><strong class="text-white text-xs">${sppg.sekolahMitra} titik</strong></div>
+          <div><span class="text-ink-muted text-[10px] block">Status Verifikasi</span><strong class="text-xs ${st.badge} px-1.5 rounded">${escapeHtml(st.label)}</strong></div>
+          <div><span class="text-ink-muted text-[10px] block">Kecamatan</span><strong class="text-white text-xs">${escapeHtml(sppg.kecamatan || 'Tidak diketahui')}</strong></div>
+          <div><span class="text-ink-muted text-[10px] block">Latitude</span><strong class="text-white text-xs">${formatCoord(sppg.lat)}</strong></div>
+          <div><span class="text-ink-muted text-[10px] block">Longitude</span><strong class="text-white text-xs">${formatCoord(sppg.lng)}</strong></div>
         </div>
 
-        <!-- Location & Contact -->
         <div class="space-y-1.5 bg-paper/60 p-3.5 rounded-xl border border-rule">
-          <p><strong class="text-white">Alamat Lengkap:</strong> <span class="text-ink-2">${sppg.alamat}</span></p>
-          <p><strong class="text-white">Kecamatan:</strong> <span class="text-ink-2">${sppg.kecamatan} (${sppg.wilayah})</span></p>
-          <p><strong class="text-white">Lembaga Pengelola:</strong> <span class="text-ink-2">${sppg.pengelola}</span></p>
-          <p><strong class="text-white">Kontak Layanan:</strong> <span class="text-ink-2 font-mono">${sppg.telepon}</span></p>
-          <p><strong class="text-white">Mulai Bergabung:</strong> <span class="text-ink-2 font-mono">${sppg.bergabung}</span></p>
-          <p><strong class="text-white">Sasaran Penerima:</strong> <span class="text-ink-2">${sppg.jenisPenerima}</span></p>
+          ${row('Alamat lengkap', sppg.alamat || 'Tidak tersedia')}
+          ${row('Kabupaten/Kota', sppg.wilayah)}
+          ${row('Status operasional', 'Tidak diketahui (belum ada sumber terverifikasi)')}
         </div>
 
-        <!-- Hygiene & Nutrition Audit -->
-        <div class="p-3.5 rounded-xl bg-accent/10 border border-accent/20">
-          <h4 class="font-bold text-accent mb-1 flex items-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            Catatan Kelayakan Gizi & Higiene
-          </h4>
-          <p class="text-ink-2 text-xs">${sppg.catatanGizi}</p>
+        ${sppg.catatanReview ? `
+          <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25">
+            <h4 class="font-bold text-amber-300 mb-1">Catatan review</h4>
+            <p class="text-ink-2 text-xs">${escapeHtml(sppg.catatanReview)}</p>
+          </div>` : ''}
+
+        <div class="space-y-1.5 bg-paper/60 p-3.5 rounded-xl border border-rule">
+          <h4 class="font-bold text-white mb-1">Asal data</h4>
+          ${row('Sumber', sppg.sumber || 'Tidak tercatat')}
+          ${row('ID kandidat', sppg.candidateId, true)}
+          ${sppg.fileAsal ? row('File asal', sppg.fileAsal, true) : ''}
         </div>
 
-        <!-- Incident History -->
-        <div>
-          <h4 class="font-bold text-white mb-2 flex items-center justify-between">
-            <span>Riwayat Laporan Kejadian (${incidents.length})</span>
-          </h4>
-          ${incidents.length === 0 ? `
-            <div class="p-4 rounded-xl bg-paper border border-rule text-center text-ink-muted">
-              Belum ada laporan kejadian atau komplain untuk SPPG ini.
-            </div>
-          ` : `
-            <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
-              ${incidents.map(inc => `
-                <div class="p-3 rounded-lg bg-paper border border-rule flex flex-col gap-1">
-                  <div class="flex items-center justify-between font-mono text-[10px]">
-                    <span class="text-rose-400 font-bold">${inc.jenis}</span>
-                    <span class="text-ink-muted">${inc.tanggal}</span>
-                  </div>
-                  <p class="text-xs text-ink-2">${inc.deskripsi}</p>
-                  <div class="text-[11px] text-emerald-400 mt-1 font-mono">
-                    <strong>Tindakan:</strong> ${inc.tindakan}
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          `}
-        </div>
+        <a href="${escapeHtml(mapsUrl(sppg))}" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center justify-center w-full py-2.5 rounded-xl bg-accent/15 border border-accent/25 hover:bg-accent text-accent hover:text-white text-xs font-semibold transition-all focus-visible:ring-2 focus-visible:ring-accent">
+          Buka Google Maps
+        </a>
+
+        ${incidentsEnabled ? incidentHistoryHtml(incidentsFor(sppg.id)) : ''}
       </div>
     `;
 
-    if (mapActionBtn) {
-      mapActionBtn.onclick = () => {
-        modal.classList.add('hidden');
-        const mapEl = document.getElementById('map-wrapper');
-        if (mapEl) mapEl.scrollIntoView({ behavior: 'smooth' });
-        if (currentMap) {
-          currentMap.flyTo([sppg.lat, sppg.lng], 14, { duration: 1.2 });
-          const target = currentMarkers.find(m => m.id === sppg.id);
-          if (target) target.marker.openPopup();
-        }
-      };
-    }
-
-    modal.classList.remove('hidden');
+    bindModalMapAction(sppg.id);
+    openModal();
   }
 
+  function incidentHistoryHtml(items: Incident[]) {
+    return `
+      <div>
+        <h4 class="font-bold text-white mb-2">Riwayat Laporan Kejadian (${items.length})</h4>
+        ${items.length === 0
+          ? `<div class="p-4 rounded-xl bg-paper border border-rule text-center text-ink-muted">Belum ada laporan terverifikasi untuk titik ini.</div>`
+          : `<div class="space-y-2 max-h-48 overflow-y-auto pr-1">${items.map(inc => `
+              <div class="p-3 rounded-lg bg-paper border border-rule flex flex-col gap-1">
+                <div class="flex items-center justify-between font-mono text-[10px]">
+                  <span class="text-rose-400 font-bold">${escapeHtml(inc.jenis)}</span>
+                  <span class="text-ink-muted">${escapeHtml(inc.tanggal)}</span>
+                </div>
+                <p class="text-xs text-ink-2">${escapeHtml(inc.deskripsi)}</p>
+                <p class="text-[11px] text-ink-muted">Sumber: ${escapeHtml(inc.sumber)}</p>
+              </div>`).join('')}</div>`}
+      </div>`;
+  }
+
+  // Hanya terpakai bila incidentsEnabled (IncidentSection dirender).
   function openIncidentModal(id: number) {
     const inc = incidentList.find(i => i.id === id);
-    if (!inc) return;
+    const eyebrow = byId('modal-eyebrow');
+    const title = byId('modal-title');
+    const body = byId('modal-body');
+    if (!inc || !eyebrow || !title || !body) return;
 
-    const modal = document.getElementById('detail-modal');
-    const eyebrow = document.getElementById('modal-eyebrow');
-    const title = document.getElementById('modal-title');
-    const body = document.getElementById('modal-body');
-    const mapActionBtn = document.getElementById('modal-action-map-btn');
-
-    if (!modal || !eyebrow || !title || !body) return;
-
-    eyebrow.textContent = `Laporan Investigasi Insiden · No. #${inc.id}`;
-    title.textContent = `[${inc.jenis}] di ${inc.sppgNama}`;
-
-    const sppg = sppgList.find(s => s.id === inc.sppgId);
-
+    eyebrow.textContent = `Laporan Kejadian · No. #${inc.id}`;
+    title.textContent = `[${inc.jenis}] ${inc.sppgNama}`;
     body.innerHTML = `
       <div class="space-y-4">
-        <!-- Status Banner -->
-        <div class="flex items-center justify-between p-3 rounded-xl bg-paper border border-rule">
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full ${inc.jenis === 'Keracunan' ? 'bg-rose-500 animate-ping' : inc.jenis === 'Keluhan' ? 'bg-amber-500' : 'bg-blue-500'}"></span>
-            <span class="font-bold text-white text-xs">${inc.jenis}</span>
-          </div>
-          <span class="font-mono text-xs text-emerald-400 font-semibold px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">${inc.status}</span>
-        </div>
-
         <div class="grid grid-cols-3 gap-2 bg-paper p-3 rounded-xl border border-rule font-mono text-center">
-          <div><span class="text-ink-muted text-[10px] block">Tanggal</span><strong class="text-white text-xs">${inc.tanggal}</strong></div>
-          <div><span class="text-ink-muted text-[10px] block">Urgensi</span><strong class="${inc.tingkatUrgensi === 'Tinggi' ? 'text-rose-400' : 'text-amber-400'} text-xs">${inc.tingkatUrgensi}</strong></div>
-          <div><span class="text-ink-muted text-[10px] block">Terdampak</span><strong class="text-white text-xs">${inc.terdampak} jiwa</strong></div>
+          <div><span class="text-ink-muted text-[10px] block">Tanggal</span><strong class="text-white text-xs">${escapeHtml(inc.tanggal)}</strong></div>
+          <div><span class="text-ink-muted text-[10px] block">Urgensi</span><strong class="text-white text-xs">${escapeHtml(inc.tingkatUrgensi)}</strong></div>
+          <div><span class="text-ink-muted text-[10px] block">Status</span><strong class="text-white text-xs">${escapeHtml(inc.status)}</strong></div>
         </div>
-
-        <!-- Description -->
         <div class="bg-paper/60 p-4 rounded-xl border border-rule space-y-2">
-          <h4 class="font-bold text-white text-xs uppercase font-mono tracking-wider text-ink-muted">Kronologi / Uraian Masalah</h4>
-          <p class="text-xs text-ink leading-relaxed">${inc.deskripsi}</p>
+          <h4 class="font-bold text-white text-xs">Uraian</h4>
+          <p class="text-xs text-ink leading-relaxed">${escapeHtml(inc.deskripsi)}</p>
+          <h4 class="font-bold text-white text-xs pt-2">Tindakan</h4>
+          <p class="text-xs text-ink-2 leading-relaxed">${escapeHtml(inc.tindakan)}</p>
+          <p class="text-[11px] text-ink-muted pt-2">Sumber: ${escapeHtml(inc.sumber)}</p>
         </div>
-
-        <!-- Action Taken -->
-        <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 space-y-1.5">
-          <h4 class="font-bold text-emerald-400 text-xs font-mono uppercase tracking-wider">Tindakan Remediasi & Penanganan</h4>
-          <p class="text-xs text-ink-2 leading-relaxed">${inc.tindakan}</p>
-        </div>
-
-        <!-- SPPG Anchor -->
-        ${sppg ? `
-          <div class="p-3 rounded-xl bg-paper border border-rule flex items-center justify-between">
-            <div>
-              <span class="text-[10px] font-mono text-ink-muted block">Dapur Penyedia Terkait</span>
-              <strong class="text-white text-xs">${sppg.nama} (${sppg.wilayah})</strong>
-            </div>
-            <button class="px-2.5 py-1 rounded bg-accent/15 text-accent text-xs font-semibold hover:bg-accent hover:text-white transition-colors" onclick="window.triggerOpenSPPG(${sppg.id})">
-              Buka Profil SPPG →
-            </button>
-          </div>
-        ` : ''}
       </div>
     `;
 
-    if (mapActionBtn && sppg) {
-      mapActionBtn.onclick = () => {
-        modal.classList.add('hidden');
-        const mapEl = document.getElementById('map-wrapper');
-        if (mapEl) mapEl.scrollIntoView({ behavior: 'smooth' });
-        if (currentMap) {
-          currentMap.flyTo([sppg.lat, sppg.lng], 14, { duration: 1.2 });
-          const target = currentMarkers.find(m => m.id === sppg.id);
-          if (target) target.marker.openPopup();
-        }
-      };
-    }
-
-    modal.classList.remove('hidden');
+    bindModalMapAction(inc.sppgId);
+    openModal();
   }
 </script>

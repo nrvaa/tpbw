@@ -1,8 +1,9 @@
 ---
-import { sppgList, incidentList } from '../data/sppg';
+import { sppgList } from '../data/sppg';
+import { wilayahCounts, statusCounts, statusInfo, shortWilayah, mapsUrl, formatCoord } from '../data/summary';
 ---
 
-<div id="section-directory" class="bento-card rounded-2xl bg-paper-card border border-rule overflow-hidden shadow-lg flex flex-col" role="region" aria-label="Direktori SPPG Bandung Raya">
+<div id="section-directory" class="bento-card rounded-2xl bg-paper-card border border-rule overflow-hidden shadow-lg flex flex-col" role="region" aria-label="Direktori titik kandidat SPPG Bandung Raya">
   <!-- Header -->
   <div class="p-5 border-b border-rule bg-paper-2 flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div class="flex items-center gap-3">
@@ -13,46 +14,38 @@ import { sppgList, incidentList } from '../data/sppg';
       </div>
       <div>
         <h2 class="text-base font-display font-bold text-white tracking-tight flex items-center gap-2">
-          <span>Direktori Satuan Pelayanan Pemenuhan Gizi (SPPG)</span>
-          <span id="sppg-count-badge" class="text-xs font-mono font-medium px-2 py-0.5 rounded-full bg-paper text-emerald-400 border border-rule">27 Terdata</span>
+          <span>Direktori Kandidat SPPG</span>
+          <span id="sppg-count-badge" class="text-xs font-mono font-medium px-2 py-0.5 rounded-full bg-paper text-emerald-400 border border-rule" aria-live="polite">{sppgList.length} Titik</span>
         </h2>
-        <p class="text-xs text-ink-muted">Daftar lengkap unit dapur MBG, kapasitas produksi harian, dan kontak pengelola</p>
+        <p class="text-xs text-ink-muted">Nama, alamat, koordinat, dan status verifikasi setiap titik kandidat</p>
       </div>
     </div>
 
-    <!-- Filters with accessible labels -->
-    <div class="flex flex-wrap items-center gap-2" role="search" aria-label="Filter Direktori SPPG">
+    <div class="flex flex-wrap items-center gap-2" role="search" aria-label="Filter direktori SPPG">
       <div class="relative">
-        <label for="sppg-search-input" class="sr-only">Cari nama unit SPPG atau pengelola</label>
+        <label for="sppg-search-input" class="sr-only">Cari nama SPPG, kecamatan, atau alamat</label>
         <input 
           type="search" 
           id="sppg-search-input"
-          placeholder="Cari SPPG / pengelola..." 
-          aria-label="Cari SPPG atau pengelola"
+          placeholder="Cari SPPG / kecamatan..." 
           class="bg-paper border border-rule text-ink text-xs rounded-xl pl-8 pr-3 py-2 w-48 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/40 transition-all"
         />
         <svg class="w-3.5 h-3.5 text-ink-muted absolute left-2.5 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
       </div>
 
       <div>
-        <label for="sppg-filter-wilayah" class="sr-only">Pilih Wilayah SPPG</label>
-        <select id="sppg-filter-wilayah" aria-label="Filter Wilayah SPPG" class="bg-paper border border-rule text-ink text-xs rounded-xl px-3 py-2 cursor-pointer focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/40">
+        <label for="sppg-filter-wilayah" class="sr-only">Filter wilayah</label>
+        <select id="sppg-filter-wilayah" class="bg-paper border border-rule text-ink text-xs rounded-xl px-3 py-2 cursor-pointer focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/40">
           <option value="all">Semua Wilayah</option>
-          <option value="Kota Bandung">Kota Bandung</option>
-          <option value="Kabupaten Bandung">Kab. Bandung</option>
-          <option value="Kota Cimahi">Kota Cimahi</option>
-          <option value="Kabupaten Bandung Barat">Kab. Bandung Barat</option>
-          <option value="Kabupaten Sumedang">Kab. Sumedang</option>
+          {wilayahCounts.map(([w, n]) => <option value={w}>{shortWilayah(w)} ({n})</option>)}
         </select>
       </div>
 
       <div>
-        <label for="sppg-filter-status" class="sr-only">Pilih Status SPPG</label>
-        <select id="sppg-filter-status" aria-label="Filter Status Operasional SPPG" class="bg-paper border border-rule text-ink text-xs rounded-xl px-3 py-2 cursor-pointer focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/40">
-          <option value="all">Semua Status</option>
-          <option value="Aktif">Aktif</option>
-          <option value="Dalam Evaluasi">Dalam Evaluasi</option>
-          <option value="Sementara Tidak Aktif">Tidak Aktif</option>
+        <label for="sppg-filter-status" class="sr-only">Filter status verifikasi data</label>
+        <select id="sppg-filter-status" class="bg-paper border border-rule text-ink text-xs rounded-xl px-3 py-2 cursor-pointer focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/40">
+          <option value="all">Semua Status Verifikasi</option>
+          {statusCounts.map(([s, n]) => <option value={s}>{statusInfo(s).label} ({n})</option>)}
         </select>
       </div>
 
@@ -70,105 +63,76 @@ import { sppgList, incidentList } from '../data/sppg';
   <!-- Cards Grid -->
   <div class="p-5 bg-paper/40 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="sppg-cards-container">
     {sppgList.map(sppg => {
-      const relatedIncidents = incidentList.filter(i => i.sppgId === sppg.id);
-      const hasSevereIncident = relatedIncidents.some(i => i.jenis === "Keracunan");
-      const loadPercentage = Math.round((sppg.penerima / sppg.kapasitas) * 100);
-
+      const st = statusInfo(sppg.statusValidasi);
       return (
         <div class="sppg-card bento-card interactive-card p-5 rounded-2xl bg-paper-card border border-rule hover:border-rule-strong hover:bg-paper-hover transition-all duration-200 flex flex-col justify-between group shadow-sm"
              data-id={sppg.id}
              data-nama={sppg.nama}
              data-wilayah={sppg.wilayah}
-             data-status={sppg.status}
-             data-lat={sppg.lat}
-             data-lng={sppg.lng}>
-          
+             data-status={sppg.statusValidasi}>
           <div>
-            <!-- Top Badges -->
             <div class="flex items-start justify-between gap-2 mb-2">
               <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-paper border border-rule text-ink-muted">
                 {sppg.wilayah}
               </span>
-              <div class="flex items-center gap-1.5">
-                {hasSevereIncident && (
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-300 font-semibold border border-rose-500/25 flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" aria-hidden="true"></span>
-                    Ada Insiden
-                  </span>
-                )}
-                <span class={`text-[10px] font-mono px-2.5 py-0.5 rounded-full font-semibold ${
-                  sppg.status === 'Aktif' ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25' :
-                  sppg.status === 'Dalam Evaluasi' ? 'bg-amber-500/15 text-amber-300 border border-amber-500/25' :
-                  'bg-slate-500/15 text-slate-300 border border-slate-500/25'
-                }`}>
-                  {sppg.status}
-                </span>
-              </div>
+              <span class={`text-[10px] font-mono px-2.5 py-0.5 rounded-full font-semibold whitespace-nowrap ${st.badge}`}>
+                {st.label}
+              </span>
             </div>
 
-            <!-- Name & Address -->
-            <h3 class="font-display font-bold text-white text-base leading-snug group-hover:text-accent transition-colors">
+            <h3 class="font-display font-bold text-white text-base leading-snug group-hover:text-accent transition-colors break-words">
               {sppg.nama}
             </h3>
-            <p class="text-xs text-ink-muted line-clamp-2 mt-1 mb-3">
-              {sppg.alamat}
+            <p class="text-xs text-ink-muted line-clamp-2 mt-1 mb-3" title={sppg.alamat}>
+              {sppg.alamat || 'Alamat tidak tersedia'}
             </p>
 
-            <!-- Metrics bar -->
-            <div class="bg-paper p-3 rounded-xl border border-rule space-y-2 mb-3">
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-ink-muted">Penerima Harian</span>
-                <span class="font-mono font-bold text-white">
-                  {sppg.penerima.toLocaleString('id-ID')} <span class="font-normal text-ink-muted">/ {sppg.kapasitas.toLocaleString('id-ID')} porsi</span>
-                </span>
+            <dl class="bg-paper p-3 rounded-xl border border-rule space-y-1.5 mb-3 text-xs">
+              <div class="flex items-center justify-between gap-2">
+                <dt class="text-ink-muted">Kecamatan</dt>
+                <dd class="font-semibold text-white text-right">{sppg.kecamatan || 'Tidak diketahui'}</dd>
               </div>
-              <div class="w-full bg-paper-2 rounded-full h-1.5 overflow-hidden">
-                <div class={`h-full rounded-full transition-all ${
-                  loadPercentage > 90 ? 'bg-amber-400' : 'bg-emerald-400'
-                }`} style={`width: ${Math.min(loadPercentage, 100)}%`}></div>
+              <div class="flex items-center justify-between gap-2 pt-1.5 border-t border-rule">
+                <dt class="text-ink-muted">Koordinat</dt>
+                <dd class="font-mono text-ink-2 text-[11px]">{formatCoord(sppg.lat)}, {formatCoord(sppg.lng)}</dd>
               </div>
-              <div class="flex items-center justify-between text-[11px] text-ink-dim pt-1 border-t border-rule font-mono">
-                <span>{sppg.sekolahMitra} Sekolah Mitra</span>
-                <span class="font-semibold text-ink-2">Beban: {loadPercentage}%</span>
-              </div>
-            </div>
+            </dl>
 
-            <div class="text-[11px] text-ink-muted space-y-1">
-              <p><strong class="text-ink-2 font-medium">Pengelola:</strong> {sppg.pengelola}</p>
-              <p><strong class="text-ink-2 font-medium">Kontak:</strong> <span class="font-mono text-ink-2">{sppg.telepon}</span></p>
-            </div>
+            {sppg.catatanReview && (
+              <p class="text-[11px] text-amber-300/90 leading-snug">
+                <strong class="text-amber-300 font-medium">Catatan review:</strong> {sppg.catatanReview}
+              </p>
+            )}
           </div>
 
-          <!-- Actions -->
           <div class="mt-4 pt-3 border-t border-rule flex items-center gap-2">
-            <button class="focus-on-map-btn flex-1 py-2 px-2 rounded-xl bg-paper border border-rule hover:border-accent hover:text-accent text-xs font-semibold text-ink-2 transition-colors flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-accent"
-                    data-lat={sppg.lat}
-                    data-lng={sppg.lng}
+            <button type="button" class="focus-on-map-btn flex-1 py-2 px-2 rounded-xl bg-paper border border-rule hover:border-accent hover:text-accent text-xs font-semibold text-ink-2 transition-colors flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-accent min-h-[36px]"
                     data-id={sppg.id}
-                    aria-label={`Pusatkan peta ke lokasi ${sppg.nama}`}>
+                    aria-label={`Fokuskan peta ke ${sppg.nama}`}>
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon></svg>
               <span>Lihat di Peta</span>
             </button>
-            <button class="open-sppg-dossier-btn flex-1 py-2 px-2 rounded-xl bg-accent/15 border border-accent/25 hover:bg-accent text-accent hover:text-white text-xs font-semibold transition-all flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-accent"
-                    data-id={sppg.id}
-                    aria-label={`Buka profil dan dossier lengkap ${sppg.nama}`}>
-              <span>Dossier</span>
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-            </button>
+            <a class="flex-1 py-2 px-2 rounded-xl bg-accent/15 border border-accent/25 hover:bg-accent text-accent hover:text-white text-xs font-semibold transition-all flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-accent min-h-[36px]"
+               href={mapsUrl(sppg)}
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label={`Buka ${sppg.nama} di Google Maps (tab baru)`}>
+              <span>Google Maps</span>
+            </a>
           </div>
         </div>
       );
     })}
   </div>
 
-  <!-- Empty State for Directory -->
-  <div id="sppg-empty-state" class="py-14 px-4 text-center hidden">
+  <!-- Empty State -->
+  <div id="sppg-empty-state" class="py-14 px-4 text-center hidden" role="status">
     <div class="w-12 h-12 rounded-2xl bg-paper-2 border border-rule mx-auto flex items-center justify-center text-ink-muted mb-3">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
     </div>
-    <h3 class="text-sm font-display font-bold text-white mb-1">Unit SPPG Tidak Ditemukan</h3>
-    <p class="text-xs text-ink-muted mb-4 max-w-sm mx-auto">Tidak ada unit dapur gizi yang sesuai dengan kriteria pencarian dan filter saat ini.</p>
-    <button id="sppg-empty-reset-btn" class="px-3.5 py-1.5 rounded-xl bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-all shadow-sm">
+    <h3 class="text-sm font-display font-bold text-white mb-1">Titik Tidak Ditemukan</h3>
+    <p class="text-xs text-ink-muted mb-4 max-w-sm mx-auto">Tidak ada titik kandidat yang cocok dengan pencarian dan filter saat ini.</p>
+    <button id="sppg-empty-reset-btn" type="button" class="px-3.5 py-1.5 rounded-xl bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-all shadow-sm">
       Reset Filter Direktori
     </button>
   </div>

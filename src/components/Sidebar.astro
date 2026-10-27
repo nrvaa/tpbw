@@ -4,6 +4,11 @@ interface Props {
 }
 
 const { activeSection = "overview" } = Astro.props;
+
+import { summary, wilayahCounts, shortWilayah } from '../data/summary';
+import { incidentsEnabled, incidentList } from '../data/incidents';
+
+const verifiedPct = summary.totalKandidat ? (summary.terverifikasi / summary.totalKandidat) * 100 : 0;
 ---
 
 <aside id="app-sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-paper-2/95 backdrop-blur-xl border-r border-rule flex flex-col transition-transform duration-300 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
@@ -19,7 +24,7 @@ const { activeSection = "overview" } = Astro.props;
       <div class="flex items-center gap-1.5">
         <span class="font-display font-extrabold tracking-tight text-white text-base leading-none">SPPG BANDUNG</span>
       </div>
-      <span class="text-[11px] font-mono tracking-wider text-emerald-400 font-semibold uppercase mt-1">GIS & MONITORING MBG</span>
+      <span class="text-[11px] font-mono tracking-wider text-emerald-400 font-semibold uppercase mt-1">WebGIS Kandidat SPPG</span>
     </div>
   </div>
 
@@ -27,17 +32,17 @@ const { activeSection = "overview" } = Astro.props;
   <div class="px-5 py-4 border-b border-rule bg-paper-3/40">
     <div class="flex items-center justify-between text-xs text-ink-2 mb-1.5">
       <span class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        Status Jaringan
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        Titik Kandidat
       </span>
-      <span class="font-mono text-emerald-400 font-semibold text-[11px]">27 SPPG</span>
+      <span class="font-mono text-emerald-400 font-semibold text-[11px]">{summary.totalKandidat} SPPG</span>
     </div>
-    <div class="w-full bg-paper rounded-full h-1.5 overflow-hidden ring-1 ring-rule">
-      <div class="bg-gradient-to-r from-emerald-500 to-accent h-full w-[88%] rounded-full"></div>
+    <div class="w-full bg-paper rounded-full h-1.5 overflow-hidden ring-1 ring-rule" role="img" aria-label={`${summary.terverifikasi} dari ${summary.totalKandidat} titik terverifikasi`}>
+      <div class="bg-gradient-to-r from-emerald-500 to-accent h-full rounded-full" style={`width: ${verifiedPct}%`}></div>
     </div>
     <div class="flex justify-between items-center text-[10px] text-ink-muted mt-1 font-mono">
-      <span>Bandung Raya Terpetakan</span>
-      <span>88.9% Aktif</span>
+      <span>{summary.totalWilayah} Kab/Kota · {summary.totalKecamatan} Kec.</span>
+      <span>{summary.perluReview} perlu review</span>
     </div>
   </div>
 
@@ -51,7 +56,7 @@ const { activeSection = "overview" } = Astro.props;
         <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
       </svg>
       <span>Dashboard Overview</span>
-      <span class="ml-auto text-[10px] font-mono bg-paper-2 px-1.5 py-0.5 rounded text-ink-muted border border-rule">Live</span>
+      <span class="ml-auto text-[10px] font-mono bg-paper-2 px-1.5 py-0.5 rounded text-ink-muted border border-rule">Data Lokal</span>
     </button>
 
     <button data-nav="map" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-ink-2 hover:text-white hover:bg-paper-hover focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98] group">
@@ -64,27 +69,29 @@ const { activeSection = "overview" } = Astro.props;
       <span class="ml-auto w-2 h-2 rounded-full bg-emerald-500" aria-label="Tersedia"></span>
     </button>
 
+    {incidentsEnabled && (
     <button data-nav="incidents" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-ink-2 hover:text-white hover:bg-paper-hover focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98] group">
       <svg class="w-4 h-4 text-ink-muted group-hover:text-rose-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
       </svg>
       <span>Data Kejadian</span>
-      <span class="ml-auto text-[10px] font-mono bg-rose-500/15 text-rose-300 font-semibold px-2 py-0.5 rounded-full border border-rose-500/25">20 Isu</span>
+      <span class="ml-auto text-[10px] font-mono bg-rose-500/15 text-rose-300 font-semibold px-2 py-0.5 rounded-full border border-rose-500/25">{incidentList.length} Isu</span>
     </button>
+    )}
 
     <button data-nav="directory" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-ink-2 hover:text-white hover:bg-paper-hover focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98] group">
       <svg class="w-4 h-4 text-ink-muted group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
       </svg>
       <span>Direktori SPPG</span>
-      <span class="ml-auto text-[10px] font-mono text-ink-muted">27 Unit</span>
+      <span class="ml-auto text-[10px] font-mono text-ink-muted">{summary.totalKandidat} Titik</span>
     </button>
 
     <button data-nav="analytics" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-ink-2 hover:text-white hover:bg-paper-hover focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98] group">
       <svg class="w-4 h-4 text-ink-muted group-hover:text-purple-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
       </svg>
-      <span>Analitik & Tren</span>
+      <span>Analitik Wilayah</span>
     </button>
   </nav>
 
@@ -96,11 +103,9 @@ const { activeSection = "overview" } = Astro.props;
     </div>
     <div class="flex flex-wrap gap-1.5" id="sidebar-region-pills" role="toolbar" aria-label="Pilihan Wilayah">
       <button aria-pressed="true" class="region-pill-btn active text-[11px] px-2.5 py-1 rounded-lg bg-accent/20 text-accent font-semibold border border-accent/35 transition-all hover:bg-accent/30 focus-visible:ring-2 focus-visible:ring-accent" data-wilayah="all">Semua</button>
-      <button aria-pressed="false" class="region-pill-btn text-[11px] px-2.5 py-1 rounded-lg bg-paper text-ink-muted hover:text-ink hover:bg-paper-hover border border-rule transition-all focus-visible:ring-2 focus-visible:ring-accent" data-wilayah="Kota Bandung">Kota Bdg</button>
-      <button aria-pressed="false" class="region-pill-btn text-[11px] px-2.5 py-1 rounded-lg bg-paper text-ink-muted hover:text-ink hover:bg-paper-hover border border-rule transition-all focus-visible:ring-2 focus-visible:ring-accent" data-wilayah="Kabupaten Bandung">Kab. Bdg</button>
-      <button aria-pressed="false" class="region-pill-btn text-[11px] px-2.5 py-1 rounded-lg bg-paper text-ink-muted hover:text-ink hover:bg-paper-hover border border-rule transition-all focus-visible:ring-2 focus-visible:ring-accent" data-wilayah="Kota Cimahi">Cimahi</button>
-      <button aria-pressed="false" class="region-pill-btn text-[11px] px-2.5 py-1 rounded-lg bg-paper text-ink-muted hover:text-ink hover:bg-paper-hover border border-rule transition-all focus-visible:ring-2 focus-visible:ring-accent" data-wilayah="Kabupaten Bandung Barat">KBB</button>
-      <button aria-pressed="false" class="region-pill-btn text-[11px] px-2.5 py-1 rounded-lg bg-paper text-ink-muted hover:text-ink hover:bg-paper-hover border border-rule transition-all focus-visible:ring-2 focus-visible:ring-accent" data-wilayah="Kabupaten Sumedang">Sumedang</button>
+      {wilayahCounts.map(([w, n]) => (
+        <button aria-pressed="false" class="region-pill-btn text-[11px] px-2.5 py-1 rounded-lg bg-paper text-ink-muted hover:text-ink hover:bg-paper-hover border border-rule transition-all focus-visible:ring-2 focus-visible:ring-accent" data-wilayah={w}>{shortWilayah(w)} ({n})</button>
+      ))}
     </div>
   </div>
 
@@ -110,7 +115,7 @@ const { activeSection = "overview" } = Astro.props;
       <p class="font-medium text-ink">Kelompok 14</p>
       <p class="text-[11px] text-ink-muted">Tugas Besar Pemrograman Web</p>
     </div>
-    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">2025</span>
+    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Pilot</span>
   </div>
 </aside>
 
