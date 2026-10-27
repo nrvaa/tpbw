@@ -1,0 +1,146 @@
+@import "tailwindcss";
+@import "../../tokens.css";
+
+@theme {
+  --color-paper: var(--color-paper);
+  --color-paper-2: var(--color-paper-2);
+  --color-paper-3: var(--color-paper-3);
+  --color-paper-card: var(--color-paper-card);
+  --color-ink: var(--color-ink);
+  --color-ink-2: var(--color-ink-2);
+  --color-ink-muted: var(--color-ink-muted);
+  --color-rule: var(--color-rule);
+  --color-accent: var(--color-accent);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+/* Base styles */
+html, body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  overflow-x: clip;
+  min-height: 100vh;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bento Card & Clean Surfaces */
+.bento-card {
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bento-card:hover {
+  border-color: var(--color-rule-strong);
+  background-color: var(--color-paper-hover);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-paper);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-rule-strong);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-muted);
+}
+
+/* Leaflet Dark Theme Overrides */
+.leaflet-container {
+  background-color: var(--color-paper-2) !important;
+  font-family: var(--font-body) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--color-paper-card) !important;
+  color: var(--color-ink) !important;
+  border: 1px solid var(--color-rule-strong) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+  padding: 4px !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--color-paper-card) !important;
+  border: 1px solid var(--color-rule-strong) !important;
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px !important;
+  line-height: 1.5 !important;
+}
+
+.leaflet-bar a {
+  background-color: var(--color-paper-card) !important;
+  color: var(--color-ink) !important;
+  border-color: var(--color-rule) !important;
+  transition: all 0.15s ease !important;
+}
+
+.leaflet-bar a:hover {
+  background-color: var(--color-paper-hover) !important;
+  color: var(--color-accent) !important;
+}
+
+/* Marker pulse animations */
+@keyframes marker-pulse-green {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+@keyframes marker-pulse-red {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.pulse-green {
+  animation: marker-pulse-green 2.5s infinite;
+}
+
+.pulse-red {
+  animation: marker-pulse-red 1.8s infinite;
+}
+
+/* Focus visibility for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Clean card surface */
+.glass-panel {
+  background: oklch(19% 0.018 255);
+  border: 1px solid var(--color-rule);
+}
+
+/* Interactive Card Elevation */
+.interactive-card {
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+}
+.interactive-card:hover {
+  border-color: var(--color-rule-strong);
+  background-color: var(--color-paper-hover);
+}
+
+/* Reduced Motion Support for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .pulse-green, .pulse-red, .animate-pulse, .animate-ping {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,935 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Topbar from '../components/Topbar.astro';
+import StatCards from '../components/StatCards.astro';
+import MapSection from '../components/MapSection.astro';
+import ChartsSection from '../components/ChartsSection.astro';
+import IncidentSection from '../components/IncidentSection.astro';
+import SPPGGrid from '../components/SPPGGrid.astro';
+import DetailModal from '../components/DetailModal.astro';
+import { sppgList, incidentList } from '../data/sppg';
+---
+
+<Layout>
+  <!-- Sidebar Navigation -->
+  <Sidebar />
+
+  <!-- Main Content Area -->
+  <div class="flex-1 lg:pl-64 flex flex-col min-h-screen min-w-0">
+    <Topbar />
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl mx-auto w-full">
+      
+      <!-- Telemetry Overview Banner -->
+      <section id="section-overview" class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-rule pb-4">
+          <div>
+            <h2 class="text-xl font-display font-extrabold text-white tracking-tight">Ringkasan Operasional Bandung Raya</h2>
+            <p class="text-xs text-ink-muted">Pemantauan Satuan Pelayanan Pemenuhan Gizi (SPPG) Program Makan Bergizi Gratis</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium bg-paper border border-rule text-ink-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Sinkronisasi: Real-time
+            </span>
+          </div>
+        </div>
+
+        <!-- Metric Stat Cards -->
+        <StatCards />
+      </section>
+
+      <!-- Interactive Map Section -->
+      <section id="map-wrapper" class="scroll-mt-24">
+        <MapSection />
+      </section>
+
+      <!-- Analytics Charts Section -->
+      <section id="analytics-wrapper" class="scroll-mt-24 space-y-4">
+        <div class="border-b border-rule pb-3">
+          <h2 class="text-lg font-display font-bold text-white tracking-tight">Analitik Wilayah & Tren Kejadian</h2>
+          <p class="text-xs text-ink-muted">Distribusi beban dapur gizi serta pemantauan waktu insiden</p>
+        </div>
+        <ChartsSection />
+      </section>
+
+      <!-- Incidents Table Section -->
+      <section id="incidents-wrapper" class="scroll-mt-24">
+        <IncidentSection />
+      </section>
+
+      <!-- SPPG Directory Cards Section -->
+      <section id="directory-wrapper" class="scroll-mt-24">
+        <SPPGGrid />
+      </section>
+
+      <!-- Footer Info -->
+      <footer class="pt-8 pb-12 border-t border-rule text-xs text-ink-muted flex flex-col sm:flex-row items-center justify-between gap-4 font-mono">
+        <div>
+          <span>© 2025 Sistem Pemetaan SPPG se-Bandung Raya · Kelompok 14</span>
+        </div>
+        <div class="flex items-center gap-4 text-[11px]">
+          <span>Program Makan Bergizi Gratis (MBG)</span>
+          <span>•</span>
+          <span>Astro v5 + Tailwind CSS v4 + Leaflet GIS</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Detail Modal Component -->
+  <DetailModal />
+</Layout>
+
+<script>
+  import { sppgList, incidentList } from '../data/sppg';
+
+  // State Management
+  let currentMap: any = null;
+  let markersLayer: any = null;
+  let currentMarkers: any[] = [];
+  let selectedSPPGId: number | null = null;
+
+  // Wait for DOM
+  document.addEventListener('DOMContentLoaded', () => {
+    initNavigation();
+    initLeafletMap();
+    initCharts();
+    initFilters();
+    initModalHandlers();
+    initSearch();
+  });
+
+  // 1. Navigation & Scroll Spy
+  function initNavigation() {
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const mobileToggle = document.getElementById('mobile-sidebar-toggle');
+    const sidebar = document.getElementById('app-sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    const quickPanBtn = document.getElementById('quick-pan-map-btn');
+
+    // Mobile sidebar toggle
+    if (mobileToggle && sidebar && backdrop) {
+      mobileToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        backdrop.classList.toggle('hidden');
+      });
+      backdrop.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      });
+    }
+
+    // Scroll to sections
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-nav');
+        navButtons.forEach(b => {
+          b.classList.remove('bg-accent/15', 'text-accent', 'border', 'border-accent/20');
+          b.classList.add('text-ink-2');
+        });
+        btn.classList.add('bg-accent/15', 'text-accent', 'border', 'border-accent/20');
+        btn.classList.remove('text-ink-2');
+
+        // Close mobile sidebar if open
+        if (sidebar && backdrop && !backdrop.classList.contains('hidden')) {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+        }
+
+        let sectionEl: HTMLElement | null = null;
+        if (target === 'overview') sectionEl = document.getElementById('section-overview');
+        if (target === 'map') sectionEl = document.getElementById('map-wrapper');
+        if (target === 'incidents') sectionEl = document.getElementById('incidents-wrapper');
+        if (target === 'directory') sectionEl = document.getElementById('directory-wrapper');
+        if (target === 'analytics') sectionEl = document.getElementById('analytics-wrapper');
+
+        if (sectionEl) {
+          sectionEl.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    if (quickPanBtn) {
+      quickPanBtn.addEventListener('click', () => {
+        const mapEl = document.getElementById('map-wrapper');
+        if (mapEl) mapEl.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+
+    // Region pill filters in sidebar
+    const regionPills = document.querySelectorAll('.region-pill-btn');
+    regionPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        regionPills.forEach(p => {
+          p.classList.remove('active', 'bg-accent/20', 'text-accent', 'border-accent/30');
+          p.classList.add('bg-paper', 'text-ink-muted');
+        });
+        pill.classList.add('active', 'bg-accent/20', 'text-accent', 'border-accent/30');
+        pill.classList.remove('bg-paper', 'text-ink-muted');
+
+        const selectedWilayah = pill.getAttribute('data-wilayah') || 'all';
+        
+        // Sync map filter
+        const mapWilayahSelect = document.getElementById('map-select-wilayah') as HTMLSelectElement;
+        if (mapWilayahSelect) {
+          mapWilayahSelect.value = selectedWilayah;
+          updateMapMarkers();
+        }
+
+        // Sync directory filter
+        const sppgWilayahSelect = document.getElementById('sppg-filter-wilayah') as HTMLSelectElement;
+        if (sppgWilayahSelect) {
+          sppgWilayahSelect.value = selectedWilayah;
+          filterDirectory();
+        }
+
+        // Scroll to map
+        const mapEl = document.getElementById('map-wrapper');
+        if (mapEl) mapEl.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Telemetry & Stat Card interactive shortcuts
+    document.querySelectorAll('[data-stat-target]').forEach(el => {
+      el.addEventListener('click', () => {
+        const target = el.getAttribute('data-stat-target');
+        let sectionEl: HTMLElement | null = null;
+        if (target === 'analytics') sectionEl = document.getElementById('analytics-wrapper');
+        if (target === 'directory') sectionEl = document.getElementById('directory-wrapper');
+        if (target === 'incidents') sectionEl = document.getElementById('incidents-wrapper');
+        if (target === 'map') sectionEl = document.getElementById('map-wrapper');
+        if (sectionEl) sectionEl.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    document.querySelectorAll('[data-stat-incident-filter]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const jenis = btn.getAttribute('data-stat-incident-filter');
+        const jenisSelect = document.getElementById('incident-filter-jenis') as HTMLSelectElement;
+        if (jenisSelect && jenis) {
+          jenisSelect.value = jenis;
+          jenisSelect.dispatchEvent(new Event('change'));
+        }
+        const sectionEl = document.getElementById('incidents-wrapper');
+        if (sectionEl) sectionEl.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  }
+
+  // 2. Leaflet Map Initialization
+  function initLeafletMap() {
+    const mapContainer = document.getElementById('leaflet-map');
+    if (!mapContainer || typeof (window as any).L === 'undefined') {
+      setTimeout(initLeafletMap, 200);
+      return;
+    }
+
+    const L = (window as any).L;
+
+    // Center Bandung Raya coordinates
+    const bandungCenter = [-6.9175, 107.6191];
+    
+    currentMap = L.map('leaflet-map', {
+      center: bandungCenter,
+      zoom: 11,
+      zoomControl: true,
+      attributionControl: true
+    });
+
+    // Dark Tile Layer (CartoDB Dark Matter)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_4oqq_1_6432e1ac4153b1217ab5d340', {
+      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://openstreetmap.org">OSM</a> contributors',
+      maxZoom: 19,
+      subdomains: 'abcd'
+    }).addTo(currentMap);
+
+    markersLayer = L.layerGroup().addTo(currentMap);
+
+    renderMapMarkers(sppgList);
+
+    // Reset center button
+    const resetBtn = document.getElementById('map-reset-btn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        currentMap.flyTo(bandungCenter, 11, { duration: 1.2 });
+      });
+    }
+
+    // Map filters
+    const wilayahSelect = document.getElementById('map-select-wilayah');
+    const statusSelect = document.getElementById('map-select-status');
+    const incidentSelect = document.getElementById('map-select-incident');
+
+    if (wilayahSelect) wilayahSelect.addEventListener('change', updateMapMarkers);
+    if (statusSelect) statusSelect.addEventListener('change', updateMapMarkers);
+    if (incidentSelect) incidentSelect.addEventListener('change', updateMapMarkers);
+
+    // Quick drawer close
+    const quickCloseBtn = document.getElementById('quick-close-btn');
+    const quickDrawer = document.getElementById('map-quick-info');
+    if (quickCloseBtn && quickDrawer) {
+      quickCloseBtn.addEventListener('click', () => {
+        quickDrawer.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+      });
+    }
+
+    // Quick drawer full dossier button
+    const quickFullBtn = document.getElementById('quick-view-full-btn');
+    if (quickFullBtn) {
+      quickFullBtn.addEventListener('click', () => {
+        if (selectedSPPGId) {
+          openSPPGModal(selectedSPPGId);
+        }
+      });
+    }
+  }
+
+  function renderMapMarkers(list: typeof sppgList) {
+    if (!currentMap || !markersLayer) return;
+    const L = (window as any).L;
+
+    markersLayer.clearLayers();
+    currentMarkers = [];
+
+    const activeCountBadge = document.getElementById('active-marker-count');
+    if (activeCountBadge) {
+      activeCountBadge.textContent = `${list.length} Titik`;
+    }
+
+    list.forEach(sppg => {
+      const relatedIncidents = incidentList.filter(i => i.sppgId === sppg.id);
+      const hasKeracunan = relatedIncidents.some(i => i.jenis === "Keracunan");
+      const hasKeluhan = relatedIncidents.some(i => i.jenis === "Keluhan");
+      const hasDistribusi = relatedIncidents.some(i => i.jenis === "Gangguan Distribusi");
+
+      // Custom marker styling
+      let markerColor = '#10b981'; // green default
+      let pulseClass = '';
+
+      if (sppg.status !== 'Aktif') {
+        markerColor = '#64748b'; // slate/gray
+      } else if (hasKeracunan) {
+        markerColor = '#ef4444'; // red
+        pulseClass = 'pulse-red';
+      } else if (hasKeluhan) {
+        markerColor = '#f59e0b'; // amber
+      } else if (hasDistribusi) {
+        markerColor = '#3b82f6'; // blue
+      }
+
+      const iconHtml = `
+        <div class="relative flex items-center justify-center">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-125 cursor-pointer ${pulseClass}" style="background-color: ${markerColor}; border: 2.5px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            </svg>
+          </div>
+        </div>
+      `;
+
+      const customIcon = L.divIcon({
+        className: 'custom-leaflet-marker',
+        html: iconHtml,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+        popupAnchor: [0, -18]
+      });
+
+      const marker = L.marker([sppg.lat, sppg.lng], { icon: customIcon });
+
+      // Rich Popup
+      const popupContent = `
+        <div class="p-1 space-y-2 text-xs">
+          <div class="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5">
+            <span class="font-mono text-[10px] text-emerald-400 font-semibold">${sppg.wilayah}</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-white font-mono">${sppg.status}</span>
+          </div>
+          <h4 class="font-bold text-white text-sm leading-snug">${sppg.nama}</h4>
+          <p class="text-gray-300 text-[11px] leading-tight">${sppg.alamat}</p>
+          <div class="grid grid-cols-2 gap-2 bg-black/40 p-2 rounded-lg text-center font-mono text-[11px]">
+            <div><span class="text-gray-400 block text-[9px]">Kapasitas</span><strong class="text-white">${sppg.kapasitas}</strong></div>
+            <div><span class="text-gray-400 block text-[9px]">Penerima</span><strong class="text-emerald-400">${sppg.penerima}</strong></div>
+          </div>
+          ${relatedIncidents.length > 0 ? `
+            <div class="p-1.5 rounded bg-rose-500/20 border border-rose-500/30 text-rose-300 text-[10px]">
+              <strong>${relatedIncidents.length} Catatan Kejadian</strong>
+            </div>
+          ` : ''}
+          <button class="w-full mt-2 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-colors" onclick="window.triggerOpenSPPG(${sppg.id})">
+            Buka Dossier SPPG →
+          </button>
+        </div>
+      `;
+
+      marker.bindPopup(popupContent, { maxWidth: 280 });
+
+      // Marker click also triggers Quick Floating Drawer
+      marker.on('click', () => {
+        showQuickInfo(sppg, relatedIncidents);
+      });
+
+      marker.addTo(markersLayer);
+      currentMarkers.push({ id: sppg.id, marker, sppg });
+    });
+
+    if (list.length > 0 && currentMarkers.length > 0) {
+      const group = L.featureGroup(currentMarkers.map(m => m.marker));
+      currentMap.fitBounds(group.getBounds().pad(0.12));
+    }
+  }
+
+  function showQuickInfo(sppg: any, incidents: any[]) {
+    selectedSPPGId = sppg.id;
+    const quickDrawer = document.getElementById('map-quick-info');
+    const nameEl = document.getElementById('quick-sppg-name');
+    const addrEl = document.getElementById('quick-sppg-address');
+    const capEl = document.getElementById('quick-sppg-cap');
+    const recEl = document.getElementById('quick-sppg-rec');
+    const statusBadge = document.getElementById('quick-sppg-status-badge');
+    const alertBox = document.getElementById('quick-incident-alert');
+    const alertText = document.getElementById('quick-incident-text');
+
+    if (!quickDrawer || !nameEl || !addrEl || !capEl || !recEl) return;
+
+    nameEl.textContent = sppg.nama;
+    addrEl.textContent = sppg.alamat;
+    capEl.textContent = `${sppg.kapasitas} porsi`;
+    recEl.textContent = `${sppg.penerima} porsi`;
+
+    if (statusBadge) {
+      statusBadge.textContent = sppg.status;
+      statusBadge.className = `text-[10px] font-mono px-2 py-0.5 rounded font-semibold ${
+        sppg.status === 'Aktif' ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' :
+        sppg.status === 'Dalam Evaluasi' ? 'bg-amber-500/15 text-amber-400 border border-amber-500/20' :
+        'bg-gray-500/15 text-gray-400 border border-gray-500/20'
+      }`;
+    }
+
+    if (alertBox && alertText) {
+      if (incidents.length > 0) {
+        alertBox.classList.remove('hidden');
+        const latest = incidents[incidents.length - 1];
+        alertText.textContent = `[${latest.jenis}] ${latest.deskripsi}`;
+      } else {
+        alertBox.classList.add('hidden');
+      }
+    }
+
+    quickDrawer.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+  }
+
+  function updateMapMarkers() {
+    const wilayahVal = (document.getElementById('map-select-wilayah') as HTMLSelectElement)?.value || 'all';
+    const statusVal = (document.getElementById('map-select-status') as HTMLSelectElement)?.value || 'all';
+    const incidentVal = (document.getElementById('map-select-incident') as HTMLSelectElement)?.value || 'all';
+
+    let filtered = sppgList.filter(s => {
+      const matchWilayah = wilayahVal === 'all' || s.wilayah === wilayahVal;
+      const matchStatus = statusVal === 'all' || s.status === statusVal;
+
+      let matchIncident = true;
+      if (incidentVal === 'has-incident') {
+        matchIncident = incidentList.some(i => i.sppgId === s.id);
+      } else if (incidentVal !== 'all') {
+        matchIncident = incidentList.some(i => i.sppgId === s.id && i.jenis === incidentVal);
+      }
+
+      return matchWilayah && matchStatus && matchIncident;
+    });
+
+    renderMapMarkers(filtered);
+  }
+
+  // 3. Chart.js Initialization
+  function initCharts() {
+    if (typeof (window as any).Chart === 'undefined') {
+      setTimeout(initCharts, 200);
+      return;
+    }
+    const Chart = (window as any).Chart;
+
+    // Common theme settings
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = 'Inter, sans-serif';
+
+    // Chart 1: Bar Chart Sebaran SPPG & Kapasitas per Wilayah
+    const canvasWilayah = document.getElementById('chart-wilayah') as HTMLCanvasElement;
+    if (canvasWilayah) {
+      const regions = ["Kota Bandung", "Kab. Bandung", "Kota Cimahi", "Bandung Barat", "Sumedang"];
+      const counts = [10, 7, 3, 4, 3];
+      const portions = [4800, 3350, 1450, 1940, 1540];
+
+      new Chart(canvasWilayah, {
+        type: 'bar',
+        data: {
+          labels: regions,
+          datasets: [
+            {
+              label: 'Jumlah SPPG',
+              data: counts,
+              backgroundColor: 'rgba(59, 130, 246, 0.75)',
+              borderColor: '#3b82f6',
+              borderWidth: 1.5,
+              borderRadius: 6,
+              yAxisID: 'y'
+            },
+            {
+              label: 'Penerima Harian (x100)',
+              data: portions.map(p => Math.round(p / 100)),
+              backgroundColor: 'rgba(16, 185, 129, 0.75)',
+              borderColor: '#10b981',
+              borderWidth: 1.5,
+              borderRadius: 6,
+              yAxisID: 'y'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: { boxWidth: 12, font: { size: 11 } }
+            }
+          },
+          scales: {
+            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+          }
+        }
+      });
+    }
+
+    // Chart 2: Doughnut Chart Rasio Insiden
+    const canvasIncident = document.getElementById('chart-incident-ratio') as HTMLCanvasElement;
+    if (canvasIncident) {
+      new Chart(canvasIncident, {
+        type: 'doughnut',
+        data: {
+          labels: ['Keracunan (6)', 'Keluhan (7)', 'Gangguan Distribusi (7)'],
+          datasets: [{
+            data: [6, 7, 7],
+            backgroundColor: [
+              'rgba(239, 68, 68, 0.85)',
+              'rgba(245, 158, 11, 0.85)',
+              'rgba(59, 130, 246, 0.85)'
+            ],
+            borderColor: '#161b27',
+            borderWidth: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '72%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 10, font: { size: 11 } }
+            }
+          }
+        }
+      });
+    }
+
+    // Chart 3: Monthly Trends Line Chart
+    const canvasTrends = document.getElementById('chart-monthly-trends') as HTMLCanvasElement;
+    if (canvasTrends) {
+      new Chart(canvasTrends, {
+        type: 'line',
+        data: {
+          labels: ['Feb 2025', 'Mar 2025', 'Apr 2025', 'Mei 2025', 'Jun 2025', 'Jul 2025', 'Agu 2025'],
+          datasets: [
+            {
+              label: 'Keracunan',
+              data: [0, 1, 1, 1, 1, 1, 1],
+              borderColor: '#ef4444',
+              backgroundColor: 'rgba(239, 68, 68, 0.15)',
+              tension: 0.35,
+              fill: true,
+              borderWidth: 2
+            },
+            {
+              label: 'Keluhan',
+              data: [1, 1, 1, 1, 1, 1, 1],
+              borderColor: '#f59e0b',
+              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+              tension: 0.35,
+              fill: true,
+              borderWidth: 2
+            },
+            {
+              label: 'Gangguan Distribusi',
+              data: [1, 1, 1, 1, 1, 1, 1],
+              borderColor: '#3b82f6',
+              backgroundColor: 'rgba(59, 130, 246, 0.1)',
+              tension: 0.35,
+              fill: true,
+              borderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { stepSize: 1 }
+            }
+          }
+        }
+      });
+    }
+  }
+
+  // 4. Incident Filters & Table Logic
+  function initFilters() {
+    const searchInput = document.getElementById('incident-search-input') as HTMLInputElement;
+    const jenisSelect = document.getElementById('incident-filter-jenis') as HTMLSelectElement;
+    const wilayahSelect = document.getElementById('incident-filter-wilayah') as HTMLSelectElement;
+    const statusSelect = document.getElementById('incident-filter-status') as HTMLSelectElement;
+
+    function applyIncidentFilters() {
+      const q = (searchInput?.value || '').toLowerCase().trim();
+      const jenis = jenisSelect?.value || 'all';
+      const wilayah = wilayahSelect?.value || 'all';
+      const status = statusSelect?.value || 'all';
+
+      const rows = document.querySelectorAll('.incident-row') as NodeListOf<HTMLElement>;
+      rows.forEach(row => {
+        const rowJenis = row.getAttribute('data-jenis');
+        const rowWilayah = row.getAttribute('data-wilayah');
+        const rowStatus = row.getAttribute('data-status');
+        const textContent = row.textContent?.toLowerCase() || '';
+
+        const matchQ = !q || textContent.includes(q);
+        const matchJenis = jenis === 'all' || rowJenis === jenis;
+        const matchWilayah = wilayah === 'all' || rowWilayah === wilayah;
+        const matchStatus = status === 'all' || rowStatus === status;
+
+        if (matchQ && matchJenis && matchWilayah && matchStatus) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    if (searchInput) searchInput.addEventListener('input', applyIncidentFilters);
+    if (jenisSelect) jenisSelect.addEventListener('change', applyIncidentFilters);
+    if (wilayahSelect) wilayahSelect.addEventListener('change', applyIncidentFilters);
+    if (statusSelect) statusSelect.addEventListener('change', applyIncidentFilters);
+
+    // Row click opens incident modal
+    document.querySelectorAll('.view-incident-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = parseInt(btn.getAttribute('data-id') || '0', 10);
+        openIncidentModal(id);
+      });
+    });
+
+    document.querySelectorAll('.incident-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const id = parseInt(row.getAttribute('data-id') || '0', 10);
+        openIncidentModal(id);
+      });
+    });
+
+    // Directory filters
+    const sppgSearch = document.getElementById('sppg-search-input') as HTMLInputElement;
+    const sppgWilayah = document.getElementById('sppg-filter-wilayah') as HTMLSelectElement;
+    const sppgStatus = document.getElementById('sppg-filter-status') as HTMLSelectElement;
+
+    if (sppgSearch) sppgSearch.addEventListener('input', filterDirectory);
+    if (sppgWilayah) sppgWilayah.addEventListener('change', filterDirectory);
+    if (sppgStatus) sppgStatus.addEventListener('change', filterDirectory);
+
+    // Directory Pan-To-Map and Dossier buttons
+    document.querySelectorAll('.focus-on-map-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const lat = parseFloat(btn.getAttribute('data-lat') || '0');
+        const lng = parseFloat(btn.getAttribute('data-lng') || '0');
+        const id = parseInt(btn.getAttribute('data-id') || '0', 10);
+
+        if (currentMap && lat && lng) {
+          const mapEl = document.getElementById('map-wrapper');
+          if (mapEl) mapEl.scrollIntoView({ behavior: 'smooth' });
+          currentMap.flyTo([lat, lng], 14, { duration: 1.5 });
+
+          const target = currentMarkers.find(m => m.id === id);
+          if (target) {
+            target.marker.openPopup();
+            showQuickInfo(target.sppg, incidentList.filter(i => i.sppgId === id));
+          }
+        }
+      });
+    });
+
+    document.querySelectorAll('.open-sppg-dossier-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = parseInt(btn.getAttribute('data-id') || '0', 10);
+        openSPPGModal(id);
+      });
+    });
+  }
+
+  function filterDirectory() {
+    const q = (document.getElementById('sppg-search-input') as HTMLInputElement)?.value.toLowerCase().trim() || '';
+    const wilayah = (document.getElementById('sppg-filter-wilayah') as HTMLSelectElement)?.value || 'all';
+    const status = (document.getElementById('sppg-filter-status') as HTMLSelectElement)?.value || 'all';
+
+    const cards = document.querySelectorAll('.sppg-card') as NodeListOf<HTMLElement>;
+    cards.forEach(card => {
+      const cardNama = (card.getAttribute('data-nama') || '').toLowerCase();
+      const cardWilayah = card.getAttribute('data-wilayah') || '';
+      const cardStatus = card.getAttribute('data-status') || '';
+      const textContent = card.textContent?.toLowerCase() || '';
+
+      const matchQ = !q || cardNama.includes(q) || textContent.includes(q);
+      const matchWilayah = wilayah === 'all' || cardWilayah === wilayah;
+      const matchStatus = status === 'all' || cardStatus === status;
+
+      if (matchQ && matchWilayah && matchStatus) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  // 5. Global Search
+  function initSearch() {
+    const globalInput = document.getElementById('global-search-input') as HTMLInputElement;
+    if (!globalInput) return;
+
+    globalInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const val = globalInput.value.trim();
+        if (!val) return;
+
+        // Search directory first
+        const sppgSearch = document.getElementById('sppg-search-input') as HTMLInputElement;
+        if (sppgSearch) {
+          sppgSearch.value = val;
+          filterDirectory();
+        }
+
+        // Search incident
+        const incSearch = document.getElementById('incident-search-input') as HTMLInputElement;
+        if (incSearch) {
+          incSearch.value = val;
+          const ev = new Event('input');
+          incSearch.dispatchEvent(ev);
+        }
+
+        // Scroll to directory
+        const dirEl = document.getElementById('directory-wrapper');
+        if (dirEl) dirEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  }
+
+  // 6. Modal Functions
+  function initModalHandlers() {
+    const modal = document.getElementById('detail-modal');
+    const closeBtn = document.getElementById('modal-close-btn');
+    const closeActionBtn = document.getElementById('modal-close-action-btn');
+
+    const closeModal = () => {
+      if (modal) modal.classList.add('hidden');
+    };
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (closeActionBtn) closeActionBtn.addEventListener('click', closeModal);
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+    }
+
+    // Expose trigger to window for popup buttons
+    (window as any).triggerOpenSPPG = (id: number) => {
+      openSPPGModal(id);
+    };
+  }
+
+  function openSPPGModal(id: number) {
+    const sppg = sppgList.find(s => s.id === id);
+    if (!sppg) return;
+
+    const modal = document.getElementById('detail-modal');
+    const eyebrow = document.getElementById('modal-eyebrow');
+    const title = document.getElementById('modal-title');
+    const body = document.getElementById('modal-body');
+    const mapActionBtn = document.getElementById('modal-action-map-btn');
+
+    if (!modal || !eyebrow || !title || !body) return;
+
+    eyebrow.textContent = `Dossier SPPG · ${sppg.wilayah}`;
+    title.textContent = sppg.nama;
+
+    const incidents = incidentList.filter(i => i.sppgId === sppg.id);
+
+    body.innerHTML = `
+      <div class="space-y-4">
+        <!-- Status & Key Attributes -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-paper p-3.5 rounded-xl border border-rule font-mono text-center">
+          <div><span class="text-ink-muted text-[10px] block">Status</span><strong class="text-emerald-400 text-xs">${sppg.status}</strong></div>
+          <div><span class="text-ink-muted text-[10px] block">Kapasitas</span><strong class="text-white text-xs">${sppg.kapasitas} porsi</strong></div>
+          <div><span class="text-ink-muted text-[10px] block">Penerima</span><strong class="text-white text-xs">${sppg.penerima} siswa</strong></div>
+          <div><span class="text-ink-muted text-[10px] block">Sekolah</span><strong class="text-white text-xs">${sppg.sekolahMitra} titik</strong></div>
+        </div>
+
+        <!-- Location & Contact -->
+        <div class="space-y-1.5 bg-paper/60 p-3.5 rounded-xl border border-rule">
+          <p><strong class="text-white">Alamat Lengkap:</strong> <span class="text-ink-2">${sppg.alamat}</span></p>
+          <p><strong class="text-white">Kecamatan:</strong> <span class="text-ink-2">${sppg.kecamatan} (${sppg.wilayah})</span></p>
+          <p><strong class="text-white">Lembaga Pengelola:</strong> <span class="text-ink-2">${sppg.pengelola}</span></p>
+          <p><strong class="text-white">Kontak Layanan:</strong> <span class="text-ink-2 font-mono">${sppg.telepon}</span></p>
+          <p><strong class="text-white">Mulai Bergabung:</strong> <span class="text-ink-2 font-mono">${sppg.bergabung}</span></p>
+          <p><strong class="text-white">Sasaran Penerima:</strong> <span class="text-ink-2">${sppg.jenisPenerima}</span></p>
+        </div>
+
+        <!-- Hygiene & Nutrition Audit -->
+        <div class="p-3.5 rounded-xl bg-accent/10 border border-accent/20">
+          <h4 class="font-bold text-accent mb-1 flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Catatan Kelayakan Gizi & Higiene
+          </h4>
+          <p class="text-ink-2 text-xs">${sppg.catatanGizi}</p>
+        </div>
+
+        <!-- Incident History -->
+        <div>
+          <h4 class="font-bold text-white mb-2 flex items-center justify-between">
+            <span>Riwayat Laporan Kejadian (${incidents.length})</span>
+          </h4>
+          ${incidents.length === 0 ? `
+            <div class="p-4 rounded-xl bg-paper border border-rule text-center text-ink-muted">
+              Belum ada laporan kejadian atau komplain untuk SPPG ini.
+            </div>
+          ` : `
+            <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
+              ${incidents.map(inc => `
+                <div class="p-3 rounded-lg bg-paper border border-rule flex flex-col gap-1">
+                  <div class="flex items-center justify-between font-mono text-[10px]">
+                    <span class="text-rose-400 font-bold">${inc.jenis}</span>
+                    <span class="text-ink-muted">${inc.tanggal}</span>
+                  </div>
+                  <p class="text-xs text-ink-2">${inc.deskripsi}</p>
+                  <div class="text-[11px] text-emerald-400 mt-1 font-mono">
+                    <strong>Tindakan:</strong> ${inc.tindakan}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+      </div>
+    `;
+
+    if (mapActionBtn) {
+      mapActionBtn.onclick = () => {
+        modal.classList.add('hidden');
+        const mapEl = document.getElementById('map-wrapper');
+        if (mapEl) mapEl.scrollIntoView({ behavior: 'smooth' });
+        if (currentMap) {
+          currentMap.flyTo([sppg.lat, sppg.lng], 14, { duration: 1.2 });
+          const target = currentMarkers.find(m => m.id === sppg.id);
+          if (target) target.marker.openPopup();
+        }
+      };
+    }
+
+    modal.classList.remove('hidden');
+  }
+
+  function openIncidentModal(id: number) {
+    const inc = incidentList.find(i => i.id === id);
+    if (!inc) return;
+
+    const modal = document.getElementById('detail-modal');
+    const eyebrow = document.getElementById('modal-eyebrow');
+    const title = document.getElementById('modal-title');
+    const body = document.getElementById('modal-body');
+    const mapActionBtn = document.getElementById('modal-action-map-btn');
+
+    if (!modal || !eyebrow || !title || !body) return;
+
+    eyebrow.textContent = `Laporan Investigasi Insiden · No. #${inc.id}`;
+    title.textContent = `[${inc.jenis}] di ${inc.sppgNama}`;
+
+    const sppg = sppgList.find(s => s.id === inc.sppgId);
+
+    body.innerHTML = `
+      <div class="space-y-4">
+        <!-- Status Banner -->
+        <div class="flex items-center justify-between p-3 rounded-xl bg-paper border border-rule">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full ${inc.jenis === 'Keracunan' ? 'bg-rose-500 animate-ping' : inc.jenis === 'Keluhan' ? 'bg-amber-500' : 'bg-blue-500'}"></span>
+            <span class="font-bold text-white text-xs">${inc.jenis}</span>
+          </div>
+          <span class="font-mono text-xs text-emerald-400 font-semibold px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">${inc.status}</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 bg-paper p-3 rounded-xl border border-rule font-mono text-center">
+          <div><span class="text-ink-muted text-[10px] block">Tanggal</span><strong class="text-white text-xs">${inc.tanggal}</strong></div>
+          <div><span class="text-ink-muted text-[10px] block">Urgensi</span><strong class="${inc.tingkatUrgensi === 'Tinggi' ? 'text-rose-400' : 'text-amber-400'} text-xs">${inc.tingkatUrgensi}</strong></div>
+          <div><span class="text-ink-muted text-[10px] block">Terdampak</span><strong class="text-white text-xs">${inc.terdampak} jiwa</strong></div>
+        </div>
+
+        <!-- Description -->
+        <div class="bg-paper/60 p-4 rounded-xl border border-rule space-y-2">
+          <h4 class="font-bold text-white text-xs uppercase font-mono tracking-wider text-ink-muted">Kronologi / Uraian Masalah</h4>
+          <p class="text-xs text-ink leading-relaxed">${inc.deskripsi}</p>
+        </div>
+
+        <!-- Action Taken -->
+        <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 space-y-1.5">
+          <h4 class="font-bold text-emerald-400 text-xs font-mono uppercase tracking-wider">Tindakan Remediasi & Penanganan</h4>
+          <p class="text-xs text-ink-2 leading-relaxed">${inc.tindakan}</p>
+        </div>
+
+        <!-- SPPG Anchor -->
+        ${sppg ? `
+          <div class="p-3 rounded-xl bg-paper border border-rule flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-mono text-ink-muted block">Dapur Penyedia Terkait</span>
+              <strong class="text-white text-xs">${sppg.nama} (${sppg.wilayah})</strong>
+            </div>
+            <button class="px-2.5 py-1 rounded bg-accent/15 text-accent text-xs font-semibold hover:bg-accent hover:text-white transition-colors" onclick="window.triggerOpenSPPG(${sppg.id})">
+              Buka Profil SPPG →
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    if (mapActionBtn && sppg) {
+      mapActionBtn.onclick = () => {
+        modal.classList.add('hidden');
+        const mapEl = document.getElementById('map-wrapper');
+        if (mapEl) mapEl.scrollIntoView({ behavior: 'smooth' });
+        if (currentMap) {
+          currentMap.flyTo([sppg.lat, sppg.lng], 14, { duration: 1.2 });
+          const target = currentMarkers.find(m => m.id === sppg.id);
+          if (target) target.marker.openPopup();
+        }
+      };
+    }
+
+    modal.classList.remove('hidden');
+  }
+</script>

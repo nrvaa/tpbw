@@ -1,0 +1,1806 @@
+{
+ "url": "index.html",
+ "at": "2026-10-27T03:21:36.335Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 2,
+   "filled": [
+    0.84,
+    0.89
+   ],
+   "motion": {
+    "elements": 4,
+    "css": 1,
+    "transitions": 1,
+    "scripted": 2,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 1661,
+     "screens": 1.8,
+     "words": 263,
+     "img": 1,
+     "video": 0,
+     "canvas": 4,
+     "svg": 12,
+     "sections": 4,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Dashboard SPPG Bandung Raya",
+     "words": 4,
+     "chars": 27,
+     "lines": 1,
+     "size": 22,
+     "vw": 1.5,
+     "font": "Plus Jakarta Sans",
+     "weight": 800,
+     "tracking": -0.02,
+     "leading": 1.2,
+     "top": 88,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Dashboard SPPG Bandung Raya",
+     "words": 4,
+     "lines": 1,
+     "size": 22,
+     "font": "Plus Jakarta Sans"
+    },
+    "headings": [
+     {
+      "text": "26.310",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 42,
+      "vw": 2.9,
+      "font": "Plus Jakarta Sans",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.09,
+      "top": 230,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "57",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 34,
+      "vw": 2.4,
+      "font": "Plus Jakarta Sans",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.03,
+      "top": 264,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "285",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 34,
+      "vw": 2.4,
+      "font": "Plus Jakarta Sans",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.04,
+      "top": 264,
+      "tag": "span",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 3,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.97,
+       "mono": false
+      },
+      {
+       "family": "Plus Jakarta Sans",
+       "share": 0.03,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      14,
+      15,
+      17,
+      22,
+      24,
+      34,
+      42
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter",
+      "size": 14,
+      "leading": 1.2,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.6
+     },
+     "measureChars": 76,
+     "max": {
+      "size": 42,
+      "vw": 2.9,
+      "font": "Plus Jakarta Sans",
+      "text": "26.310"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.04,
+     "centerShare": 0.03,
+     "smallText": 0
+    },
+    "eyebrows": [
+     {
+      "text": "Distribusi Utama MBG",
+      "above": "26.310",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 194
+     },
+     {
+      "text": "Unit SPPG Aktif",
+      "above": "57",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 244
+     },
+     {
+      "text": "Sekolah Mitra",
+      "above": "285",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 244
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0a0d14",
+     "bodyBgHsl": {
+      "h": 222,
+      "s": 0.33,
+      "l": 0.06
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#151a27",
+       "top": 1249,
+       "hsl": {
+        "h": 223,
+        "s": 0.3,
+        "l": 0.12
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#94a3b8",
+       "share": 0.34
+      },
+      {
+       "color": "#f8fafc",
+       "share": 0.25
+      },
+      {
+       "color": "#8b96a5",
+       "share": 0.14
+      },
+      {
+       "color": "#4ade80",
+       "share": 0.07
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.05
+      }
+     ],
+     "button": {
+      "bg": "#2563eb",
+      "hsl": {
+       "h": 221,
+       "s": 0.83,
+       "l": 0.53
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 9,
+     "inHero": 8,
+     "radius": 8,
+     "height": 32,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Dashboard",
+      "Peta SPPG",
+      "Data Kejadian",
+      "Daftar SPPG",
+      "6 Keracunan"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 9,
+     "hairlineSamples": [
+      "aside#sidebar.sidebar 240px",
+      "header.topbar 1200px",
+      "div.telemetry-footer-strip 608px",
+      "div.infra-metrics-row 420px",
+      "div.chart-summary-strip 710px"
+     ],
+     "outlinedBoxes": 8,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 8,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 4,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.1
+     }
+    ],
+    "nav": {
+     "links": 1,
+     "fixed": true,
+     "height": 900,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "inter",
+     "plus jakarta sans"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 1661,
+    "margins": {
+     "left": 268,
+     "right": 49
+    },
+    "sections": [
+     {
+      "sel": "div.telemetry-dashboard",
+      "tag": "div",
+      "top": 165,
+      "height": 387,
+      "words": 104,
+      "media": 0,
+      "middle": 16,
+      "heading": {
+       "text": "26.310",
+       "size": 42,
+       "tag": "span"
+      },
+      "left": 268,
+      "right": 28,
+      "textLeft": 293,
+      "textRight": 53,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.charts-row",
+      "tag": "div",
+      "top": 580,
+      "height": 327,
+      "words": 29,
+      "media": 2,
+      "middle": 58,
+      "heading": {
+       "text": "Distribusi SPPG per Wilayah",
+       "size": 15,
+       "tag": "h3"
+      },
+      "left": 289,
+      "right": 49,
+      "textLeft": 289,
+      "textRight": 58,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.charts-row",
+      "tag": "div",
+      "top": 926,
+      "height": 303,
+      "words": 25,
+      "media": 2,
+      "middle": 58,
+      "heading": {
+       "text": "Tren Waktu Insiden & Kejadian (2025)",
+       "size": 15,
+       "tag": "h3"
+      },
+      "left": 289,
+      "right": 49,
+      "textLeft": 289,
+      "textRight": 58,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.table-card.bento-card",
+      "tag": "div",
+      "top": 1249,
+      "height": 364,
+      "words": 67,
+      "media": 0,
+      "middle": 72,
+      "heading": {
+       "text": "Kejadian Terbaru",
+       "size": 15,
+       "tag": "h3"
+      },
+      "left": 285,
+      "right": 49,
+      "textLeft": 285,
+      "textRight": 68,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Dashboard SPPG Bandung Raya",
+      "size": 22,
+      "top": 88,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 289,
+      "n": 3
+     },
+     {
+      "x": 268,
+      "n": 2
+     },
+     {
+      "x": 1057,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 7,
+    "bodySize": 14,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0.1,
+    "voidBox": {
+     "x": 0,
+     "y": 300,
+     "w": 240,
+     "h": 540
+    }
+   },
+   "app": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "dark": true,
+    "ground": "#0a0d14",
+    "sidebar": {
+     "w": 240,
+     "tag": "aside",
+     "links": 4,
+     "share": 0.17
+    },
+    "topbar": {
+     "h": 60
+    },
+    "canvas": {
+     "left": 28,
+     "right": 49
+    },
+    "hero": {
+     "text": "Dashboard SPPG Bandung Raya",
+     "words": 4,
+     "chars": 27,
+     "lines": 1,
+     "size": 22,
+     "vw": 1.5,
+     "font": "Plus Jakarta Sans",
+     "weight": 800,
+     "tracking": -0.02,
+     "leading": 1.2,
+     "top": 88,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 8,
+    "layout": {
+     "panels": 9,
+     "firstScreen": 6,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 9,
+     "radii": [
+      [
+       16,
+       8
+      ],
+      [
+       0,
+       1
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 2,
+     "hues": 2,
+     "samples": [
+      {
+       "hue": 147,
+       "size": 40,
+       "radius": "8px"
+      },
+      {
+       "hue": 352,
+       "size": 38,
+       "radius": "8px"
+      }
+     ]
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 8,
+     "tabularShare": 1,
+     "kpiMax": 42
+    },
+    "rows": {
+     "count": 5,
+     "median": 51
+    },
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0,
+     "tiny": 0,
+     "tinySamples": [],
+     "sizes": [
+      12,
+      13,
+      14,
+      15,
+      17,
+      22,
+      24,
+      34,
+      42
+     ]
+    },
+    "title": {
+     "text": "Dashboard SPPG Bandung Raya",
+     "size": 22,
+     "top": 88
+    },
+    "colourShare": 0.056
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 3,
+   "filled": [
+    0.77,
+    0.92,
+    0.8
+   ],
+   "motion": {
+    "elements": 4,
+    "css": 1,
+    "transitions": 1,
+    "scripted": 2,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 2612,
+     "screens": 2.6,
+     "words": 246,
+     "img": 1,
+     "video": 0,
+     "canvas": 4,
+     "svg": 12,
+     "sections": 4,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Dashboard SPPG Bandung Raya",
+     "words": 4,
+     "chars": 27,
+     "lines": 1,
+     "size": 22,
+     "vw": 2.9,
+     "font": "Plus Jakarta Sans",
+     "weight": 800,
+     "tracking": -0.02,
+     "leading": 1.2,
+     "top": 84,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Dashboard SPPG Bandung Raya",
+     "words": 4,
+     "lines": 1,
+     "size": 22,
+     "font": "Plus Jakarta Sans"
+    },
+    "headings": [
+     {
+      "text": "26.310",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 42,
+      "vw": 5.5,
+      "font": "Plus Jakarta Sans",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.17,
+      "top": 226,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "57",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 34,
+      "vw": 4.4,
+      "font": "Plus Jakarta Sans",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.05,
+      "top": 509,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "285",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 34,
+      "vw": 4.4,
+      "font": "Plus Jakarta Sans",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.08,
+      "top": 509,
+      "tag": "span",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 3,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.97,
+       "mono": false
+      },
+      {
+       "family": "Plus Jakarta Sans",
+       "share": 0.03,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      14,
+      15,
+      22,
+      24,
+      34,
+      42
+     ],
+     "sizeCount": 7,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter",
+      "size": 14,
+      "leading": 1.2,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.6
+     },
+     "measureChars": 76,
+     "max": {
+      "size": 42,
+      "vw": 5.5,
+      "font": "Plus Jakarta Sans",
+      "text": "26.310"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.04,
+     "centerShare": 0.03,
+     "smallText": 0
+    },
+    "eyebrows": [
+     {
+      "text": "Distribusi Utama MBG",
+      "above": "26.310",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 190
+     },
+     {
+      "text": "Unit SPPG Aktif",
+      "above": "57",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 489
+     },
+     {
+      "text": "Sekolah Mitra",
+      "above": "285",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 489
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0a0d14",
+     "bodyBgHsl": {
+      "h": 222,
+      "s": 0.33,
+      "l": 0.06
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#151a27",
+       "top": 2092,
+       "hsl": {
+        "h": 223,
+        "s": 0.3,
+        "l": 0.12
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#94a3b8",
+       "share": 0.33
+      },
+      {
+       "color": "#f8fafc",
+       "share": 0.26
+      },
+      {
+       "color": "#8b96a5",
+       "share": 0.13
+      },
+      {
+       "color": "#4ade80",
+       "share": 0.06
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.05
+      }
+     ],
+     "button": {
+      "bg": "#2563eb",
+      "hsl": {
+       "h": 221,
+       "s": 0.83,
+       "l": 0.53
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 5,
+     "inHero": 4,
+     "radius": 8,
+     "height": 32,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "6 Keracunan",
+      "7 Keluhan",
+      "7 Logistik",
+      "Buka Log →"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 8,
+     "hairlineSamples": [
+      "header.topbar 768px",
+      "div.telemetry-footer-strip 678px",
+      "div.infra-metrics-row 678px",
+      "div.chart-summary-strip 686px",
+      "div.chart-summary-strip 686px"
+     ],
+     "outlinedBoxes": 8,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 8,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 4,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.13
+     }
+    ],
+    "nav": {
+     "links": 0,
+     "fixed": true,
+     "height": 0,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "inter",
+     "plus jakarta sans"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 2612,
+    "margins": {
+     "left": 20,
+     "right": 33
+    },
+    "sections": [
+     {
+      "sel": "div.telemetry-dashboard",
+      "tag": "div",
+      "top": 161,
+      "height": 621,
+      "words": 104,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "26.310",
+       "size": 42,
+       "tag": "span"
+      },
+      "left": 20,
+      "right": 20,
+      "textLeft": 45,
+      "textRight": 45,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.charts-row",
+      "tag": "div",
+      "top": 810,
+      "height": 621,
+      "words": 29,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Distribusi SPPG per Wilayah",
+       "size": 15,
+       "tag": "h3"
+      },
+      "left": 41,
+      "right": 41,
+      "textLeft": 41,
+      "textRight": 50,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.charts-row",
+      "tag": "div",
+      "top": 1451,
+      "height": 621,
+      "words": 25,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Tren Waktu Insiden & Kejadian (2025)",
+       "size": 15,
+       "tag": "h3"
+      },
+      "left": 41,
+      "right": 41,
+      "textLeft": 41,
+      "textRight": 50,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.table-card.bento-card",
+      "tag": "div",
+      "top": 2092,
+      "height": 472,
+      "words": 67,
+      "media": 0,
+      "middle": 38,
+      "heading": {
+       "text": "Kejadian Terbaru",
+       "size": 15,
+       "tag": "h3"
+      },
+      "left": 37,
+      "right": 41,
+      "textLeft": 37,
+      "textRight": 48,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Dashboard SPPG Bandung Raya",
+      "size": 22,
+      "top": 84,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 41,
+      "n": 5
+     },
+     {
+      "x": 20,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 7,
+    "bodySize": 14,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "dark": true,
+    "ground": "#0a0d14",
+    "sidebar": null,
+    "topbar": {
+     "h": 60
+    },
+    "canvas": {
+     "left": 21,
+     "right": 41
+    },
+    "hero": {
+     "text": "Dashboard SPPG Bandung Raya",
+     "words": 4,
+     "chars": 27,
+     "lines": 1,
+     "size": 22,
+     "vw": 2.9,
+     "font": "Plus Jakarta Sans",
+     "weight": 800,
+     "tracking": -0.02,
+     "leading": 1.2,
+     "top": 84,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 8,
+    "layout": {
+     "panels": 8,
+     "firstScreen": 4,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 8,
+     "radii": [
+      [
+       16,
+       8
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 1,
+     "hues": 1,
+     "samples": [
+      {
+       "hue": 352,
+       "size": 38,
+       "radius": "8px"
+      }
+     ]
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 8,
+     "tabularShare": 1,
+     "kpiMax": 42
+    },
+    "rows": {
+     "count": 5,
+     "median": 59
+    },
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0,
+     "tiny": 0,
+     "tinySamples": [],
+     "sizes": [
+      12,
+      13,
+      14,
+      15,
+      17,
+      22,
+      24,
+      34,
+      42
+     ]
+    },
+    "title": {
+     "text": "Dashboard SPPG Bandung Raya",
+     "size": 22,
+     "top": 84
+    },
+    "colourShare": 0.062
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 4,
+   "filled": [
+    0.89,
+    0.86,
+    0.86,
+    0.87
+   ],
+   "motion": {
+    "elements": 3,
+    "css": 1,
+    "transitions": 0,
+    "scripted": 2,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 3092,
+     "screens": 3.7,
+     "words": 246,
+     "img": 1,
+     "video": 0,
+     "canvas": 4,
+     "svg": 12,
+     "sections": 4,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 1,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Dashboard SPPG Bandung Raya",
+     "words": 4,
+     "chars": 27,
+     "lines": 1,
+     "size": 20,
+     "vw": 5.1,
+     "font": "Plus Jakarta Sans",
+     "weight": 800,
+     "tracking": -0.02,
+     "leading": 1.2,
+     "top": 80,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "h1": {
+     "text": "Dashboard SPPG Bandung Raya",
+     "words": 4,
+     "lines": 1,
+     "size": 20,
+     "font": "Plus Jakarta Sans"
+    },
+    "headings": [
+     {
+      "text": "26.310",
+      "words": 1,
+      "chars": 6,
+      "lines": 1,
+      "size": 34,
+      "vw": 8.7,
+      "font": "Plus Jakarta Sans",
+      "weight": 800,
+      "tracking": -0.03,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.28,
+      "top": 260,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "57",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 34,
+      "vw": 8.7,
+      "font": "Plus Jakarta Sans",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.1,
+      "top": 675,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "285",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 34,
+      "vw": 8.7,
+      "font": "Plus Jakarta Sans",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.16,
+      "top": 675,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "20",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Plus Jakarta Sans",
+      "weight": 800,
+      "tracking": 0,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.07,
+      "top": 903,
+      "tag": "span",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 4,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.97,
+       "mono": false
+      },
+      {
+       "family": "Plus Jakarta Sans",
+       "share": 0.03,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      14,
+      15,
+      20,
+      24,
+      34
+     ],
+     "sizeCount": 6,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter",
+      "size": 14,
+      "leading": 1.2,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 7.6
+     },
+     "measureChars": 51,
+     "max": {
+      "size": 34,
+      "vw": 8.7,
+      "font": "Plus Jakarta Sans",
+      "text": "26.310"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.04,
+     "centerShare": 0.03,
+     "smallText": 0
+    },
+    "eyebrows": [
+     {
+      "text": "Distribusi Utama MBG",
+      "above": "26.310",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 196
+     },
+     {
+      "text": "Unit SPPG Aktif",
+      "above": "57",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 655
+     },
+     {
+      "text": "Sekolah Mitra",
+      "above": "285",
+      "upper": false,
+      "tracked": false,
+      "mono": false,
+      "pill": false,
+      "size": 13,
+      "top": 655
+     }
+    ],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#0a0d14",
+     "bodyBgHsl": {
+      "h": 222,
+      "s": 0.33,
+      "l": 0.06
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#151a27",
+       "top": 171,
+       "hsl": {
+        "h": 223,
+        "s": 0.3,
+        "l": 0.12
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#94a3b8",
+       "share": 0.33
+      },
+      {
+       "color": "#f8fafc",
+       "share": 0.26
+      },
+      {
+       "color": "#8b96a5",
+       "share": 0.13
+      },
+      {
+       "color": "#4ade80",
+       "share": 0.06
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.05
+      }
+     ],
+     "button": {
+      "bg": "#2563eb",
+      "hsl": {
+       "h": 221,
+       "s": 0.83,
+       "l": 0.53
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 5,
+     "inHero": 0,
+     "radius": 8,
+     "height": 32,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 8,
+     "hairlineSamples": [
+      "header.topbar 390px",
+      "div.telemetry-footer-strip 304px",
+      "div.infra-metrics-row 304px",
+      "div.chart-summary-strip 312px",
+      "div.chart-summary-strip 312px"
+     ],
+     "outlinedBoxes": 8,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 8,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 4,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 0,
+     "fixed": true,
+     "height": 0,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "inter",
+     "plus jakarta sans"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 3092,
+    "margins": {
+     "left": 18,
+     "right": 18
+    },
+    "sections": [
+     {
+      "sel": "div.telemetry-dashboard",
+      "tag": "div",
+      "top": 171,
+      "height": 937,
+      "words": 104,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "26.310",
+       "size": 34,
+       "tag": "span"
+      },
+      "left": 18,
+      "right": 18,
+      "textLeft": 43,
+      "textRight": 18,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.charts-row",
+      "tag": "div",
+      "top": 1136,
+      "height": 693,
+      "words": 29,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Distribusi SPPG per Wilayah",
+       "size": 15,
+       "tag": "h3"
+      },
+      "left": 39,
+      "right": 39,
+      "textLeft": 39,
+      "textRight": 48,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.charts-row",
+      "tag": "div",
+      "top": 1850,
+      "height": 660,
+      "words": 25,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Tren Waktu Insiden & Kejadian (2025)",
+       "size": 15,
+       "tag": "h3"
+      },
+      "left": 39,
+      "right": 39,
+      "textLeft": 39,
+      "textRight": 46,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.table-card.bento-card",
+      "tag": "div",
+      "top": 2529,
+      "height": 523,
+      "words": 49,
+      "media": 0,
+      "middle": 18,
+      "heading": {
+       "text": "Kejadian Terbaru",
+       "size": 15,
+       "tag": "h3"
+      },
+      "left": 35,
+      "right": 19,
+      "textLeft": 35,
+      "textRight": 19,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Dashboard SPPG Bandung Raya",
+      "size": 20,
+      "top": 80,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 39,
+      "n": 5
+     },
+     {
+      "x": 18,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 7,
+    "bodySize": 14,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "dark": true,
+    "ground": "#0a0d14",
+    "sidebar": null,
+    "topbar": {
+     "h": 60
+    },
+    "canvas": {
+     "left": 19,
+     "right": -294
+    },
+    "hero": {
+     "text": "Dashboard SPPG Bandung Raya",
+     "words": 4,
+     "chars": 27,
+     "lines": 1,
+     "size": 20,
+     "vw": 5.1,
+     "font": "Plus Jakarta Sans",
+     "weight": 800,
+     "tracking": -0.02,
+     "leading": 1.2,
+     "top": 80,
+     "tag": "h1",
+     "kind": "heading",
+     "align": "left",
+     "position": "left"
+    },
+    "charts": 8,
+    "layout": {
+     "panels": 8,
+     "firstScreen": 2,
+     "ragged": [],
+     "voids": []
+    },
+    "tiles": 0,
+    "panels": {
+     "count": 9,
+     "radii": [
+      [
+       16,
+       8
+      ],
+      [
+       0,
+       1
+      ]
+     ],
+     "heavyBorders": 0,
+     "borderSamples": [],
+     "heavyShadows": 0,
+     "softShadows": 0,
+     "shadowSamples": [],
+     "glass": 0
+    },
+    "chips": {
+     "count": 1,
+     "hues": 1,
+     "samples": [
+      {
+       "hue": 352,
+       "size": 38,
+       "radius": "8px"
+      }
+     ]
+    },
+    "numbers": {
+     "cells": 0,
+     "leftAligned": 0,
+     "figures": 8,
+     "tabularShare": 1,
+     "kpiMax": 34
+    },
+    "rows": {
+     "count": 5,
+     "median": 76
+    },
+    "chartHues": 0,
+    "placeholders": [],
+    "type": {
+     "under13": 0,
+     "tiny": 0,
+     "tinySamples": [],
+     "sizes": [
+      12,
+      13,
+      14,
+      15,
+      17,
+      20,
+      24,
+      34
+     ]
+    },
+    "title": {
+     "text": "Dashboard SPPG Bandung Raya",
+     "size": 20,
+     "top": 80
+    },
+    "colourShare": 0.029
+   },
+   "consoleErrors": []
+  }
+ ],
+ "findings": [],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\NRVA\\coding\\tpbw\\.taste-skill\\inspect\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\NRVA\\coding\\tpbw\\.taste-skill\\inspect\\desktop-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\NRVA\\coding\\tpbw\\.taste-skill\\inspect\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\NRVA\\coding\\tpbw\\.taste-skill\\inspect\\tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\NRVA\\coding\\tpbw\\.taste-skill\\inspect\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\NRVA\\coding\\tpbw\\.taste-skill\\inspect\\mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

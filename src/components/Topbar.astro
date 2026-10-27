@@ -1,0 +1,73 @@
+---
+---
+
+<header class="h-20 border-b border-rule bg-paper-2/85 backdrop-blur-xl sticky top-0 z-30 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+  <div class="flex items-center gap-3.5">
+    <!-- Hamburger button for mobile with a11y -->
+    <button 
+      id="mobile-sidebar-toggle" 
+      class="lg:hidden p-2.5 rounded-xl bg-paper border border-rule text-ink hover:text-white hover:bg-paper-hover transition-colors focus-visible:ring-2 focus-visible:ring-accent min-w-[44px] min-h-[44px] flex items-center justify-center" 
+      aria-label="Buka Menu Navigasi Samping"
+      aria-expanded="false"
+      aria-controls="app-sidebar"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+
+    <div>
+      <h1 class="text-base sm:text-lg lg:text-xl font-display font-bold text-white tracking-tight flex items-center gap-2">
+        <span>Sistem Pemetaan SPPG Bandung Raya</span>
+        <span class="hidden sm:inline-flex text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">MBG 2025</span>
+      </h1>
+      <p class="text-xs text-ink-muted hidden md:block">Integrasi data lokasi unit gizi & pemantauan data kejadian terpadu se-Bandung Raya</p>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-2.5 sm:gap-3">
+    <!-- Global Quick Search with a11y & Clear button -->
+    <div class="relative hidden sm:block w-48 md:w-64">
+      <label for="global-search-input" class="sr-only">Cari SPPG, wilayah, atau insiden</label>
+      <input 
+        type="search" 
+        id="global-search-input"
+        placeholder="Cari SPPG, wilayah, insiden..." 
+        aria-label="Cari SPPG, wilayah, atau insiden"
+        class="w-full bg-paper border border-rule rounded-xl pl-9 pr-8 py-2 text-xs text-ink placeholder:text-ink-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/40 transition-all font-body"
+      />
+      <svg class="w-4 h-4 text-ink-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+      <button 
+        id="global-search-clear" 
+        type="button" 
+        aria-label="Hapus kata kunci pencarian"
+        class="absolute right-2.5 top-2 text-ink-dim hover:text-white hidden p-0.5"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Live Telemetry Pill -->
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-paper border border-rule text-xs font-mono" role="status" aria-live="polite">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true"></span>
+      <span class="text-ink-muted hidden lg:inline">Status:</span>
+      <span class="text-emerald-400 font-semibold">Online</span>
+    </div>
+
+    <!-- Quick Action to Map -->
+    <button 
+      id="quick-pan-map-btn" 
+      class="px-3.5 py-2 rounded-xl bg-accent text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent text-xs font-semibold font-body flex items-center gap-1.5 shadow-sm shadow-accent/25 active:scale-95 transition-all min-h-[38px]"
+      aria-label="Gulir ke Tampilan Peta Interaktif"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+      </svg>
+      <span>Buka Peta</span>
+    </button>
+  </div>
+</header>

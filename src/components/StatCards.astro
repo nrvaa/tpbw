@@ -1,0 +1,277 @@
+---
+import { sppgList, incidentList, totalPenerima, totalKapasitas, totalSekolah, keracunanCount, keluhanCount, gangguanCount } from '../data/sppg';
+
+const totalSppg = sppgList.length;
+const aktifSppg = sppgList.filter(s => s.status === "Aktif").length;
+const nonAktifSppg = sppgList.filter(s => s.status !== "Aktif").length;
+const resolvedIncidents = incidentList.filter(i => i.status === "Ditangani").length;
+const pendingIncidents = incidentList.filter(i => i.status !== "Ditangani").length;
+const resolveRate = Math.round((resolvedIncidents / incidentList.length) * 100);
+const utilizationPercent = ((totalPenerima / totalKapasitas) * 100).toFixed(1);
+
+const colorMap: Record<string, string> = {
+  'Kota Bandung': 'bg-blue-400',
+  'Kabupaten Bandung': 'bg-emerald-400',
+  'Kota Cimahi': 'bg-purple-400',
+  'Kabupaten Bandung Barat': 'bg-amber-400',
+  'Kabupaten Sumedang': 'bg-rose-400'
+};
+
+const uniqueWilayahs = Array.from(new Set(sppgList.map(s => s.wilayah)));
+const regionalData = uniqueWilayahs.map(w => ({
+  label: w,
+  portions: sppgList.filter(s => s.wilayah === w).reduce((a, b) => a + (b.penerima || 0), 0),
+  count: sppgList.filter(s => s.wilayah === w).length,
+  color: colorMap[w] || 'bg-slate-400'
+}));
+---
+
+<div class="space-y-4" role="region" aria-label="Ringkasan Telemetri Operasional SPPG Bandung Raya">
+  <!-- Top Asymmetric Grid: Hero Delivery Cockpit (7 cols) + Infrastructure Readiness (5 cols) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+    <!-- HERO COCKPIT: Daily MBG Nutrition Delivery (Primary Commanding Metric) -->
+    <div 
+      class="lg:col-span-7 p-6 rounded-2xl bg-paper-card border border-rule hover:border-accent/50 transition-all duration-200 relative overflow-hidden shadow-sm group cursor-pointer focus-visible:ring-2 focus-visible:ring-accent"
+      role="button"
+      tabindex="0"
+      data-stat-target="analytics"
+      aria-label="Lihat Analitik Distribusi: 11.420 porsi MBG disalurkan per hari dari kapasitas 13.410 porsi (85.2% utilitas)"
+    >
+      <!-- Subtle tactical background corner accent -->
+      <div class="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-accent/5 pointer-events-none group-hover:bg-accent/10 transition-colors" aria-hidden="true"></div>
+
+      <!-- Cockpit Header Strip -->
+      <div class="flex items-center justify-between gap-3 mb-4">
+        <div class="flex items-center gap-2 font-mono text-[11px] text-ink-muted">
+          <span class="w-2 h-2 rounded-full bg-accent animate-pulse" aria-hidden="true"></span>
+          <span class="font-semibold text-accent tracking-wider uppercase">OPS-MBG // DISTRIBUSI UTAMA</span>
+          <span class="text-ink-dim hidden sm:inline">•</span>
+          <span class="text-ink-dim hidden sm:inline">Penyaluran Nutrisi Harian</span>
+        </div>
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/10 border border-accent/25 text-accent font-mono text-[11px] font-semibold">
+          <span>{utilizationPercent}% Utilitas Kapasitas</span>
+        </div>
+      </div>
+
+      <!-- Primary Metric Number & Context Split -->
+      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 mb-4">
+        <div>
+          <div class="flex items-baseline gap-2.5">
+            <span class="text-4xl sm:text-5xl font-display font-extrabold text-white tracking-tight tabular-nums">
+              {totalPenerima.toLocaleString('id-ID')}
+            </span>
+            <span class="text-sm sm:text-base font-semibold text-ink-2 font-display">Porsi / Hari</span>
+          </div>
+          <p class="text-xs text-ink-muted mt-1">
+            Tersalurkan ke <span class="text-white font-medium">{totalSekolah} sekolah & pesantren mitra</span> aktif se-Bandung Raya
+          </p>
+        </div>
+
+        <div class="sm:text-right font-mono text-xs text-ink-muted border-t sm:border-t-0 sm:border-l border-rule/70 pt-2 sm:pt-0 sm:pl-4">
+          <div class="text-[11px] text-ink-dim">Kapasitas Maksimal</div>
+          <div class="text-sm font-bold text-white tabular-nums">{totalKapasitas.toLocaleString('id-ID')} Porsi</div>
+          <div class="text-[11px] text-emerald-400 font-medium">+1.990 Porsi Cadangan</div>
+        </div>
+      </div>
+
+      <!-- Capacity Utilization Progress Bar -->
+      <div class="space-y-1.5 mb-4">
+        <div class="flex justify-between items-center text-[11px] font-mono text-ink-muted">
+          <span>Beban Dapur Gizi Bandung Raya</span>
+          <span class="text-accent font-semibold">{totalPenerima.toLocaleString('id-ID')} / {totalKapasitas.toLocaleString('id-ID')} ({utilizationPercent}%)</span>
+        </div>
+        <div class="w-full bg-paper rounded-full h-2.5 p-0.5 border border-rule overflow-hidden relative">
+          <div 
+            class="bg-gradient-to-r from-accent via-blue-400 to-emerald-400 h-full rounded-full transition-all duration-500 relative"
+            style={`width: ${utilizationPercent}%`}
+          >
+            <span class="absolute right-0 top-0 bottom-0 w-1 bg-white rounded-full opacity-75 shadow-sm" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Regional Distribution Footnote Chips -->
+      <div class="pt-3 border-t border-rule/70 flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-mono text-ink-muted">
+          <span class="text-ink-dim font-medium">Sebaran Porsi:</span>
+          {regionalData.map(reg => (
+            <span class="inline-flex items-center gap-1.5 text-ink-2">
+              <span class={`w-1.5 h-1.5 rounded-full ${reg.color}`} aria-hidden="true"></span>
+              <span>{reg.label}: <strong class="text-white">{reg.portions.toLocaleString('id-ID')}</strong></span>
+            </span>
+          ))}
+        </div>
+        <span class="text-[11px] font-mono text-accent font-semibold group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1 ml-auto">
+          Grafik Wilayah →
+        </span>
+      </div>
+    </div>
+
+    <!-- INFRASTRUCTURE READINESS: SPPG Kitchen Units & School Partners -->
+    <div 
+      class="lg:col-span-5 p-6 rounded-2xl bg-paper-card border border-rule hover:border-emerald-500/50 transition-all duration-200 relative overflow-hidden shadow-sm group cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-400 flex flex-col justify-between"
+      role="button"
+      tabindex="0"
+      data-stat-target="directory"
+      aria-label="Lihat Direktori SPPG: 22 dari 27 unit dapur beroperasi aktif (81.5% kesiapan) melayani 117 titik sekolah"
+    >
+      <div class="absolute -right-12 -bottom-12 w-44 h-44 rounded-full bg-emerald-500/5 pointer-events-none group-hover:bg-emerald-500/10 transition-colors" aria-hidden="true"></div>
+
+      <div>
+        <!-- Card Header Strip -->
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <div class="flex items-center gap-2 font-mono text-[11px] text-ink-muted">
+            <span class="w-2 h-2 rounded-full bg-emerald-400" aria-hidden="true"></span>
+            <span class="font-semibold text-emerald-400 tracking-wider uppercase">OPS-NET // KESIAPAN JARINGAN</span>
+          </div>
+          <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-semibold border border-emerald-500/25">
+            5 Wilayah
+          </span>
+        </div>
+
+        <!-- Metric Twin Display -->
+        <div class="grid grid-cols-2 gap-4 pb-4 border-b border-rule/70">
+          <!-- Sub-metric 1: Active SPPG -->
+          <div>
+            <span class="text-xs font-semibold text-ink-muted uppercase tracking-wider font-mono block mb-1">Unit SPPG Aktif</span>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-3xl sm:text-4xl font-display font-extrabold text-white tracking-tight tabular-nums">{aktifSppg}</span>
+              <span class="text-xs font-mono text-ink-muted">/ {totalSppg}</span>
+            </div>
+            <div class="mt-1 text-xs text-emerald-400 font-medium flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span>{Math.round((aktifSppg / totalSppg) * 100)}% Siap Masak</span>
+            </div>
+          </div>
+
+          <!-- Sub-metric 2: School Network -->
+          <div class="border-l border-rule/70 pl-4">
+            <span class="text-xs font-semibold text-ink-muted uppercase tracking-wider font-mono block mb-1">Sekolah & Santri</span>
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-3xl sm:text-4xl font-display font-extrabold text-white tracking-tight tabular-nums">{totalSekolah}</span>
+              <span class="text-xs font-mono text-ink-muted">Titik</span>
+            </div>
+            <div class="mt-1 text-xs text-purple-400 font-medium">
+              SD, SMP, SMA, Pontren
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Network Fleet Operational Status -->
+      <div class="pt-4 flex items-center justify-between text-xs">
+        <div class="flex flex-wrap items-center gap-2 text-[11px] font-mono">
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            {aktifSppg} Beroperasi Normal
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-paper text-ink-muted border border-rule">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            {nonAktifSppg} Non-aktif/Evaluasi
+          </span>
+        </div>
+        <span class="text-[11px] font-mono text-emerald-400 font-semibold group-hover:translate-x-0.5 transition-transform hidden sm:inline-flex items-center gap-1">
+          Daftar Dapur →
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Command Strip: Incident Triage & Food Safety Monitor -->
+  <div 
+    class="p-4 sm:p-5 rounded-2xl bg-paper-card border border-rule hover:border-rose-500/40 transition-all duration-200 relative overflow-hidden shadow-sm group"
+    role="region"
+    aria-label="Pemantauan Insiden dan Keamanan Pangan MBG: 20 kejadian, 15 ditangani, 5 dalam tindak lanjut"
+  >
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+
+      <!-- Left: Domain Title & Headline Summary -->
+      <div class="flex items-center gap-3.5">
+        <div class="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center border border-rose-500/25 shrink-0 group-hover:scale-105 transition-transform">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-2 font-mono text-[11px]">
+            <span class="font-bold text-rose-400 tracking-wider uppercase">PEMANTAUAN KEAMANAN & KENDALA MBG</span>
+            <span class="text-ink-dim hidden sm:inline">•</span>
+            <span class="text-ink-muted hidden sm:inline">Mitigasi Risiko Terpadu</span>
+          </div>
+          <div class="flex items-baseline gap-2 mt-0.5">
+            <span class="text-2xl font-display font-extrabold text-white tracking-tight tabular-nums">{incidentList.length}</span>
+            <span class="text-xs font-mono text-ink-muted">Total Kejadian Dilaporkan (2025)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: Key Operational Status Triage Badges -->
+      <div class="flex flex-wrap items-center gap-2 text-xs font-mono">
+        <!-- Resolved Rate -->
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-300">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>{resolvedIncidents} Ditangani ({resolveRate}%)</span>
+        </div>
+
+        <!-- Pending Attention -->
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-300">
+          <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+          <span>{pendingIncidents} Perlu Tindak Lanjut</span>
+        </div>
+      </div>
+
+      <!-- Right: Category Breakdown Pill Group & Direct Navigation -->
+      <div class="flex flex-wrap items-center gap-2 pt-2 lg:pt-0 border-t lg:border-t-0 border-rule/70">
+        <!-- Keracunan Filter Pill -->
+        <button 
+          type="button" 
+          data-stat-incident-filter="Keracunan"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-paper hover:bg-rose-500/20 text-rose-400 border border-rule hover:border-rose-500/40 text-xs font-mono font-medium transition-colors cursor-pointer"
+          title="Filter tabel ke kasus Keracunan"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+          <span>{keracunanCount} Keracunan</span>
+        </button>
+
+        <!-- Keluhan Filter Pill -->
+        <button 
+          type="button" 
+          data-stat-incident-filter="Keluhan"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-paper hover:bg-amber-500/20 text-amber-400 border border-rule hover:border-amber-500/40 text-xs font-mono font-medium transition-colors cursor-pointer"
+          title="Filter tabel ke Keluhan Layanan"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+          <span>{keluhanCount} Keluhan</span>
+        </button>
+
+        <!-- Distribusi Filter Pill -->
+        <button 
+          type="button" 
+          data-stat-incident-filter="Gangguan Distribusi"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-paper hover:bg-blue-500/20 text-blue-400 border border-rule hover:border-blue-500/40 text-xs font-mono font-medium transition-colors cursor-pointer"
+          title="Filter tabel ke Kendala Logistik Distribusi"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+          <span>{gangguanCount} Logistik</span>
+        </button>
+
+        <!-- View Full Log Link -->
+        <button 
+          type="button"
+          data-stat-target="incidents"
+          class="px-3.5 py-1.5 rounded-xl bg-accent text-white hover:bg-accent/90 text-xs font-semibold font-body flex items-center gap-1 transition-all ml-auto lg:ml-2 shadow-sm cursor-pointer"
+        >
+          <span>Buka Log</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+

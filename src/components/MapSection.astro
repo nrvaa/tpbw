@@ -1,0 +1,216 @@
+---
+import { sppgList, incidentList } from '../data/sppg';
+---
+
+<div id="section-map" class="rounded-2xl bg-paper-card border border-rule overflow-hidden shadow-lg flex flex-col" role="region" aria-label="Peta Geospasial SPPG dan Kejadian">
+  <!-- Map Header Bar with Controls -->
+  <div class="p-4 lg:p-5 border-b border-rule bg-paper-2 flex flex-col gap-4">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-accent/15 text-accent flex items-center justify-center border border-accent/25">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+            <line x1="8" y1="2" x2="8" y2="18"></line>
+            <line x1="16" y1="6" x2="16" y2="22"></line>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-base font-display font-bold text-white tracking-tight flex items-center gap-2">
+            <span>Peta Geospasial SPPG se-Bandung Raya</span>
+            <span id="active-marker-count" class="text-xs font-mono font-medium px-2 py-0.5 rounded-full bg-paper text-emerald-400 border border-rule">27 Titik</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/25 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+              OSM & Esri API
+            </span>
+          </h2>
+          <p class="text-xs text-ink-muted">Sebaran spasial dapur SPPG, geocoding akurat, radius coverage 3 KM, dan reverse geocoding API</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-2">
+        <!-- Toggle Radius Coverage Layer -->
+        <button 
+          id="btn-toggle-coverage"
+          type="button"
+          class="px-3 py-1.5 rounded-xl bg-paper border border-rule hover:border-emerald-500 text-ink-2 hover:text-emerald-400 text-xs font-medium flex items-center gap-1.5 transition-colors"
+          title="Tampilkan radius jangkauan layanan 3 KM untuk setiap SPPG"
+        >
+          <span class="w-2.5 h-2.5 rounded-full border-2 border-emerald-400"></span>
+          <span>Radius 3 KM</span>
+        </button>
+
+        <!-- Reset Center Button -->
+        <button 
+          id="map-reset-btn" 
+          title="Pusatkan Kembali ke Bandung Raya" 
+          aria-label="Pusatkan kembali peta ke tampilan Bandung Raya"
+          class="p-2 rounded-xl bg-paper border border-rule hover:border-rule-strong hover:bg-paper-hover text-ink-muted hover:text-white transition-all text-xs flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-accent"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          <span class="hidden sm:inline">Reset Posisi</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Second Row: Accurate Geocoding API Search & Filters -->
+    <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-rule/70">
+      <!-- Accurate Geocoding API Search Bar (Nominatim OSM) -->
+      <div class="relative flex-1 min-w-[260px] max-w-md">
+        <label for="map-geocoding-input" class="sr-only">Cari Lokasi / Sekolah / Alamat Akurat di Bandung Raya</label>
+        <input 
+          type="text" 
+          id="map-geocoding-input" 
+          placeholder="Cari jalan, sekolah, kecamatan (API Akurat)..." 
+          class="w-full bg-paper border border-rule text-ink text-xs rounded-xl pl-9 pr-16 py-2 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+        />
+        <svg class="w-4 h-4 text-ink-muted absolute left-2.5 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <button 
+          id="btn-geocoding-search" 
+          type="button" 
+          class="absolute right-1 top-1 px-2.5 py-1 bg-accent/20 hover:bg-accent text-accent hover:text-white rounded-lg text-[11px] font-semibold transition-colors"
+        >
+          Cari
+        </button>
+        <!-- Geocoding live results dropdown -->
+        <div id="geocoding-results-dropdown" class="absolute left-0 right-0 top-full mt-1.5 bg-paper-2 border border-rule rounded-xl shadow-2xl z-30 hidden overflow-hidden divide-y divide-rule max-h-56 overflow-y-auto"></div>
+      </div>
+
+      <!-- Filters & Tile Selector -->
+      <div class="flex flex-wrap items-center gap-2" role="toolbar" aria-label="Kontrol Filter Peta">
+        <!-- Tile Base Map API Switcher -->
+        <div class="relative">
+          <label for="map-select-tile" class="sr-only">Pilih Sumber Tile Peta API</label>
+          <select id="map-select-tile" aria-label="Pilih Sumber Tile Peta API" class="bg-paper border border-rule text-ink text-xs rounded-xl pl-3 pr-8 py-2 appearance-none focus:outline-none focus:border-accent cursor-pointer">
+            <option value="osm">OpenStreetMap (Jalan & Bangunan)</option>
+            <option value="satellite">Citra Satelit HD (Esri World Imagery)</option>
+            <option value="dark" selected>Dark Matter (Tema Gelap)</option>
+          </select>
+          <svg class="w-3.5 h-3.5 text-ink-muted absolute right-2.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+
+        <!-- Wilayah Selector -->
+        <div class="relative">
+          <label for="map-select-wilayah" class="sr-only">Filter Wilayah Peta</label>
+          <select id="map-select-wilayah" aria-label="Filter Wilayah Peta" class="bg-paper border border-rule text-ink text-xs rounded-xl pl-3 pr-8 py-2 appearance-none focus:outline-none focus:border-accent cursor-pointer">
+            <option value="all">Semua Wilayah (5 Kab/Kota)</option>
+            <option value="Kota Bandung">Kota Bandung (10 SPPG)</option>
+            <option value="Kabupaten Bandung">Kab. Bandung (7 SPPG)</option>
+            <option value="Kota Cimahi">Kota Cimahi (3 SPPG)</option>
+            <option value="Kabupaten Bandung Barat">Kab. Bandung Barat (4 SPPG)</option>
+            <option value="Kabupaten Sumedang">Kab. Sumedang (3 SPPG)</option>
+          </select>
+          <svg class="w-3.5 h-3.5 text-ink-muted absolute right-2.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="relative">
+          <label for="map-select-status" class="sr-only">Filter Status Operasional SPPG</label>
+          <select id="map-select-status" aria-label="Filter Status Operasional SPPG" class="bg-paper border border-rule text-ink text-xs rounded-xl pl-3 pr-8 py-2 appearance-none focus:outline-none focus:border-accent cursor-pointer">
+            <option value="all">Semua Status</option>
+            <option value="Aktif">Hanya Aktif</option>
+            <option value="Dalam Evaluasi">Dalam Evaluasi</option>
+            <option value="Sementara Tidak Aktif">Tidak Aktif</option>
+          </select>
+          <svg class="w-3.5 h-3.5 text-ink-muted absolute right-2.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+
+        <!-- Layer Kejadian Switcher -->
+        <div class="relative">
+          <label for="map-select-incident" class="sr-only">Filter Lapisan Insiden MBG</label>
+          <select id="map-select-incident" aria-label="Filter Lapisan Insiden MBG" class="bg-paper border border-rule text-ink text-xs rounded-xl pl-3 pr-8 py-2 appearance-none focus:outline-none focus:border-accent cursor-pointer">
+            <option value="all">Semua Titik SPPG</option>
+            <option value="has-incident">Ada Laporan Insiden</option>
+            <option value="Keracunan">Hanya Keracunan</option>
+            <option value="Keluhan">Hanya Keluhan</option>
+            <option value="Gangguan Distribusi">Hanya Kendala Distribusi</option>
+          </select>
+          <svg class="w-3.5 h-3.5 text-ink-muted absolute right-2.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map Canvas & Floating Panels -->
+  <div class="relative w-full h-[520px] lg:h-[620px] bg-paper">
+    <!-- Map Canvas Element -->
+    <div id="leaflet-map" class="w-full h-full z-10" role="application" aria-label="Visualisasi Peta Interaktif Leaflet"></div>
+
+    <!-- Floating Map Legend Card -->
+    <div class="absolute bottom-4 left-4 z-20 bg-paper-2/95 backdrop-blur-md border border-rule p-3.5 rounded-xl text-xs max-w-xs shadow-xl hidden sm:block" role="region" aria-label="Legenda Peta">
+      <div class="flex items-center justify-between mb-2">
+        <span class="font-mono text-[10px] uppercase font-bold text-ink-muted tracking-wider">Legenda Spasial</span>
+        <span class="text-[10px] text-ink-dim">Klik peta utk info alamat</span>
+      </div>
+      <div class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px] text-ink-2">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-emerald-500/30"></span>
+          <span>SPPG Aktif Normal</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-rose-500 ring-2 ring-rose-500/40 animate-pulse"></span>
+          <span>Ada Keracunan</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-amber-500 ring-2 ring-amber-500/30"></span>
+          <span>Keluhan Kualitas</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-blue-500 ring-2 ring-blue-500/30"></span>
+          <span>Kendala Logistik</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-slate-500 ring-1 ring-slate-400/30"></span>
+          <span>Evaluasi / Non-aktif</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full border-2 border-emerald-400 bg-emerald-400/20"></span>
+          <span>Radius 3 KM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Selected SPPG Floating Info Bar -->
+    <div 
+      id="map-quick-info" 
+      class="absolute top-4 right-4 z-20 bg-paper-2/95 backdrop-blur-md border border-rule p-4 rounded-2xl text-xs w-80 shadow-2xl transition-all duration-300 translate-y-2 opacity-0 pointer-events-none"
+      role="dialog"
+      aria-label="Ringkasan SPPG Terpilih"
+    >
+      <div class="flex items-start justify-between mb-2">
+        <div>
+          <span id="quick-sppg-status-badge" class="text-[10px] font-mono px-2 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">Aktif</span>
+          <h4 id="quick-sppg-name" class="font-display font-bold text-sm text-white mt-1">Nama SPPG</h4>
+        </div>
+        <button id="quick-close-btn" aria-label="Tutup ringkasan informasi SPPG" class="text-ink-muted hover:text-white p-1.5 rounded-lg hover:bg-paper-hover transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <p id="quick-sppg-address" class="text-xs text-ink-muted line-clamp-2 mb-3">Alamat...</p>
+      
+      <div class="grid grid-cols-2 gap-2 text-center mb-3">
+        <div class="bg-paper p-2.5 rounded-xl border border-rule">
+          <span class="text-[10px] font-mono text-ink-muted block">Kapasitas</span>
+          <span id="quick-sppg-cap" class="font-bold text-white text-sm">0</span>
+        </div>
+        <div class="bg-paper p-2.5 rounded-xl border border-rule">
+          <span class="text-[10px] font-mono text-ink-muted block">Penerima</span>
+          <span id="quick-sppg-rec" class="font-bold text-emerald-400 text-sm">0</span>
+        </div>
+      </div>
+
+      <div id="quick-incident-alert" class="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-[11px] mb-3 hidden">
+        <strong>Catatan Kejadian:</strong>
+        <p id="quick-incident-text" class="mt-0.5 text-xs text-rose-200">Tidak ada kejadian aktif.</p>
+      </div>
+
+      <button id="quick-view-full-btn" class="w-full py-2.5 rounded-xl bg-accent text-white hover:bg-accent/90 text-xs font-semibold tracking-wide transition-all shadow-md focus-visible:ring-2 focus-visible:ring-accent">
+        Buka Lembar Detail SPPG →
+      </button>
+    </div>
+  </div>
+</div>
