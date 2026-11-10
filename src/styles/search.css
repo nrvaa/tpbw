@@ -1,0 +1,41 @@
+/* Searchbar cekung: tanpa border, bayangan inset, membesar sedikit saat fokus.
+   Pola dari Uiverse (Praashoo7), warnanya diganti token walnut supaya cocok dengan tema gelap.
+   Scale ditaruh di pembungkus (.search-wrap) agar ikon dan tombol di dalamnya ikut membesar. */
+.search-wrap {
+  transition: transform 300ms ease-in-out;
+}
+.search-wrap:focus-within {
+  transform: scale(1.05);
+  z-index: 20;
+}
+
+.search-field {
+  border: none;
+  outline: none;
+  border-radius: 15px;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: inset 2px 5px 10px rgb(0 0 0 / 0.6);
+  transition: background-color 300ms ease-in-out, box-shadow 300ms ease-in-out;
+}
+.search-field::placeholder {
+  color: var(--color-ink-muted);
+}
+.search-field:focus {
+  outline: none;
+  background-color: var(--color-paper-hover);
+  box-shadow:
+    inset 0 0 0 1px var(--color-focus),
+    13px 13px 60px rgb(0 0 0 / 0.55),
+    -13px -13px 60px rgb(255 237 215 / 0.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-wrap,
+  .search-field {
+    transition: none;
+  }
+  .search-wrap:focus-within {
+    transform: none;
+  }
+}

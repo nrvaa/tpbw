@@ -9,44 +9,37 @@ interface StatusInfo {
 }
 
 // Status verifikasi data, BUKAN status operasional dapur.
+// Warna sama dengan landing page: cream = belum, ember = perlu review, sage = terverifikasi.
+// Kelas slate/amber/emerald dipetakan ulang ke palet walnut di global.css (@theme).
 export const STATUS_VALIDASI: Record<StatusValidasi, StatusInfo> = {
   belum_diverifikasi: {
     label: 'Belum diverifikasi',
-    badge: 'bg-blue-500/15 text-blue-300 border border-blue-500/25',
-    dot: 'bg-blue-500',
-    marker: '#3b82f6',
+    badge: 'bg-slate-500/15 text-slate-300 border border-slate-500/30',
+    dot: 'bg-slate-400',
+    marker: '#ffedd7',
   },
   perlu_review: {
     label: 'Perlu review manual',
-    badge: 'bg-amber-500/15 text-amber-300 border border-amber-500/25',
+    badge: 'bg-amber-500/20 text-amber-300 border border-amber-500/40',
     dot: 'bg-amber-500',
-    marker: '#f59e0b',
+    marker: '#dc5000',
   },
   terverifikasi: {
     label: 'Terverifikasi',
-    badge: 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25',
+    badge: 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30',
     dot: 'bg-emerald-500',
-    marker: '#10b981',
+    marker: '#a7c08a',
   },
 };
 
 const UNKNOWN_STATUS: StatusInfo = {
   label: 'Tidak diketahui',
-  badge: 'bg-slate-500/15 text-slate-300 border border-slate-500/25',
-  dot: 'bg-slate-500',
-  marker: '#64748b',
+  badge: 'bg-gray-500/15 text-gray-300 border border-gray-500/30',
+  dot: 'bg-gray-500',
+  marker: '#6c5f51',
 };
 
 export const statusInfo = (s: string): StatusInfo => STATUS_VALIDASI[s as StatusValidasi] ?? UNKNOWN_STATUS;
-
-const WILAYAH_COLOR: Record<string, { dot: string; hex: string }> = {
-  'Kota Bandung': { dot: 'bg-blue-400', hex: '#60a5fa' },
-  'Kabupaten Bandung': { dot: 'bg-emerald-400', hex: '#34d399' },
-  'Kota Cimahi': { dot: 'bg-purple-400', hex: '#c084fc' },
-  'Kabupaten Bandung Barat': { dot: 'bg-amber-400', hex: '#fbbf24' },
-  'Kabupaten Sumedang': { dot: 'bg-rose-400', hex: '#fb7185' },
-};
-export const wilayahColor = (w: string) => WILAYAH_COLOR[w] ?? { dot: 'bg-slate-400', hex: '#94a3b8' };
 
 export const shortWilayah = (w: string) => w.replace(/^Kabupaten /, 'Kab. ');
 
@@ -61,7 +54,8 @@ function countBy(items: SPPG[], key: (s: SPPG) => string): [string, number][] {
 
 export const wilayahCounts = countBy(sppgList, s => s.wilayah);
 // Nama kecamatan bisa sama di kab/kota berbeda, jadi dikunci bersama wilayahnya.
-export const kecamatanCounts = countBy(sppgList, s => `${s.kecamatan} · ${shortWilayah(s.wilayah)}`);
+// Titik tanpa kecamatan (alamat kosong di CSV) tidak dihitung sebagai kecamatan tersendiri.
+export const kecamatanCounts = countBy(sppgList.filter(s => s.kecamatan), s => `${s.kecamatan} · ${shortWilayah(s.wilayah)}`);
 export const statusCounts = countBy(sppgList, s => s.statusValidasi);
 
 const countStatus = (s: StatusValidasi) => sppgList.filter(x => x.statusValidasi === s).length;

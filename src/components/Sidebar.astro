@@ -1,123 +1,131 @@
 ---
-interface Props {
-  activeSection?: string;
-}
+import { summary, wilayahCounts, shortWilayah, STATUS_VALIDASI } from '../data/summary';
+import { incidentsEnabled } from '../data/incidents';
 
-const { activeSection = "overview" } = Astro.props;
+const maxWilayah = wilayahCounts[0]?.[1] ?? 1;
+const statusRows = [
+  { ...STATUS_VALIDASI.belum_diverifikasi, n: summary.belumDiverifikasi },
+  { ...STATUS_VALIDASI.perlu_review, n: summary.perluReview },
+  { ...STATUS_VALIDASI.terverifikasi, n: summary.terverifikasi },
+];
 
-import { summary, wilayahCounts, shortWilayah } from '../data/summary';
-import { incidentsEnabled, incidentList } from '../data/incidents';
-
-const verifiedPct = summary.totalKandidat ? (summary.terverifikasi / summary.totalKandidat) * 100 : 0;
+// Ikon outline yang sama gayanya dengan ikon lain di dashboard.
+const NAV = [
+  { key: 'overview', href: '#section-overview', label: 'Ringkasan', d: 'M4 13h6V4H4v9zm0 7h6v-5H4v5zm10 0h6v-9h-6v9zm0-16v5h6V4h-6z' },
+  { key: 'map', href: '#map-wrapper', label: 'Peta sebaran', d: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7' },
+  { key: 'analytics', href: '#analytics-wrapper', label: 'Analitik wilayah', d: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6m6 0h6m-6 0V9a2 2 0 012-2h2a2 2 0 012 2v10m0 0h6m-6 0V5a2 2 0 012-2h2a2 2 0 012 2v14' },
+  ...(incidentsEnabled ? [{ key: 'incidents', href: '#incidents-wrapper', label: 'Data kejadian', d: 'M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z' }] : []),
+  { key: 'directory', href: '#directory-wrapper', label: 'Direktori', count: summary.totalKandidat, d: 'M4 6h16M4 12h16M4 18h10' },
+];
 ---
 
-<aside id="app-sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-paper-2/95 backdrop-blur-xl border-r border-rule flex flex-col transition-transform duration-300 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
-  <!-- Brand Header -->
-  <div class="h-20 px-6 flex items-center gap-3.5 border-b border-rule">
-    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 ring-1 ring-white/20">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-    </div>
-    <div class="flex flex-col">
-      <div class="flex items-center gap-1.5">
-        <span class="font-display font-extrabold tracking-tight text-white text-base leading-none">SPPG BANDUNG</span>
-      </div>
-      <span class="text-[11px] font-mono tracking-wider text-emerald-400 font-semibold uppercase mt-1">WebGIS Kandidat SPPG</span>
-    </div>
-  </div>
+<aside id="default-sidebar" class="sb fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full lg:translate-x-0" aria-label="Navigasi dashboard">
+  <div class="sb-inner">
 
-  <!-- Quick Status Banner -->
-  <div class="px-5 py-4 border-b border-rule bg-paper-3/40">
-    <div class="flex items-center justify-between text-xs text-ink-2 mb-1.5">
-      <span class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-        Titik Kandidat
+    <a href="/" class="sb-brand" aria-label="SIGMA-B: kembali ke halaman utama">
+      <img src="/img/SIGMA-B — Simbol koordinat.svg" alt="Simbol koordinat SIGMA-B" class="sb-mark" width="36" height="36" />
+      <span class="min-w-0">
+        <span class="sb-brand-name" style="view-transition-name: brand">SIGMA-B</span>
+        <span class="sb-brand-sub">Peta kandidat · data pilot</span>
       </span>
-      <span class="font-mono text-emerald-400 font-semibold text-[11px]">{summary.totalKandidat} SPPG</span>
+    </a>
+
+    <nav class="sb-block" aria-label="Bagian dashboard">
+      <p class="sb-label">Bagian</p>
+      <ul class="sb-nav">
+        {NAV.map(item => (
+          <li>
+            <a href={item.href} data-nav={item.key} class="nav-btn sb-link" aria-current={item.key === 'overview' ? 'page' : undefined}>
+              <svg class="sb-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d={item.d} />
+              </svg>
+              <span class="flex-1">{item.label}</span>
+              {item.count && <span class="sb-count">{item.count}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="sb-block" role="group" aria-labelledby="sb-wilayah-label">
+      <p class="sb-label" id="sb-wilayah-label">Filter wilayah</p>
+      <div class="sb-regions" id="sidebar-region-pills">
+        <button type="button" class="region-pill-btn sb-region" data-wilayah="all" aria-pressed="true">
+          <span class="sb-region-row"><span>Semua wilayah</span><strong>{summary.totalKandidat}</strong></span>
+        </button>
+        {wilayahCounts.map(([w, n]) => (
+          <button type="button" class="region-pill-btn sb-region" data-wilayah={w} aria-pressed="false">
+            <span class="sb-region-row"><span>{shortWilayah(w)}</span><strong>{n}</strong></span>
+            <span class="sb-bar" aria-hidden="true"><span style={`width: ${(n / maxWilayah) * 100}%`}></span></span>
+          </button>
+        ))}
+      </div>
     </div>
-    <div class="w-full bg-paper rounded-full h-1.5 overflow-hidden ring-1 ring-rule" role="img" aria-label={`${summary.terverifikasi} dari ${summary.totalKandidat} titik terverifikasi`}>
-      <div class="bg-gradient-to-r from-emerald-500 to-accent h-full rounded-full" style={`width: ${verifiedPct}%`}></div>
+
+    <div class="sb-block">
+      <p class="sb-label">Warna penanda</p>
+      <ul class="sb-legend">
+        {statusRows.map(s => (
+          <li><span class="sb-dot" style={`--dot: ${s.marker}`} aria-hidden="true"></span><span class="flex-1">{s.label}</span><span class="sb-count">{s.n}</span></li>
+        ))}
+      </ul>
     </div>
-    <div class="flex justify-between items-center text-[10px] text-ink-muted mt-1 font-mono">
-      <span>{summary.totalWilayah} Kab/Kota · {summary.totalKecamatan} Kec.</span>
-      <span>{summary.perluReview} perlu review</span>
+
+    <div class="sb-foot">
+      <a href="/" class="sb-home">
+        <svg class="sb-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7 7-7M3 12h18" /></svg>
+        Beranda
+      </a>
     </div>
-  </div>
-
-  <!-- Navigation Menu -->
-  <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto" aria-label="Navigasi Halaman Utama">
-    <button data-nav="overview" aria-current="page" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-white bg-accent/20 border border-accent/30 focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98] group">
-      <svg class="w-4 h-4 text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
-        <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
-        <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
-        <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
-        <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
-      </svg>
-      <span>Dashboard Overview</span>
-      <span class="ml-auto text-[10px] font-mono bg-paper-2 px-1.5 py-0.5 rounded text-ink-muted border border-rule">Data Lokal</span>
-    </button>
-
-    <button data-nav="map" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-ink-2 hover:text-white hover:bg-paper-hover focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98] group">
-      <svg class="w-4 h-4 text-ink-muted group-hover:text-emerald-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
-        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-        <line x1="8" y1="2" x2="8" y2="18"></line>
-        <line x1="16" y1="6" x2="16" y2="22"></line>
-      </svg>
-      <span>Peta Geospasial</span>
-      <span class="ml-auto w-2 h-2 rounded-full bg-emerald-500" aria-label="Tersedia"></span>
-    </button>
-
-    {incidentsEnabled && (
-    <button data-nav="incidents" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-ink-2 hover:text-white hover:bg-paper-hover focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98] group">
-      <svg class="w-4 h-4 text-ink-muted group-hover:text-rose-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-      </svg>
-      <span>Data Kejadian</span>
-      <span class="ml-auto text-[10px] font-mono bg-rose-500/15 text-rose-300 font-semibold px-2 py-0.5 rounded-full border border-rose-500/25">{incidentList.length} Isu</span>
-    </button>
-    )}
-
-    <button data-nav="directory" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-ink-2 hover:text-white hover:bg-paper-hover focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98] group">
-      <svg class="w-4 h-4 text-ink-muted group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-      </svg>
-      <span>Direktori SPPG</span>
-      <span class="ml-auto text-[10px] font-mono text-ink-muted">{summary.totalKandidat} Titik</span>
-    </button>
-
-    <button data-nav="analytics" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all text-ink-2 hover:text-white hover:bg-paper-hover focus-visible:ring-2 focus-visible:ring-accent active:scale-[0.98] group">
-      <svg class="w-4 h-4 text-ink-muted group-hover:text-purple-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-      </svg>
-      <span>Analitik Wilayah</span>
-    </button>
-  </nav>
-
-  <!-- Wilayah Filter Chips In Sidebar -->
-  <div class="p-4 border-t border-rule bg-paper-3/20" role="region" aria-label="Filter Wilayah Cepat">
-    <div class="flex items-center justify-between mb-2">
-      <p class="text-[10px] font-mono uppercase tracking-wider text-ink-muted font-bold">Fokus Wilayah</p>
-      <span class="text-[10px] font-mono text-ink-dim">Filter Cepat</span>
-    </div>
-    <div class="flex flex-wrap gap-1.5" id="sidebar-region-pills" role="toolbar" aria-label="Pilihan Wilayah">
-      <button aria-pressed="true" class="region-pill-btn active text-[11px] px-2.5 py-1 rounded-lg bg-accent/20 text-accent font-semibold border border-accent/35 transition-all hover:bg-accent/30 focus-visible:ring-2 focus-visible:ring-accent" data-wilayah="all">Semua</button>
-      {wilayahCounts.map(([w, n]) => (
-        <button aria-pressed="false" class="region-pill-btn text-[11px] px-2.5 py-1 rounded-lg bg-paper text-ink-muted hover:text-ink hover:bg-paper-hover border border-rule transition-all focus-visible:ring-2 focus-visible:ring-accent" data-wilayah={w}>{shortWilayah(w)} ({n})</button>
-      ))}
-    </div>
-  </div>
-
-  <!-- Footer Credits -->
-  <div class="p-4 border-t border-rule flex items-center justify-between text-xs text-ink-muted bg-paper-2">
-    <div>
-      <p class="font-medium text-ink">Kelompok 14</p>
-      <p class="text-[11px] text-ink-muted">Tugas Besar Pemrograman Web</p>
-    </div>
-    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Pilot</span>
   </div>
 </aside>
 
-<!-- Backdrop for mobile -->
-<div id="sidebar-backdrop" class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm hidden lg:hidden"></div>
+<div id="sidebar-backdrop" class="fixed inset-0 z-30 bg-black/60 hidden lg:hidden"></div>
+
+<script>
+  function setupSidebar() {
+    const sidebar = document.getElementById('default-sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    const toggles = document.querySelectorAll('[data-drawer-toggle="default-sidebar"]');
+
+    // Sama dengan breakpoint lg: di bawahnya sidebar jadi drawer.
+    const drawerMode = window.matchMedia('(max-width: 1023px)');
+
+    const setDrawer = (open: boolean) => {
+      if (!sidebar) return;
+      sidebar.classList.toggle('-translate-x-full', !open);
+      backdrop?.classList.toggle('hidden', !open);
+      // Drawer tertutup ada di luar layar; inert supaya link-nya tidak ikut urutan Tab.
+      sidebar.inert = drawerMode.matches && !open;
+      toggles.forEach(btn => btn.setAttribute('aria-expanded', String(open)));
+    };
+    setDrawer(false);
+    drawerMode.addEventListener('change', () => setDrawer(false));
+
+    toggles.forEach(btn => btn.addEventListener('click', e => {
+      e.stopPropagation();
+      setDrawer(!!sidebar?.classList.contains('-translate-x-full'));
+    }));
+    backdrop?.addEventListener('click', () => setDrawer(false));
+    document.querySelectorAll('#default-sidebar a[href^="#"], #default-sidebar .sb-region').forEach(el =>
+      el.addEventListener('click', () => { if (drawerMode.matches) setDrawer(false); }));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setDrawer(false); });
+
+    // Penanda bagian aktif mengikuti posisi scroll (bukan hanya saat diklik).
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.sb-link')];
+    const ids = links.map(a => a.getAttribute('href')!.slice(1));
+    const setCurrent = (id: string) => links.forEach(a => {
+      if (a.getAttribute('href') === `#${id}`) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        const hit = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (hit) setCurrent(hit.target.id);
+      }, { rootMargin: '-35% 0px -55% 0px' });
+      ids.forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
+    }
+  }
+
+  setupSidebar();
+</script>

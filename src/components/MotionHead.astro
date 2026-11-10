@@ -1,0 +1,12 @@
+<!-- Dipasang di <head> sebelum render agar elemen [data-reveal] tidak berkedip tampil lalu hilang.
+     Bila skrip modul gagal dimuat dalam 3 detik, kelasnya dilepas supaya konten tetap terlihat. -->
+<script is:inline>
+  (function () {
+    var root = document.documentElement;
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    root.classList.add('motion-ok');
+    setTimeout(function () {
+      if (!root.classList.contains('reveal-ready')) root.classList.remove('motion-ok');
+    }, 3000);
+  })();
+</script>

@@ -1,0 +1,258 @@
+/* Urutan layer: reset paling lemah. Tanpa ini, `a { color: inherit }` (tanpa layer) selalu menang
+   atas warna hover .btn-split di @layer components, sehingga teks tetap cream saat hover. */
+@layer reset, components;
+@import './motion.css';
+@import './buttons.css';
+
+/* Landing page. Token dari arahan desain pemilik proyek, disimpan sebagai variabel biasa
+   (bukan @theme Tailwind) karena --spacing-6/8/12 dan --radius-2xl/3xl akan menimpa
+   skala Tailwind yang dipakai dashboard /peta. */
+:root {
+  --color-warm-cream: #ffedd7;
+  --color-walnut-shadow: #100904;
+  --color-bark-brown: #382416;
+  --color-cork-border: #40372e;
+  --color-driftwood: #6c5f51;
+  --color-ember-accent: #dc5000;
+  --color-pure-black: #000000;
+  /* Driftwood cuma 3.2:1 di atas walnut, jadi teks sekunder pakai campuran cream (>= 4.5:1). */
+  --color-cream-muted: color-mix(in srgb, var(--color-warm-cream) 72%, var(--color-walnut-shadow));
+  /* Nama yang dipakai buttons.css (bersama dashboard). */
+  --color-ink: var(--color-warm-cream);
+  --color-accent: var(--color-ember-accent);
+
+  /* Halyard Display butuh kit Adobe Fonts. Hanken Grotesk dipilih sebagai pengganti gratis:
+     grotesk variabel dengan bentuk rapat yang tetap terbaca di leading 0.9. */
+  --font-display: 'halyard-display-variable', 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Arial', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --text-subheading: 18px;
+  --text-heading-sm: 24px;
+  --text-body: 29px;
+  --text-heading: 41px;
+  --text-display: 51px;
+
+  --sp-6: 6px;
+  --sp-8: 8px;
+  --sp-10: 10px;
+  --sp-12: 12px;
+  --sp-14: 14px;
+  --sp-18: 18px;
+  --sp-24: 24px;
+  --sp-31: 31px;
+  --sp-41: 41px;
+  --sp-45: 45px;
+  --sp-68: 68px;
+  --sp-204: 204px;
+
+  --radius-xl: 12px;
+  --radius-2xl: 22.5px;
+  --radius-3xl: 36px;
+  --radius-full: 9999px;
+}
+
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    color: var(--color-warm-cream);
+    font-family: var(--font-body);
+    font-size: var(--text-subheading);
+    line-height: 1.5;
+    overflow-x: clip;
+  }
+  h1, h2, h3, p, dl, dd, ol, figure { margin: 0; }
+  ol { padding: 0; list-style: none; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--color-warm-cream); outline-offset: 3px; }
+}
+
+.lp-wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 var(--sp-18); }
+@media (min-width: 640px) { .lp-wrap { padding: 0 var(--sp-41); } }
+
+.lp-skip { position: absolute; left: -9999px; }
+.lp-skip:focus { left: var(--sp-18); top: var(--sp-18); z-index: 10; padding: var(--sp-10) var(--sp-18); background: var(--color-warm-cream); color: var(--color-walnut-shadow); border-radius: var(--radius-xl); }
+
+/* Header */
+.lp-header { position: relative; z-index: 2; border-bottom: 1px solid var(--color-cork-border); }
+.lp-header .lp-wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-18); min-height: 72px; }
+.lp-brand { display: inline-flex; align-items: center; gap: var(--sp-10); font-family: var(--font-display); font-weight: 700; font-size: var(--text-subheading); line-height: 1; text-decoration: none; }
+.lp-brand-mark { width: 32px; height: 32px; flex-shrink: 0; object-fit: contain; }
+.lp-nav { display: flex; align-items: center; gap: var(--sp-8); }
+.lp-nav-link { display: none; padding: var(--sp-12) var(--sp-10); color: var(--color-cream-muted); text-decoration: none; font-size: 16px; border-radius: var(--radius-xl); }
+.lp-nav-link:hover { color: var(--color-warm-cream); }
+@media (min-width: 640px) { .lp-nav-link { display: inline-block; } }
+
+/* Tombol: .btn-split (buttons.css) untuk aksi utama; versi besar di hero dan kartu penutup. */
+.btn-split { font-family: var(--font-display); font-weight: 700; }
+.btn-split--lg { min-height: 52px; padding: var(--sp-12) var(--sp-31); font-size: var(--text-subheading); }
+.lp-btn-ghost {
+  display: inline-flex; align-items: center; min-height: 52px; padding: var(--sp-12) var(--sp-24);
+  border-radius: 10px; color: var(--color-warm-cream); font-size: 16px;
+  text-underline-offset: 4px; transition: background-color 0.2s ease;
+}
+.lp-btn-ghost:hover { background: rgb(255 237 215 / 0.06); }
+
+/* Garis scroll (Skiper 19): di belakang konten, kanan atas, menjulur ke bawah.
+   Ember gelap #8f3606 supaya teks cream yang melintasinya tetap > 6:1. */
+.lp-main { position: relative; overflow-x: clip; } /* garis sengaja menjulur ke kanan; jangan sampai halaman bisa digeser */
+.lp-main > section { position: relative; z-index: 1; }
+.lp-line {
+  position: absolute; z-index: 0; top: 40px; right: -14vw;
+  width: min(1278px, 95vw); height: auto;
+  pointer-events: none;
+}
+/* Di layar lebar lingkaran garis digeser ke kanan supaya tidak menumpuk di atas judul. */
+@media (min-width: 900px) { .lp-line { right: -34vw; top: 90px; } }
+
+/* Hero (pola Hero 37): teks di tengah, lalu tiga panel bergaya layar yang saling tumpuk. */
+.lp-hero { padding: var(--sp-68) 0 var(--sp-45); }
+.lp-hero-text { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.lp-label { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-cream-muted); }
+.lp-display {
+  margin-top: var(--sp-18); max-width: 16ch;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(38px, 8vw, 76px); line-height: 0.92; letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.lp-lede {
+  margin-top: var(--sp-24); max-width: 36ch;
+  font-size: clamp(19px, 2.6vw, 24px); line-height: 1.35;
+  color: var(--color-cream-muted);
+}
+.lp-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--sp-12); margin-top: var(--sp-31); }
+
+/* Jarak teks ke panel dibuat lebar supaya di HP tombol terlihat sebelum ilustrasi. */
+.lp-devices { position: relative; display: grid; place-items: center; margin-top: var(--sp-68); }
+.lp-slot { grid-area: 1 / 1; }
+.lp-slot--center { position: relative; z-index: 2; width: min(100%, 560px); }
+.lp-slot--left, .lp-slot--right { display: none; z-index: 1; }
+.lp-device { background: var(--color-bark-brown); border: 1px solid var(--color-cork-border); border-radius: var(--radius-3xl); box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.8); }
+/* Panel samping hanya di layar lebar: di HP cukup panel tengah (data utamanya). */
+@media (min-width: 900px) {
+  .lp-slot--left, .lp-slot--right { display: block; }
+  .lp-slot--left { justify-self: start; }
+  .lp-slot--right { justify-self: end; }
+  .lp-slot--left .lp-device { transform: rotate(-7deg) translateY(30px); opacity: 0.92; }
+  .lp-slot--right .lp-device { transform: rotate(7deg) translateY(30px); opacity: 0.92; }
+}
+.lp-device--phone { width: 250px; min-height: 380px; padding: var(--sp-31) var(--sp-24) var(--sp-24); }
+/* Lekuk atas: penanda bentuk layar HP, bukan dekorasi berdiri sendiri. */
+.lp-device--phone::before { content: ''; display: block; width: 64px; height: 6px; margin: -12px auto var(--sp-18); border-radius: var(--radius-full); background: var(--color-cork-border); }
+.lp-device-title { font-family: var(--font-display); font-weight: 700; font-size: 16px; }
+
+.lp-mini { margin-top: var(--sp-18); display: grid; gap: var(--sp-14); }
+.lp-mini-row { display: flex; justify-content: space-between; font-size: 14px; color: var(--color-cream-muted); }
+.lp-mini-row strong { color: var(--color-warm-cream); font-variant-numeric: tabular-nums; }
+.lp-mini-bar, .lp-status-bar { display: flex; margin-top: var(--sp-6); height: 6px; background: var(--color-cork-border); border-radius: var(--radius-full); overflow: hidden; }
+.lp-mini-bar span, .lp-status-bar span { display: block; height: 100%; background: var(--color-warm-cream); }
+.lp-status-bar span.is-review { background: var(--color-ember-accent); }
+
+.lp-status { margin-top: var(--sp-18); display: grid; gap: var(--sp-14); }
+.lp-status dt { font-size: 14px; color: var(--color-cream-muted); }
+.lp-status dd { font-family: var(--font-display); font-weight: 700; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.lp-status dd.is-review { color: var(--color-ember-accent); }
+.lp-status-bar { margin-top: var(--sp-24); height: 8px; }
+
+.lp-plot { padding: var(--sp-24); }
+.lp-plot svg { display: block; width: 100%; height: auto; }
+.lp-plot figcaption { margin-top: var(--sp-14); font-size: 14px; line-height: 1.4; color: var(--color-warm-cream); }
+.lp-key { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: baseline; margin: 0 var(--sp-6) 0 var(--sp-8); }
+.lp-key--cream { background: var(--color-warm-cream); margin-left: 0; }
+.lp-key--ember { background: var(--color-ember-accent); }
+
+/* Sections */
+.lp-section { padding: var(--sp-68) 0; border-top: 1px solid var(--color-cork-border); scroll-margin-top: var(--sp-18); }
+.lp-heading { font-family: var(--font-display); font-weight: 700; font-size: clamp(30px, 5vw, var(--text-heading)); line-height: 0.95; }
+.lp-intro { margin-top: var(--sp-14); max-width: 46ch; color: var(--color-cream-muted); }
+
+/* Sebaran: daftar berperingkat, bukan kartu, karena isinya satu dimensi (jumlah per wilayah). */
+.lp-rank { margin-top: var(--sp-41); border-top: 1px solid var(--color-cork-border); }
+.lp-rank a {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--sp-8) var(--sp-18);
+  min-height: 64px; padding: var(--sp-14) var(--sp-12);
+  border-bottom: 1px solid var(--color-cork-border);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.lp-rank a:hover { background: rgb(56 36 22 / 0.85); }
+.lp-rank-name { grid-row: 1; font-family: var(--font-display); font-weight: 600; font-size: var(--text-subheading); line-height: 1.2; }
+.lp-rank-bar { grid-row: 2; grid-column: 1; height: 8px; background: var(--color-cork-border); border-radius: var(--radius-full); overflow: hidden; }
+.lp-rank-bar span { display: block; height: 100%; background: var(--color-warm-cream); border-radius: inherit; }
+.lp-rank-count { grid-column: 2; grid-row: 1 / span 2; font-family: var(--font-display); font-weight: 700; font-size: var(--text-heading-sm); line-height: 1; text-align: right; font-variant-numeric: tabular-nums; }
+.lp-rank-count small { display: block; margin-top: var(--sp-6); font-family: var(--font-body); font-weight: 400; font-size: 14px; color: var(--color-cream-muted); }
+.lp-rank-go { display: none; font-size: 14px; color: var(--color-cream-muted); text-align: right; text-decoration: underline; text-underline-offset: 4px; }
+.lp-rank a:hover .lp-rank-go { color: var(--color-warm-cream); }
+@media (min-width: 760px) {
+  .lp-rank a { grid-template-columns: 14rem minmax(0, 1fr) 4.5rem 7rem; }
+  .lp-rank-name, .lp-rank-bar, .lp-rank-count { grid-row: auto; grid-column: auto; }
+  .lp-rank-go { display: block; }
+}
+
+/* Asal data: judul di kiri, rincian di kanan. Teks panjang, jadi leading 1.5 (bukan 1 dari token subheading). */
+.lp-split { display: grid; gap: var(--sp-31); }
+@media (min-width: 900px) { .lp-split { grid-template-columns: 1fr 1.6fr; gap: var(--sp-68); } }
+.lp-notes > div { padding: var(--sp-24) 0; border-bottom: 1px solid var(--color-cork-border); }
+.lp-notes > div:first-child { padding-top: 0; }
+.lp-notes dt { font-family: var(--font-display); font-weight: 700; font-size: var(--text-heading-sm); line-height: 1.09; }
+.lp-notes dd { margin-top: var(--sp-10); color: var(--color-cream-muted); max-width: 60ch; }
+.lp-notes strong { color: var(--color-warm-cream); font-weight: 700; }
+
+/* Kartu penutup (pola Skiper 19): judul raksasa selebar kartu + empat keterangan. */
+.lp-outro { padding: var(--sp-45) 0 var(--sp-68); }
+.lp-outro-card {
+  padding: var(--sp-41) var(--sp-24) var(--sp-31);
+  border-radius: var(--radius-3xl);
+  background: var(--color-warm-cream); color: var(--color-walnut-shadow);
+}
+@media (min-width: 640px) { .lp-outro-card { padding: var(--sp-45) var(--sp-41) var(--sp-41); } }
+.lp-outro-big {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(54px, 12.5vw, 172px); line-height: 0.86; letter-spacing: -0.04em;
+}
+.lp-outro-meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-24); margin-top: var(--sp-45); }
+@media (min-width: 900px) { .lp-outro-meta { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.lp-outro-meta dt { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #5a4c3e; }
+.lp-outro-meta dd { margin-top: var(--sp-6); font-size: 15px; line-height: 1.35; }
+/* Di atas kartu cream: teks walnut saat diam; saat hover panelnya walnut + bark-brown dengan
+   teks cream (17:1 dan 12.8:1). Panel ember tidak dipakai di sini karena cream di atas ember cuma 3.5:1. */
+.lp-outro-cta { margin-top: var(--sp-41); color: var(--color-walnut-shadow); border-color: var(--color-walnut-shadow); }
+.lp-outro-cta::before { background: var(--color-walnut-shadow) !important; }
+.lp-outro-cta::after { background: var(--color-bark-brown) !important; }
+.lp-outro-cta:hover, .lp-outro-cta:focus-visible { color: var(--color-warm-cream) !important; }
+.lp-outro-cta:focus-visible { outline-color: var(--color-walnut-shadow); }
+
+/* Footer */
+.lp-footer { padding: var(--sp-31) 0 var(--sp-41); border-top: 1px solid var(--color-cork-border); font-size: 15px; color: var(--color-cream-muted); }
+.lp-footer .lp-wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-12) var(--sp-24); }
+.lp-footer strong { color: var(--color-warm-cream); }
+.lp-credit { font-size: 13px; }
+
+/* ---- Gerak khusus landing (dasarnya di motion.css) ---- */
+
+/* Batang tumbuh dari kiri saat barisnya terlihat: panjang batang adalah datanya. */
+.motion-ok .lp-rank-bar span,
+.motion-ok .lp-mini-bar span {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--i, 0) * 80ms + 300ms);
+}
+.motion-ok .is-in .lp-rank-bar span,
+.motion-ok .is-in .lp-mini-bar span { transform: none; }
+
+/* Titik plot muncul menyapu dari barat ke timur (--d dihitung dari bujur di index.astro). */
+.motion-ok .lp-plot circle {
+  opacity: 0;
+  transform: scale(0.2);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1);
+  transition-delay: var(--d, 0ms);
+}
+.motion-ok .is-in .lp-plot circle { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

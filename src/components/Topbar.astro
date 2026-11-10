@@ -2,40 +2,48 @@
 import { summary } from '../data/summary';
 ---
 
-<header class="h-20 border-b border-rule bg-paper-2/85 backdrop-blur-xl sticky top-0 z-30 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-  <div class="flex items-center gap-3.5">
-    <!-- Hamburger button for mobile with a11y -->
-    <button 
-      id="mobile-sidebar-toggle" 
-      class="lg:hidden p-2.5 rounded-xl bg-paper border border-rule text-ink hover:text-white hover:bg-paper-hover transition-colors focus-visible:ring-2 focus-visible:ring-accent min-w-[44px] min-h-[44px] flex items-center justify-center" 
-      aria-label="Buka Menu Navigasi Samping"
+<header class="h-16 sm:h-20 border-b border-rule bg-paper-2/95 sticky top-0 z-30 px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-3 sm:gap-4">
+  <div class="flex items-center gap-2 sm:gap-3.5 min-w-0">
+    <!-- Tombol drawer, hanya di bawah lg (sidebar tetap tampil di lg ke atas) -->
+    <button
+      id="mobile-sidebar-toggle"
+      data-drawer-target="default-sidebar"
+      data-drawer-toggle="default-sidebar"
+      aria-controls="default-sidebar"
+      type="button"
+      class="lg:hidden inline-flex items-center gap-1.5 min-h-11 px-2.5 -ml-1 rounded-lg text-ink-2 text-xs font-semibold hover:bg-paper-hover hover:text-ink transition-colors shrink-0"
       aria-expanded="false"
-      aria-controls="app-sidebar"
     >
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+      <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
       </svg>
+      <span>Menu</span>
     </button>
 
-    <div>
-      <h1 class="text-base sm:text-lg lg:text-xl font-display font-bold text-white tracking-tight flex items-center gap-2">
-        <span>Sistem Pemetaan SPPG Bandung Raya</span>
-        <span class="hidden sm:inline-flex text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">Dataset Pilot</span>
-      </h1>
-      <p class="text-xs text-ink-muted hidden md:block">Sebaran {summary.totalKandidat} titik kandidat SPPG di {summary.totalWilayah} kab/kota, {summary.totalKecamatan} kecamatan</p>
+    <div class="flex items-center gap-2.5 min-w-0">
+      <img src="/img/SIGMA-B — Simbol koordinat.svg" alt="Logo SIGMA-B" class="w-7 h-7 sm:w-8 sm:h-8 shrink-0" width="32" height="32" />
+      <div class="min-w-0">
+        <h1 class="text-base xl:text-lg 2xl:text-xl leading-tight font-display font-bold text-white tracking-tight flex items-center gap-2">
+          <!-- Nama lengkap baru muat di samping pencarian mulai xl; di bawahnya pakai singkatan. -->
+          <span class="xl:hidden">SIGMA-B</span>
+          <span class="hidden xl:inline">Sistem Informasi Geospasial MBG Area Bandung (SIGMA-B)</span>
+          <span class="hidden 2xl:inline-flex text-[11px] font-mono font-medium px-2 py-0.5 rounded-md bg-paper-3 text-ink-2 border border-rule">Dataset Pilot</span>
+        </h1>
+        <p class="text-xs text-ink-muted hidden md:block truncate">Sebaran {summary.totalKandidat} titik kandidat SPPG di {summary.totalWilayah} kab/kota, {summary.totalKecamatan} kecamatan</p>
+      </div>
     </div>
   </div>
 
-  <div class="flex items-center gap-2.5 sm:gap-3">
+  <div class="flex items-center gap-2 sm:gap-3 shrink-0">
     <!-- Global Quick Search with a11y & Clear button -->
-    <div class="relative hidden sm:block w-48 md:w-64">
+    <div class="search-wrap relative hidden sm:block w-48 md:w-56 xl:w-64">
       <label for="global-search-input" class="sr-only">Cari SPPG, kecamatan, atau wilayah</label>
       <input 
         type="search" 
         id="global-search-input"
         placeholder="Cari SPPG, kecamatan..." 
         aria-label="Cari SPPG, kecamatan, atau wilayah"
-        class="w-full bg-paper border border-rule rounded-xl pl-9 pr-8 py-2 text-xs text-ink placeholder:text-ink-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/40 transition-all font-body"
+        class="search-field w-full pl-9 pr-8 py-2.5 text-xs font-body"
       />
       <svg class="w-4 h-4 text-ink-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -53,22 +61,22 @@ import { summary } from '../data/summary';
     </div>
 
     <!-- Sumber data: file statis, diperbarui manual -->
-    <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-paper border border-rule text-xs font-mono" title="Data dimuat dari file statis dan diperbarui manual">
-      <span class="w-2 h-2 rounded-full bg-amber-400" aria-hidden="true"></span>
+    <!-- <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-paper border border-rule text-xs font-mono" title="Data dimuat dari file statis dan diperbarui manual">
+      <span class="w-2 h-2 rounded-sm bg-amber-400" aria-hidden="true"></span>
       <span class="text-ink-muted hidden lg:inline">Data:</span>
       <span class="text-amber-300 font-semibold">Pembaruan Manual</span>
-    </div>
+    </div> -->
 
     <!-- Quick Action to Map -->
     <button 
       id="quick-pan-map-btn" 
-      class="px-3.5 py-2 rounded-xl bg-accent text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent text-xs font-semibold font-body flex items-center gap-1.5 shadow-sm shadow-accent/25 active:scale-95 transition-all min-h-[38px]"
-      aria-label="Gulir ke Tampilan Peta Interaktif"
+      class="btn-split shrink-0 min-h-11 min-w-11 px-3 sm:px-3.5 text-xs sm:text-sm"
+      aria-label="Gulir ke peta interaktif"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
         <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
       </svg>
-      <span>Buka Peta</span>
+      <span class="hidden sm:inline">Buka Peta</span>
     </button>
   </div>
 </header>

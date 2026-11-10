@@ -2,51 +2,43 @@
 /* Hallmark · genre: modern-minimal · macrostructure: Workbench · theme: Cobalt · enrichment: none · nav: N3 Side-rail · footer: Ft2 Inline */
 
 :root {
-  /* Paper / Background tokens (Dark Modern-Minimal) */
-  --color-paper: oklch(14% 0.012 255);
-  --color-paper-2: oklch(18% 0.016 255);
-  --color-paper-3: oklch(22% 0.020 255);
-  --color-paper-card: oklch(19% 0.018 255);
-  --color-paper-hover: oklch(24% 0.024 255);
-  --color-paper-active: oklch(26% 0.028 255);
+  /* Palet walnut/cream/ember, sama dengan landing page (src/styles/landing.css). */
+  --color-paper: #100904;
+  --color-paper-2: oklch(17% 0.018 55);
+  --color-paper-3: oklch(21% 0.022 55);
+  --color-paper-card: oklch(18.5% 0.02 55);
+  --color-paper-hover: oklch(24% 0.03 58);
+  --color-paper-active: #382416;
 
-  /* Ink / Text tokens (Enhanced for WCAG 2.1 AA Contrast) */
-  --color-ink: oklch(98% 0.005 255);
-  --color-ink-2: oklch(84% 0.015 255);
-  --color-ink-muted: oklch(68% 0.020 255);
-  --color-ink-dim: oklch(54% 0.018 255);
+  /* Teks: cream dan turunannya. ink-dim tetap >= 4.5:1 di atas paper-card. */
+  --color-ink: #ffedd7;
+  --color-ink-2: oklch(88% 0.03 75);
+  --color-ink-muted: oklch(78% 0.03 70);
+  --color-ink-dim: oklch(70% 0.03 65);
 
-  /* Rule / Border tokens */
-  --color-rule: oklch(28% 0.018 255 / 0.7);
-  --color-rule-subtle: oklch(24% 0.014 255 / 0.45);
-  --color-rule-strong: oklch(38% 0.024 255 / 0.9);
+  /* Garis: cork dan driftwood */
+  --color-rule: rgb(64 55 46 / 0.85);
+  --color-rule-subtle: rgb(64 55 46 / 0.5);
+  --color-rule-strong: #6c5f51;
 
-  /* Primary Accent (Electric Cobalt) */
-  --color-accent: oklch(64% 0.21 250);
-  --color-accent-ink: oklch(99% 0 0);
-  --color-accent-dim: oklch(64% 0.21 250 / 0.16);
-  --color-focus: oklch(70% 0.20 250);
+  /* Aksen ember. Di dashboard dipakai juga sebagai warna teks kecil (text-accent), jadi sedikit
+     lebih terang dari #dc5000 agar >= 4.5:1 di atas kartu dan latar ember tipis.
+     #dc5000 asli tetap dipakai di tombol utama, kartu Perlu Review, dan penanda peta.
+     Teks di atas ember selalu hitam (cream cuma 3.5:1). */
+  --color-accent: oklch(72% 0.16 48);
+  --color-accent-ink: #000000;
+  --color-accent-dim: rgb(220 80 0 / 0.16);
+  --color-focus: oklch(80% 0.12 60);
 
-  /* Status Tokens (Accessible Contrast & Luminance) */
-  --color-status-success: oklch(72% 0.19 146);
-  --color-status-success-dim: oklch(72% 0.19 146 / 0.16);
-  --color-status-warning: oklch(78% 0.17 78);
-  --color-status-warning-dim: oklch(78% 0.17 78 / 0.16);
-  --color-status-danger: oklch(66% 0.24 27);
-  --color-status-danger-dim: oklch(66% 0.24 27 / 0.16);
-  --color-status-info: oklch(70% 0.18 220);
-  --color-status-info-dim: oklch(70% 0.18 220 / 0.16);
-  --color-status-purple: oklch(70% 0.19 300);
-  --color-status-purple-dim: oklch(70% 0.19 300 / 0.16);
+  /* Status verifikasi: cream = belum, ember = perlu review, sage = terverifikasi. */
+  --color-status-pending: #ffedd7;
+  --color-status-review: #dc5000;
+  --color-status-verified: oklch(76% 0.1 135);
+  --color-status-danger: oklch(64% 0.19 28);
 
-  /* Glow & Modern Lighting */
-  --glow-accent: 0 0 24px -4px oklch(64% 0.21 250 / 0.35);
-  --glow-emerald: 0 0 24px -4px oklch(72% 0.19 146 / 0.35);
-  --glow-danger: 0 0 24px -4px oklch(66% 0.24 27 / 0.35);
-
-  /* Typography */
-  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Tipografi sama dengan landing. Mono dipertahankan untuk koordinat agar digit sejajar. */
+  --font-display: 'halyard-display-variable', 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Arial', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* 4-point Spacing scale */
