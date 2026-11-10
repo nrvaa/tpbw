@@ -36,9 +36,10 @@
   --color-status-verified: oklch(76% 0.1 135);
   --color-status-danger: oklch(64% 0.19 28);
 
-  /* Tipografi sama dengan landing. Mono dipertahankan untuk koordinat agar digit sejajar. */
-  --font-display: 'halyard-display-variable', 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-body: 'Arial', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Tipografi sama dengan landing. Instrument Serif hanya punya weight 400, jadi judul tidak ditebalkan.
+     Inter untuk teks UI kecil (12-14px) karena tetap terbaca di ukuran itu. Mono untuk koordinat agar digit sejajar. */
+  --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* 4-point Spacing scale */

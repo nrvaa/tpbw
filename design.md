@@ -22,8 +22,8 @@ Walnut/cream/ember, sama untuk landing (`/`) dan dashboard (`/peta`). Sumber: `t
 - Background halaman: kontur topografi (`/contours.svg`, cekungan Bandung) + cahaya bark-brown dari atas.
 
 ## Typography
-- Display: Hanken Grotesk 700 (pengganti gratis Halyard Display)
-- Body: Arial
+- Display: Instrument Serif 400 (satu-satunya weight; jangan pakai bold)
+- Body: Inter 400-700
 - Mono: JetBrains Mono, hanya untuk koordinat dan angka tabel
 
 ## Motion

@@ -21,10 +21,9 @@
   --color-ink: var(--color-warm-cream);
   --color-accent: var(--color-ember-accent);
 
-  /* Halyard Display butuh kit Adobe Fonts. Hanken Grotesk dipilih sebagai pengganti gratis:
-     grotesk variabel dengan bentuk rapat yang tetap terbaca di leading 0.9. */
-  --font-display: 'halyard-display-variable', 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-body: 'Arial', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Judul: Instrument Serif (hanya weight 400, jangan ditebalkan). Isi: Inter. */
+  --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   --text-subheading: 18px;
   --text-heading-sm: 24px;
@@ -77,7 +76,7 @@
 /* Header */
 .lp-header { position: relative; z-index: 2; border-bottom: 1px solid var(--color-cork-border); }
 .lp-header .lp-wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-18); min-height: 72px; }
-.lp-brand { display: inline-flex; align-items: center; gap: var(--sp-10); font-family: var(--font-display); font-weight: 700; font-size: var(--text-subheading); line-height: 1; text-decoration: none; }
+.lp-brand { display: inline-flex; align-items: center; gap: var(--sp-10); font-family: var(--font-display); font-weight: 400; font-size: var(--text-subheading); line-height: 1; text-decoration: none; }
 .lp-brand-mark { width: 32px; height: 32px; flex-shrink: 0; object-fit: contain; }
 .lp-nav { display: flex; align-items: center; gap: var(--sp-8); }
 .lp-nav-link { display: none; padding: var(--sp-12) var(--sp-10); color: var(--color-cream-muted); text-decoration: none; font-size: 16px; border-radius: var(--radius-xl); }
@@ -85,7 +84,7 @@
 @media (min-width: 640px) { .lp-nav-link { display: inline-block; } }
 
 /* Tombol: .btn-split (buttons.css) untuk aksi utama; versi besar di hero dan kartu penutup. */
-.btn-split { font-family: var(--font-display); font-weight: 700; }
+.btn-split { font-family: var(--font-display); font-weight: 400; }
 .btn-split--lg { min-height: 52px; padding: var(--sp-12) var(--sp-31); font-size: var(--text-subheading); }
 .lp-btn-ghost {
   display: inline-flex; align-items: center; min-height: 52px; padding: var(--sp-12) var(--sp-24);
@@ -112,7 +111,7 @@
 .lp-label { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-cream-muted); }
 .lp-display {
   margin-top: var(--sp-18); max-width: 16ch;
-  font-family: var(--font-display); font-weight: 700;
+  font-family: var(--font-display); font-weight: 400;
   font-size: clamp(38px, 8vw, 76px); line-height: 0.92; letter-spacing: -0.02em;
   text-wrap: balance;
 }
@@ -140,7 +139,7 @@
 .lp-device--phone { width: 250px; min-height: 380px; padding: var(--sp-31) var(--sp-24) var(--sp-24); }
 /* Lekuk atas: penanda bentuk layar HP, bukan dekorasi berdiri sendiri. */
 .lp-device--phone::before { content: ''; display: block; width: 64px; height: 6px; margin: -12px auto var(--sp-18); border-radius: var(--radius-full); background: var(--color-cork-border); }
-.lp-device-title { font-family: var(--font-display); font-weight: 700; font-size: 16px; }
+.lp-device-title { font-family: var(--font-display); font-weight: 400; font-size: 16px; }
 
 .lp-mini { margin-top: var(--sp-18); display: grid; gap: var(--sp-14); }
 .lp-mini-row { display: flex; justify-content: space-between; font-size: 14px; color: var(--color-cream-muted); }
@@ -151,7 +150,7 @@
 
 .lp-status { margin-top: var(--sp-18); display: grid; gap: var(--sp-14); }
 .lp-status dt { font-size: 14px; color: var(--color-cream-muted); }
-.lp-status dd { font-family: var(--font-display); font-weight: 700; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.lp-status dd { font-family: var(--font-display); font-weight: 400; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
 .lp-status dd.is-review { color: var(--color-ember-accent); }
 .lp-status-bar { margin-top: var(--sp-24); height: 8px; }
 
@@ -164,7 +163,7 @@
 
 /* Sections */
 .lp-section { padding: var(--sp-68) 0; border-top: 1px solid var(--color-cork-border); scroll-margin-top: var(--sp-18); }
-.lp-heading { font-family: var(--font-display); font-weight: 700; font-size: clamp(30px, 5vw, var(--text-heading)); line-height: 0.95; }
+.lp-heading { font-family: var(--font-display); font-weight: 400; font-size: clamp(30px, 5vw, var(--text-heading)); line-height: 0.95; }
 .lp-intro { margin-top: var(--sp-14); max-width: 46ch; color: var(--color-cream-muted); }
 
 /* Sebaran: daftar berperingkat, bukan kartu, karena isinya satu dimensi (jumlah per wilayah). */
@@ -177,10 +176,10 @@
   transition: background-color 0.2s ease;
 }
 .lp-rank a:hover { background: rgb(56 36 22 / 0.85); }
-.lp-rank-name { grid-row: 1; font-family: var(--font-display); font-weight: 600; font-size: var(--text-subheading); line-height: 1.2; }
+.lp-rank-name { grid-row: 1; font-family: var(--font-display); font-weight: 400; font-size: var(--text-subheading); line-height: 1.2; }
 .lp-rank-bar { grid-row: 2; grid-column: 1; height: 8px; background: var(--color-cork-border); border-radius: var(--radius-full); overflow: hidden; }
 .lp-rank-bar span { display: block; height: 100%; background: var(--color-warm-cream); border-radius: inherit; }
-.lp-rank-count { grid-column: 2; grid-row: 1 / span 2; font-family: var(--font-display); font-weight: 700; font-size: var(--text-heading-sm); line-height: 1; text-align: right; font-variant-numeric: tabular-nums; }
+.lp-rank-count { grid-column: 2; grid-row: 1 / span 2; font-family: var(--font-display); font-weight: 400; font-size: var(--text-heading-sm); line-height: 1; text-align: right; font-variant-numeric: tabular-nums; }
 .lp-rank-count small { display: block; margin-top: var(--sp-6); font-family: var(--font-body); font-weight: 400; font-size: 14px; color: var(--color-cream-muted); }
 .lp-rank-go { display: none; font-size: 14px; color: var(--color-cream-muted); text-align: right; text-decoration: underline; text-underline-offset: 4px; }
 .lp-rank a:hover .lp-rank-go { color: var(--color-warm-cream); }
@@ -195,7 +194,7 @@
 @media (min-width: 900px) { .lp-split { grid-template-columns: 1fr 1.6fr; gap: var(--sp-68); } }
 .lp-notes > div { padding: var(--sp-24) 0; border-bottom: 1px solid var(--color-cork-border); }
 .lp-notes > div:first-child { padding-top: 0; }
-.lp-notes dt { font-family: var(--font-display); font-weight: 700; font-size: var(--text-heading-sm); line-height: 1.09; }
+.lp-notes dt { font-family: var(--font-display); font-weight: 400; font-size: var(--text-heading-sm); line-height: 1.09; }
 .lp-notes dd { margin-top: var(--sp-10); color: var(--color-cream-muted); max-width: 60ch; }
 .lp-notes strong { color: var(--color-warm-cream); font-weight: 700; }
 
@@ -208,7 +207,7 @@
 }
 @media (min-width: 640px) { .lp-outro-card { padding: var(--sp-45) var(--sp-41) var(--sp-41); } }
 .lp-outro-big {
-  font-family: var(--font-display); font-weight: 800;
+  font-family: var(--font-display); font-weight: 400;
   font-size: clamp(54px, 12.5vw, 172px); line-height: 0.86; letter-spacing: -0.04em;
 }
 .lp-outro-meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-24); margin-top: var(--sp-45); }

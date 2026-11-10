@@ -38,7 +38,7 @@ import { summary } from '../data/summary';
 
       <section id="analytics-wrapper" class="scroll-mt-24 space-y-4" data-reveal>
         <div class="border-b border-rule pb-3">
-          <h2 class="text-lg font-display font-bold text-white tracking-tight">Analitik Sebaran Wilayah</h2>
+          <h2 class="text-lg font-display font-normal text-white tracking-tight">Analitik Sebaran Wilayah</h2>
           <p class="text-xs text-ink-muted">Jumlah titik kandidat per kab/kota dan status verifikasi datanya</p>
         </div>
         <ChartsSection />
@@ -516,7 +516,7 @@ import { summary } from '../data/summary';
   function initCharts() {
     // Warna dari tokens.css (ink-muted, rule) agar grafik mengikuti tema walnut.
     Chart.defaults.color = '#c9b9a5';
-    Chart.defaults.font.family = 'Arial, sans-serif';
+    Chart.defaults.font.family = "'Inter', sans-serif";
     Chart.defaults.animation = { duration: 900, easing: 'easeOutQuart' };
     const grid = { color: 'rgba(255, 237, 215, 0.07)' };
 
