@@ -11,6 +11,7 @@
     "test": "node --test scripts/convert_data.test.js"
   },
   "dependencies": {
+    "animejs": "^4.5.0",
     "astro": "^5.4.0",
     "chart.js": "^4.4.8",
     "leaflet": "^1.9.4"

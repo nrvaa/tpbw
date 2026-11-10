@@ -270,6 +270,88 @@
 }
 .motion-ok .is-in .lp-plot circle { opacity: 1; transform: none; }
 
+/* ---- Background kontur animasi (anime.js, src/scripts/landing-anime.ts) ----
+   Menggantikan gambar /contours.svg di landing; cahaya bark-brown dari motion.css tetap dipakai.
+   inset negatif memberi ruang untuk parallax kursor (±18px) tanpa tepi kosong. */
+body:has(> .lp-bg)::before {
+  background: radial-gradient(ellipse 90% 55% at 62% -8%, rgb(56 36 22 / 0.7), transparent 70%);
+}
+.lp-bg {
+  position: fixed; inset: -28px; z-index: -1; pointer-events: none;
+  will-change: transform;
+}
+.lp-bg svg {
+  display: block; width: 100%; height: 100%;
+  /* Pusat napas = pusat cekungan (CX/CY di src/data/contours.ts). */
+  transform-origin: 62.5% 43%;
+  will-change: transform;
+}
+
+/* ---- Judul hero dipecah per huruf (anime.js splitText); tiap kata memotong huruf yang naik ---- */
+.lp-display.is-split { text-wrap: balance; }
+
+/* ---- Kursor kustom: reticle juru ukur ----
+   Kursor bawaan disembunyikan hanya bila skrip sudah memasang reticle (html.has-cursor) dan
+   perangkatnya mouse. Layar sentuh, reduced motion, atau JS gagal: kursor biasa tetap. */
+@media (hover: hover) and (pointer: fine) {
+  html.has-cursor,
+  html.has-cursor * { cursor: none !important; }
+}
+.lp-reticle {
+  position: fixed; left: 0; top: 0; z-index: 9999; width: 0; height: 0;
+  pointer-events: none; opacity: 0; transition: opacity 0.25s ease;
+  color: rgb(255 237 215 / 0.75);
+}
+.lp-reticle.is-on { opacity: 1; }
+.lp-reticle-ring {
+  position: absolute; left: -18px; top: -18px; width: 36px; height: 36px;
+  border: 1.5px solid currentColor; border-radius: 50%;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.25s ease, border-color 0.25s ease;
+}
+/* Empat garis bidik di luar lingkaran, seperti reticle alat ukur. */
+.lp-reticle-ring::before,
+.lp-reticle-ring::after {
+  content: ''; position: absolute; background: currentColor;
+}
+.lp-reticle-ring::before {
+  left: 50%; top: -7px; bottom: -7px; width: 1.5px; transform: translateX(-50%);
+  -webkit-mask: linear-gradient(#000 0 7px, transparent 7px calc(100% - 7px), #000 calc(100% - 7px));
+  mask: linear-gradient(#000 0 7px, transparent 7px calc(100% - 7px), #000 calc(100% - 7px));
+}
+.lp-reticle-ring::after {
+  top: 50%; left: -7px; right: -7px; height: 1.5px; transform: translateY(-50%);
+  -webkit-mask: linear-gradient(90deg, #000 0 7px, transparent 7px calc(100% - 7px), #000 calc(100% - 7px));
+  mask: linear-gradient(90deg, #000 0 7px, transparent 7px calc(100% - 7px), #000 calc(100% - 7px));
+}
+.lp-reticle-cross {
+  position: absolute; left: -2px; top: -2px; width: 4px; height: 4px; border-radius: 50%;
+  background: var(--color-ember-accent);
+}
+.lp-reticle-readout {
+  position: absolute; left: 28px; top: 20px; white-space: nowrap;
+  padding: 4px 8px; border-radius: 6px;
+  background: rgb(16 9 4 / 0.9); border: 1px solid var(--color-cork-border);
+  color: var(--color-warm-cream); font-size: 12px; font-variant-numeric: tabular-nums;
+  opacity: 0; transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.25s ease;
+}
+/* Di atas tautan/tombol: mengecil dan terisi ember (target bisa diklik). */
+.lp-reticle.is-link .lp-reticle-ring { transform: scale(0.55); background: rgb(220 80 0 / 0.25); border-color: var(--color-ember-accent); }
+/* Di atas plot: membesar, menunjukkan koordinat asli dari proyeksi plot. */
+.lp-reticle.is-plot .lp-reticle-ring { transform: scale(1.35); border-color: var(--color-ember-accent); }
+.lp-reticle.is-plot .lp-reticle-readout { opacity: 1; transform: none; }
+
+/* Titik SPPG terdekat dengan kursor di plot. Delay sapuan muncul ditimpa supaya langsung bereaksi. */
+.lp-plot svg circle.is-near,
+.motion-ok .is-in .lp-plot circle.is-near {
+  fill: var(--color-ember-accent);
+  fill-opacity: 1;
+  transform: scale(2.2);
+  transition-delay: 0ms;
+  transition-duration: 0.25s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
+  .lp-reticle { display: none; }
 }

@@ -19,6 +19,10 @@ export const toXY = (lat: number, lng: number) => ({
   y: +(PAD + (maxLat - lat) * scale).toFixed(1),
 });
 
+// Parameter proyeksi untuk membalik x/y plot ke lintang/bujur di browser (penanda kursor di landing),
+// tanpa harus mengirim seluruh dataset ke klien.
+export const PLOT_PROJ = { pad: PAD, minLng, maxLat, kx, scale, w: PLOT_W };
+
 // Posisi dalam persen bidang plot (untuk menaruh titik di atas gambar /points.svg).
 export const toPct = (lat: number, lng: number) => {
   const { x, y } = toXY(lat, lng);

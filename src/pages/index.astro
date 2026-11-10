@@ -3,7 +3,8 @@ import '../styles/landing.css';
 import MotionHead from '../components/MotionHead.astro';
 import { sppgList } from '../data/sppg';
 import { summary, wilayahCounts, shortWilayah } from '../data/summary';
-import { PLOT_W, PLOT_H, toXY } from '../data/projection';
+import { PLOT_W, PLOT_H, PLOT_PROJ, toXY } from '../data/projection';
+import { CONTOUR_W, CONTOUR_H, contourRings } from '../data/contours';
 
 const { totalKandidat, totalWilayah, totalKecamatan, belumDiverifikasi, perluReview, terverifikasi } = summary;
 const tanpaKecamatan = sppgList.filter(s => !s.kecamatan).length;
@@ -49,6 +50,22 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
 <body>
   <a class="lp-skip" href="#utama" data-native-anchor>Lewati ke konten utama</a>
 
+  <!-- Background kontur cekungan Bandung, dianimasikan anime.js (src/scripts/landing-anime.ts) -->
+  <div class="lp-bg" aria-hidden="true">
+    <svg viewBox={`0 0 ${CONTOUR_W} ${CONTOUR_H}`} preserveAspectRatio="xMidYMid slice">
+      <g fill="none" stroke="#8a7a68">
+        {contourRings.map(r => <path d={r.d} stroke-opacity={r.index ? 0.42 : 0.2} stroke-width={r.index ? 1.4 : 0.9} />)}
+      </g>
+    </svg>
+  </div>
+
+  <!-- Reticle juru ukur yang mengikuti kursor (hanya perangkat dengan mouse) -->
+  <div class="lp-reticle" aria-hidden="true">
+    <span class="lp-reticle-ring"></span>
+    <span class="lp-reticle-cross"></span>
+    <span class="lp-reticle-readout"></span>
+  </div>
+
   <header class="lp-header">
     <div class="lp-wrap">
       <a class="lp-brand" href="/" style="view-transition-name: brand">
@@ -72,7 +89,7 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
     <section class="lp-hero" aria-labelledby="judul">
       <div class="lp-wrap lp-hero-text">
         <p class="lp-label" data-reveal>Dataset pilot · {totalWilayah} kab/kota · {totalKecamatan} kecamatan</p>
-        <h1 id="judul" class="lp-display" data-reveal style="--i:1">Peta {totalKandidat} titik kandidat SPPG di Bandung Raya</h1>
+        <h1 id="judul" class="lp-display">Peta {totalKandidat} titik kandidat SPPG di Bandung Raya</h1>
         <p class="lp-lede" data-reveal style="--i:2">
           Lokasi kandidat dapur Makan Bergizi Gratis dari Google Maps, lengkap dengan status verifikasinya.
         </p>
@@ -89,7 +106,7 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
             <ol class="lp-mini">
               {wilayahCounts.map(([w, n]) => (
                 <li>
-                  <span class="lp-mini-row"><span>{shortWilayah(w)}</span><strong>{n}</strong></span>
+                  <span class="lp-mini-row"><span>{shortWilayah(w)}</span><strong data-count={n}>{n}</strong></span>
                   <span class="lp-mini-bar" aria-hidden="true"><span style={`width: ${(n / maxWilayah) * 100}%`}></span></span>
                 </li>
               ))}
@@ -99,7 +116,7 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
 
         <div class="lp-slot lp-slot--center" data-reveal style="--i:4">
           <figure class="lp-device lp-plot" style="view-transition-name: peta">
-            <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Plot koordinat ${totalKandidat} titik kandidat SPPG. ${perluReview} titik perlu review manual.`}>
+            <svg viewBox={`0 0 ${W} ${H}`} data-proj={JSON.stringify(PLOT_PROJ)} role="img" aria-label={`Plot koordinat ${totalKandidat} titik kandidat SPPG. ${perluReview} titik perlu review manual.`}>
               {points.map(p => (
                 <circle cx={p.x} cy={p.y} r={p.review ? 5 : 3.5} fill={p.review ? 'var(--color-ember-accent)' : 'var(--color-warm-cream)'} fill-opacity={p.review ? 1 : 0.8} style={`--d:${p.delay}ms`} />
               ))}
@@ -116,9 +133,9 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
           <figure class="lp-device lp-device--phone">
             <figcaption class="lp-device-title">Status verifikasi</figcaption>
             <dl class="lp-status">
-              <div><dt>Belum diverifikasi</dt><dd>{belumDiverifikasi}</dd></div>
-              <div><dt>Perlu review</dt><dd class="is-review">{perluReview}</dd></div>
-              <div><dt>Terverifikasi</dt><dd>{terverifikasi}</dd></div>
+              <div><dt>Belum diverifikasi</dt><dd data-count={belumDiverifikasi}>{belumDiverifikasi}</dd></div>
+              <div><dt>Perlu review</dt><dd class="is-review" data-count={perluReview}>{perluReview}</dd></div>
+              <div><dt>Terverifikasi</dt><dd data-count={terverifikasi}>{terverifikasi}</dd></div>
             </dl>
             <span class="lp-status-bar" aria-hidden="true">
               <span style={`width: ${(belumDiverifikasi / totalKandidat) * 100}%`}></span>
@@ -139,7 +156,7 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
               <a href={`/peta?wilayah=${encodeURIComponent(w)}`} aria-label={`${w}: ${n} titik. Buka di peta`}>
                 <span class="lp-rank-name">{w}</span>
                 <span class="lp-rank-bar" aria-hidden="true"><span style={`width: ${(n / maxWilayah) * 100}%`}></span></span>
-                <span class="lp-rank-count">{n}<small>{pct(n)}%</small></span>
+                <span class="lp-rank-count"><span data-count={n}>{n}</span><small>{pct(n)}%</small></span>
                 <span class="lp-rank-go" aria-hidden="true">Lihat di peta</span>
               </a>
             </li>
@@ -188,7 +205,7 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
             <div><dt>Wilayah</dt><dd>Bandung Raya, Jawa Barat<br />{totalWilayah} kab/kota</dd></div>
             <div><dt>Dataset</dt><dd>Pilot, {totalKandidat} titik<br />belum diverifikasi resmi</dd></div>
             <div><dt>Akses</dt><dd>Gratis<br />untuk keperluan akademik</dd></div>
-            <div><dt>Dibuat oleh</dt><dd>Kelompok 14<br />Tugas Besar Teknologi Pemetaan Berbasis Web</dd></div>
+            <div><dt>Dibuat oleh</dt><dd>Rasyid Aulia<br />Varrel Aditya</dd></div>
           </dl>
           <a class="btn-split btn-split--lg lp-outro-cta" href="/peta">Buka peta interaktif</a>
         </div>
@@ -206,9 +223,11 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
   <script>
     import { initReveal, initSmoothScroll } from '../scripts/motion';
     import { initScrollLine } from '../scripts/scroll-line';
+    import { initLandingAnime } from '../scripts/landing-anime';
     initSmoothScroll();
     initReveal();
     initScrollLine(document.querySelector('.lp-line path'));
+    initLandingAnime();
   </script>
 </body>
 </html>

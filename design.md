@@ -28,7 +28,8 @@ Walnut/cream/ember, sama untuk landing (`/`) dan dashboard (`/peta`). Sumber: `t
 
 ## Motion
 - Dial: MOTION 2. Elemen `[data-reveal]` muncul saat masuk layar (0.7s, `cubic-bezier(0.16, 1, 0.3, 1)`, stagger 80ms), batang/plot/grafik beranimasi saat terlihat, transisi silang antar halaman (`@view-transition`).
-- Tanpa loop tanpa henti. Reduced motion: semua animasi mati, konten langsung tampil.
+- Landing (`/`): MOTION 3 dengan anime.js v4 (`src/scripts/landing-anime.ts`), atas permintaan pemilik proyek. Kontur tergambar dari pusat cekungan, lalu satu-satunya loop: napas lambat (transform saja) dan gelombang ember tiap ~9 detik. Reticle juru ukur mengikuti kursor (hanya mouse), membaca koordinat asli di atas plot. Judul dipecah per huruf, angka menghitung naik.
+- Selain background landing, tanpa loop tanpa henti. Reduced motion: semua animasi mati, konten langsung tampil.
 
 ## Spacing
 4-point named scale defined in `tokens.css`.
