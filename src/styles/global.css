@@ -5,6 +5,8 @@
 @import "./dropdown.css";
 @import "./dashboard.css";
 @import "./search.css";
+@import "./map-panel.css";
+@import "./detail-modal.css";
 
 /* <html class="dark"> selalu terpasang. Tanpa ini, dark: di Tailwind 4 mengikuti tema OS,
    sehingga sidebar berubah terang di laptop yang memakai light mode. */
@@ -18,7 +20,11 @@
   --color-ink: var(--color-ink);
   --color-ink-2: var(--color-ink-2);
   --color-ink-muted: var(--color-ink-muted);
+  --color-ink-dim: var(--color-ink-dim);
   --color-rule: var(--color-rule);
+  --color-rule-strong: var(--color-rule-strong);
+  --color-paper-hover: var(--color-paper-hover);
+  --color-paper-active: var(--color-paper-active);
   --color-accent: var(--color-accent);
   --font-display: var(--font-display);
   --font-body: var(--font-body);
@@ -111,7 +117,7 @@ html, body {
 }
 
 /* Hanya untuk basemap CARTO gelap (lihat peta.astro). OSM dan satelit tidak difilter. */
-.tiles-warm .leaflet-tile-pane {
+.leaflet-layer.tiles-warm {
   filter: sepia(0.55) saturate(0.85) hue-rotate(-12deg) brightness(0.92);
 }
 

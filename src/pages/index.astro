@@ -35,7 +35,7 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SIGMA-B</title>
-  <meta name="description" content={`Peta ${totalKandidat} titik kandidat SPPG Program Makan Bergizi Gratis di ${totalWilayah} kab/kota Bandung Raya. Dataset pilot dari Google Maps, belum diverifikasi resmi.`} />
+  <meta name="description" content={`Peta ${totalKandidat} titik kandidat SPPG di Bandung Raya. Data pilot dari Google Maps, belum diverifikasi resmi.`} />
   <meta name="theme-color" content="#100904" />
   <link rel="icon" type="image/svg+xml" href="/img/SIGMA-B — Simbol koordinat.svg" />
   <MotionHead />
@@ -65,7 +65,7 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
 
   <main id="utama" class="lp-main">
     <svg class="lp-line" viewBox="0 0 1278 2319" fill="none" overflow="visible" aria-hidden="true">
-      <path d={LINE_PATH} stroke="#8f3606" stroke-width="20" stroke-linecap="round" />
+      <path d={LINE_PATH} stroke="#b4460a" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
 
     <!-- Hero: teks di tengah lalu tiga panel bergaya layar (pola Hero 37), isinya data asli. -->
@@ -74,7 +74,7 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
         <p class="lp-label" data-reveal>Dataset pilot · {totalWilayah} kab/kota · {totalKecamatan} kecamatan</p>
         <h1 id="judul" class="lp-display" data-reveal style="--i:1">Peta {totalKandidat} titik kandidat SPPG di Bandung Raya</h1>
         <p class="lp-lede" data-reveal style="--i:2">
-          Lokasi kandidat dapur Program Makan Bergizi Gratis dari ekstraksi Google Maps, dipetakan per kab/kota dan kecamatan. Status verifikasinya ditampilkan apa adanya.
+          Lokasi kandidat dapur Makan Bergizi Gratis dari Google Maps, lengkap dengan status verifikasinya.
         </p>
         <div class="lp-actions" data-reveal style="--i:3">
           <a class="btn-split btn-split--lg" href="/peta">Buka peta interaktif</a>
@@ -105,7 +105,7 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
               ))}
             </svg>
             <figcaption>
-              Setiap titik adalah satu kandidat, diplot dari koordinat dataset (utara di atas).
+              Tiap titik satu kandidat, utara di atas.
               <span class="lp-key lp-key--cream" aria-hidden="true"></span>belum diverifikasi
               <span class="lp-key lp-key--ember" aria-hidden="true"></span>perlu review manual
             </figcaption>
@@ -132,7 +132,7 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
     <section id="sebaran" class="lp-section" aria-labelledby="judul-sebaran">
       <div class="lp-wrap">
         <h2 id="judul-sebaran" class="lp-heading" data-reveal>Sebaran per kab/kota</h2>
-        <p class="lp-intro" data-reveal style="--i:1">{topWilayah} punya kandidat terbanyak: {topCount} dari {totalKandidat} titik. Pilih wilayah untuk membuka peta yang sudah difilter.</p>
+        <p class="lp-intro" data-reveal style="--i:1">{topWilayah} terbanyak, {topCount} dari {totalKandidat} titik. Klik wilayah untuk melihatnya di peta.</p>
         <ol class="lp-rank">
           {wilayahCounts.map(([w, n], i) => (
             <li data-reveal style={`--i:${i}`}>
@@ -152,28 +152,28 @@ const LINE_PATH = 'M876.605 394.131C788.982 335.917 696.198 358.139 691.836 416.
       <div class="lp-wrap lp-split">
         <div data-reveal>
           <h2 id="judul-data" class="lp-heading">Asal dan batasan data</h2>
-          <p class="lp-intro">Semua titik masih berstatus kandidat. Bagian ini menjelaskan dari mana datanya dan apa yang sengaja tidak ditampilkan.</p>
+          <p class="lp-intro">Semua titik masih kandidat. Ini sumber dan batasan datanya.</p>
         </div>
         <dl class="lp-notes" data-reveal style="--i:1">
           <div>
             <dt>Sumber</dt>
-            <dd>Ekstraksi Google Maps dalam studi pilot. Data ini bukan data resmi BGN atau pemerintah daerah.</dd>
+            <dd>Ekstraksi Google Maps untuk studi pilot. Bukan data resmi BGN atau pemda.</dd>
           </div>
           <div>
             <dt>Status verifikasi</dt>
             <dd>
-              <strong>{belumDiverifikasi}</strong> titik belum diverifikasi, <strong>{perluReview}</strong> perlu review manual, dan <strong>{terverifikasi}</strong> sudah terverifikasi.
-              Status ini menyangkut kebenaran data lokasi, bukan apakah dapurnya sudah beroperasi.
-              {tanpaKecamatan > 0 && <> Ada {tanpaKecamatan} titik tanpa alamat dan kecamatan di sumber.</>}
+              <strong>{belumDiverifikasi}</strong> belum diverifikasi, <strong>{perluReview}</strong> perlu review manual, <strong>{terverifikasi}</strong> terverifikasi.
+              Status ini soal benar tidaknya lokasi, bukan soal dapur sudah beroperasi.
+              {tanpaKecamatan > 0 && <> {tanpaKecamatan} titik tidak punya alamat dan kecamatan.</>}
             </dd>
           </div>
           <div>
             <dt>Yang tidak ditampilkan</dt>
-            <dd>Kapasitas porsi, jumlah penerima, sekolah mitra, kontak, dan status operasional. Sumber tidak memuat kolom tersebut, jadi tidak diisi dengan angka perkiraan.</dd>
+            <dd>Kapasitas porsi, jumlah penerima, sekolah mitra, kontak, dan status operasional. Sumbernya tidak memuat data ini, jadi tidak kami isi dengan perkiraan.</dd>
           </div>
           <div>
             <dt>Penggunaan</dt>
-            <dd>Untuk keperluan akademik internal. Ketentuan Google Maps Platform membatasi penyimpanan dan penampilan ulang datanya di atas peta non-Google.</dd>
+            <dd>Hanya untuk keperluan akademik. Ketentuan Google Maps membatasi penampilan ulang datanya di peta lain.</dd>
           </div>
         </dl>
       </div>

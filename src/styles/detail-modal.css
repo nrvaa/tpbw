@@ -1,0 +1,189 @@
+/* Modal detail SPPG (DetailModal.astro, diisi peta.astro).
+   --dm-tone = warna status verifikasi titik (sama dengan warna penanda di peta), dipakai untuk
+   cahaya di kepala modal dan pil status, jadi modal "mengikuti" penanda yang diklik.
+   Animasi: kartu naik dengan sedikit pantulan, isi muncul berurutan, pin jatuh ke lokasinya
+   di mini peta lalu memancarkan satu riak (menandai titik). Semua mati saat reduced motion. */
+@layer components {
+  .dm { --dm-tone: #ffedd7; background: rgb(0 0 0 / 0.78); }
+
+  .dm-head {
+    background:
+      radial-gradient(130% 150% at 0% 0%, color-mix(in srgb, var(--dm-tone) 20%, transparent), transparent 62%),
+      var(--color-paper-2);
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .dm-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--dm-tone) 45%, transparent);
+    background: color-mix(in srgb, var(--dm-tone) 14%, transparent);
+    color: var(--color-ink);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .dm-status::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 2px;
+    background: var(--dm-tone);
+  }
+
+  .dm-body { padding-top: 1.25rem; }
+
+  /* Mini peta lokasi. isolation: panel Leaflet (z-index ratusan) tidak menimpa label koordinat. */
+  .dm-map {
+    position: relative;
+    height: 11rem;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: 1px solid var(--color-rule);
+    background: var(--color-paper-2);
+  }
+  @media (min-width: 640px) { .dm-map { height: 13rem; } }
+  .dm-map #modal-minimap { isolation: isolate; }
+  .dm-map .leaflet-control-attribution { font-size: 9px; }
+  .dm-map-coord {
+    position: absolute;
+    z-index: 1;
+    top: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0 0.25rem 0 0.75rem;
+    border-radius: 0.875rem;
+    background: rgb(27 19 13 / 0.92);
+    border: 1px solid rgb(255 237 215 / 0.12);
+    color: var(--color-ink);
+    font-size: 11px;
+  }
+
+  .dm-facts { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
+  /* HP: satu kolom, label kiri dan nilai kanan, supaya tidak jadi 2 + 1 menggantung. */
+  .dm-fact {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0.875rem;
+    border-radius: 0.875rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-rule);
+  }
+  .dm-fact dt { font-size: 11px; color: var(--color-ink-muted); }
+  .dm-fact dd { font-size: 0.875rem; font-weight: 600; color: var(--color-ink); text-align: right; }
+  @media (min-width: 640px) {
+    .dm-facts { grid-template-columns: repeat(3, 1fr); }
+    .dm-fact { display: block; }
+    .dm-fact dd { margin-top: 0.25rem; text-align: left; }
+  }
+
+  .dm-block {
+    padding: 0.875rem 1rem;
+    border-radius: 0.875rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-rule);
+  }
+  .dm-block--review { background: rgb(220 80 0 / 0.1); border-color: rgb(220 80 0 / 0.3); }
+  .dm-label { font-size: 11px; font-weight: 600; color: var(--color-ink-muted); }
+
+  .dm-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    padding: 0 0.75rem;
+    margin: -0.375rem 0;
+    border-radius: 0.75rem;
+    color: var(--color-ink-2);
+    font-size: 11px;
+    font-weight: 600;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .dm-copy:hover { background: rgb(255 237 215 / 0.08); color: var(--color-ink); }
+  .dm-copy:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+  .dm-copy[data-state='done'] { color: var(--color-status-verified); }
+  .dm-copy[data-state='fail'] { color: var(--color-accent); }
+  .dm-map-coord .dm-copy { margin: 0; }
+
+  .dm-source summary {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    cursor: pointer;
+    list-style: none;
+    color: var(--color-ink-muted);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .dm-source summary::-webkit-details-marker { display: none; }
+  .dm-source summary::before {
+    content: '';
+    width: 0.4rem;
+    height: 0.4rem;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.2s ease;
+  }
+  .dm-source[open] summary::before { transform: rotate(45deg); }
+  .dm-source summary:hover { color: var(--color-ink); }
+  .dm-source summary:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; border-radius: 0.5rem; }
+
+  /* Aksi utama: ember penuh dengan teks hitam (5.2:1). Panah serong menandai tautan keluar
+     (tab baru) dan bergeser saat hover. */
+  .dm-cta { background: #dc5000; color: #000; transition: background-color 0.2s ease, transform 0.2s ease; }
+  .dm-cta:hover { background: oklch(72% 0.16 48); }
+  .dm-cta:active { transform: scale(0.97); }
+  .dm-cta-arrow { transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .dm-cta:hover .dm-cta-arrow { transform: translate(2px, -2px); }
+
+  /* Pin di mini peta + riak. */
+  .dm-pin { position: relative; width: 32px; height: 32px; }
+  .dm-pin::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 999px;
+    border: 2px solid var(--dm-tone);
+    opacity: 0;
+  }
+}
+
+/* ---- Animasi ---- */
+.dm.dm-open { animation: dm-backdrop-in 0.3s ease both; }
+.dm.dm-open .dm-card { animation: dm-card-in 0.6s cubic-bezier(0.34, 1.3, 0.5, 1) both; }
+.dm.dm-open [data-dm-item] { animation: dm-item-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(140ms + var(--k, 0) * 55ms); }
+.dm.dm-open .dm-pin { animation: dm-pin-drop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.45s both; }
+.dm.dm-open .dm-pin::after { animation: dm-ripple 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.95s both; }
+
+.dm.dm-closing { animation: dm-backdrop-out 0.2s ease both; }
+.dm.dm-closing .dm-card { animation: dm-card-out 0.2s ease-in both; }
+
+@keyframes dm-backdrop-in { from { background-color: rgb(0 0 0 / 0); } }
+@keyframes dm-backdrop-out { to { background-color: rgb(0 0 0 / 0); } }
+@keyframes dm-card-in { from { opacity: 0; transform: translateY(48px) scale(0.95); } }
+@keyframes dm-card-out { to { opacity: 0; transform: translateY(24px) scale(0.97); } }
+@keyframes dm-item-in { from { opacity: 0; transform: translateY(14px); } }
+@keyframes dm-pin-drop {
+  from { opacity: 0; transform: translateY(-46px) scale(0.8); }
+  60% { opacity: 1; }
+}
+@keyframes dm-ripple {
+  from { opacity: 0.8; transform: scale(0.9); }
+  to { opacity: 0; transform: scale(3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dm.dm-open, .dm.dm-closing,
+  .dm .dm-card, .dm [data-dm-item], .dm .dm-pin, .dm .dm-pin::after { animation: none !important; }
+}

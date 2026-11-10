@@ -4,183 +4,124 @@ import { incidentsEnabled } from '../data/incidents';
 import { wilayahCounts, statusCounts, statusInfo, shortWilayah } from '../data/summary';
 ---
 
-<div id="section-map" style="view-transition-name: peta" class="rounded-xl bg-paper-card border border-rule overflow-hidden shadow-sm flex flex-col" role="region" aria-label="Peta sebaran titik kandidat SPPG">
-  <!-- Map Header Bar with Controls -->
-  <div class="p-4 lg:p-5 border-b border-rule bg-paper-2 flex flex-col gap-4">
-    <div class="flex items-start md:items-center justify-between gap-3 md:gap-4">
-      <div class="flex items-start sm:items-center gap-3 min-w-0">
-        <div class="w-9 h-9 shrink-0 rounded-lg bg-accent/15 text-accent flex items-center justify-center border border-accent/25">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
-            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-            <line x1="8" y1="2" x2="8" y2="18"></line>
-            <line x1="16" y1="6" x2="16" y2="22"></line>
-          </svg>
-        </div>
-        <div>
-          <h2 class="text-base font-display font-normal text-white tracking-tight flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span>Peta Geospasial SPPG se-Bandung Raya</span>
-            <span id="active-marker-count" class="text-xs font-mono font-medium px-2 py-0.5 rounded-md bg-paper text-ink-2 border border-rule/80 tabular-nums">{sppgList.length} Titik</span>
-          </h2>
-          <p class="text-xs text-ink-muted">Sebaran titik kandidat SPPG berdasarkan koordinat dataset pilot. Warna penanda menunjukkan status verifikasi data.</p>
-        </div>
-      </div>
+<div id="section-map" style="view-transition-name: peta" class="relative w-full h-full bg-paper" role="region" aria-label="Peta sebaran titik kandidat SPPG">
+  <div id="leaflet-map" class="w-full h-full z-10" role="application" aria-label="Peta interaktif titik kandidat SPPG. Pilih penanda untuk melihat informasinya."></div>
 
-      <!-- Quick Action Buttons -->
-      <div class="flex items-center gap-2 shrink-0">
-        <!-- Reset Center Button -->
-        <button 
-          id="map-reset-btn" 
-          title="Pusatkan Kembali ke Bandung Raya" 
-          aria-label="Pusatkan kembali peta ke tampilan Bandung Raya"
-          class="min-h-11 min-w-11 justify-center px-3 rounded-lg bg-paper border border-rule hover:border-rule-strong hover:bg-paper-hover text-ink-muted hover:text-white transition-all text-xs flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-accent"
-        >
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-          </svg>
-          <span class="hidden sm:inline">Reset Posisi</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Second Row: Accurate Geocoding API Search & Filters -->
-    <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-rule/70">
-      <!-- Pencarian titik di dataset lokal (tanpa API eksternal) -->
-      <div class="search-wrap relative w-full md:flex-1 md:min-w-[240px] md:max-w-md">
-        <label for="map-geocoding-input" class="sr-only">Cari titik SPPG berdasarkan nama, kecamatan, atau alamat</label>
-        <input 
-          type="text" 
-          id="map-geocoding-input" 
-          autocomplete="off"
-          aria-controls="geocoding-results-dropdown"
-          placeholder="Cari nama SPPG, kecamatan, alamat..." 
-          class="search-field w-full min-h-11 text-sm sm:text-xs pl-9 pr-16 py-2.5"
-        />
-        <svg class="w-4 h-4 text-ink-muted absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-        </svg>
-        <button 
-          id="btn-geocoding-search" 
-          type="button" 
-          class="absolute right-1 top-1 bottom-1 min-w-11 px-3 bg-accent/20 hover:bg-accent text-accent hover:text-black rounded-[11px] text-[11px] font-semibold transition-colors"
-        >
-          Cari
-        </button>
-        <!-- Hasil pencarian titik -->
-        <div id="geocoding-results-dropdown" role="listbox" aria-label="Hasil pencarian titik SPPG" class="absolute left-0 right-0 top-full mt-1.5 bg-paper-2 border border-rule rounded-lg shadow-2xl z-30 hidden overflow-hidden divide-y divide-rule max-h-56 overflow-y-auto"></div>
-      </div>
-
-      <!-- Filters & Tile Selector -->
-      <div class="map-filters w-full md:w-auto" role="toolbar" aria-label="Kontrol Filter Peta">
-        <!-- Tile Base Map API Switcher -->
-        <div class="relative">
-          <label for="map-select-tile" class="sr-only">Pilih peta dasar</label>
-          <select id="map-select-tile" data-dropdown="Peta dasar" aria-label="Pilih peta dasar" class="bg-paper border border-rule text-ink text-xs rounded-lg pl-3 pr-8 py-2 appearance-none focus:outline-none focus:border-accent cursor-pointer">
-            <option value="osm" data-icon="map" selected>OpenStreetMap</option>
-            <option value="satellite" data-icon="globe">Citra Satelit (Esri)</option>
-            <option value="dark" data-icon="moon">Dark Matter (CARTO)</option>
-          </select>
-          <svg class="w-3.5 h-3.5 text-ink-muted absolute right-2.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-        </div>
-
-        <!-- Wilayah Selector -->
-        <div class="relative">
-          <label for="map-select-wilayah" class="sr-only">Filter Wilayah Peta</label>
-          <select id="map-select-wilayah" data-dropdown="Wilayah" data-icon="pin" aria-label="Filter Wilayah Peta" class="bg-paper border border-rule text-ink text-xs rounded-lg pl-3 pr-8 py-2 appearance-none focus:outline-none focus:border-accent cursor-pointer">
-            <option value="all" data-icon="list">Semua Wilayah ({wilayahCounts.length} Kab/Kota)</option>
-            {wilayahCounts.map(([w, n]) => <option value={w}>{shortWilayah(w)} ({n} titik)</option>)}
-          </select>
-          <svg class="w-3.5 h-3.5 text-ink-muted absolute right-2.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-        </div>
-
-        <!-- Status Filter -->
-        <div class="relative">
-          <label for="map-select-status" class="sr-only">Filter status verifikasi data</label>
-          <select id="map-select-status" data-dropdown="Status verifikasi" aria-label="Filter status verifikasi data" class="bg-paper border border-rule text-ink text-xs rounded-lg pl-3 pr-8 py-2 appearance-none focus:outline-none focus:border-accent cursor-pointer">
-            <option value="all" data-icon="list">Semua Status Verifikasi</option>
-            {statusCounts.map(([s, n]) => <option value={s} data-dot={statusInfo(s).marker}>{statusInfo(s).label} ({n})</option>)}
-          </select>
-          <svg class="w-3.5 h-3.5 text-ink-muted absolute right-2.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-        </div>
-
-        <!-- Layer Kejadian Switcher (hanya bila data kejadian terverifikasi tersedia) -->
-        {incidentsEnabled && (
-        <div class="relative">
-          <label for="map-select-incident" class="sr-only">Filter Lapisan Insiden MBG</label>
-          <select id="map-select-incident" data-dropdown="Lapisan kejadian" aria-label="Filter Lapisan Insiden MBG" class="bg-paper border border-rule text-ink text-xs rounded-lg pl-3 pr-8 py-2 appearance-none focus:outline-none focus:border-accent cursor-pointer">
-            <option value="all">Semua Titik SPPG</option>
-            <option value="has-incident">Ada Laporan Insiden</option>
-            <option value="Keracunan">Hanya Keracunan</option>
-            <option value="Keluhan">Hanya Keluhan</option>
-            <option value="Gangguan Distribusi">Hanya Kendala Distribusi</option>
-          </select>
-          <svg class="w-3.5 h-3.5 text-ink-muted absolute right-2.5 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-        </div>
-        )}
-      </div>
+  <!-- Status peta: tampil saat Leaflet belum siap, atau bila gagal dimuat -->
+  <div id="map-status" class="absolute inset-0 z-30 grid place-items-center bg-paper text-center p-6" role="status" aria-live="polite">
+    <div class="space-y-3 max-w-xs">
+      <p id="map-status-text" class="text-sm text-ink-2">Memuat peta…</p>
+      <button id="map-status-retry" type="button" class="btn-split hidden">Muat ulang halaman</button>
     </div>
   </div>
 
-  <!-- Map Canvas & Floating Panels -->
-  <div class="relative w-full h-[clamp(340px,62dvh,520px)] lg:h-[620px] bg-paper">
-    <!-- Map Canvas Element -->
-    <div id="leaflet-map" class="w-full h-full z-10" role="application" aria-label="Visualisasi Peta Interaktif Leaflet"></div>
+  <!-- Pemberitahuan ubin gagal (peta tetap bisa dipakai, penanda tetap tampil) -->
+  <p id="map-tile-warning" class="hidden absolute bottom-20 left-1/2 -translate-x-1/2 z-20 max-w-[calc(100%-2rem)] px-3 py-2 rounded-lg bg-paper-2 border border-rule-strong text-xs text-ink-2 text-center shadow-xl" role="status">
+    Sebagian peta gagal dimuat. Coba peta dasar lain.
+  </p>
 
-    <!-- Floating Map Legend Card -->
-    <div class="absolute bottom-4 left-4 z-20 bg-paper-2/95 border border-rule p-3.5 rounded-lg text-xs max-w-xs shadow-xl hidden sm:block" role="region" aria-label="Legenda Peta">
-      <div class="flex items-center justify-between mb-2">
-        <span class="font-mono text-[10px] uppercase font-bold text-ink-muted tracking-wider">Legenda Spasial</span>
-        <span class="text-[10px] text-ink-dim">Status verifikasi data</span>
-      </div>
-      <div class="grid grid-cols-1 gap-y-1.5 text-[11px] text-ink-2">
-        {statusCounts.map(([s, n]) => (
-          <div class="flex items-center gap-2">
-            <span class={`w-2.5 h-2.5 rounded-sm ${statusInfo(s).dot}`}></span>
-            <span>{statusInfo(s).label} ({n})</span>
-          </div>
-        ))}
-      </div>
-      <p class="mt-2 pt-2 border-t border-rule text-[10px] text-ink-dim">Warna tidak menunjukkan status operasional dapur.</p>
-    </div>
+  <!-- Peta dasar: pengaturan tampilan, jadi ditaruh di peta (kanan atas), bukan di panel filter -->
+  <div class="map-tile-picker glass absolute z-20">
+    <label for="map-select-tile" class="sr-only">Pilih peta dasar</label>
+    <select id="map-select-tile" data-dropdown="Peta dasar" aria-label="Pilih peta dasar">
+      <option value="osm" data-icon="map" selected>OpenStreetMap</option>
+      <option value="satellite" data-icon="globe">Satelit</option>
+      <option value="dark" data-icon="moon">Gelap</option>
+    </select>
+  </div>
 
-    <!-- Quick Selected SPPG Floating Info Bar -->
-    <div 
-      id="map-quick-info" 
-      class="absolute top-3 left-3 right-3 sm:left-auto sm:top-4 sm:right-4 sm:w-80 max-h-[calc(100%-1.5rem)] overflow-y-auto z-20 bg-paper-2/95 border border-rule p-4 rounded-xl text-xs shadow-2xl transition-all duration-300 translate-y-2 opacity-0 pointer-events-none"
-      role="dialog"
-      aria-label="Ringkasan SPPG Terpilih"
-    >
-      <div class="flex items-start justify-between mb-2">
-        <div>
-          <span id="quick-sppg-status-badge" class="text-[10px] font-mono px-2 py-0.5 rounded-md font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">Aktif</span>
-          <h4 id="quick-sppg-name" class="font-display font-normal text-sm text-white mt-1">Nama SPPG</h4>
-        </div>
-        <button id="quick-close-btn" aria-label="Tutup ringkasan informasi SPPG" class="shrink-0 -mt-2 -mr-2 grid place-items-center w-11 h-11 text-ink-muted hover:text-white rounded-lg hover:bg-paper-hover transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-      </div>
-      <p id="quick-sppg-address" class="text-xs text-ink-muted line-clamp-2 mb-3">Alamat...</p>
-      
-      <div class="grid grid-cols-2 gap-2 text-center mb-3">
-        <div class="bg-paper p-2.5 rounded-lg border border-rule">
-          <span class="text-[10px] font-mono text-ink-muted block">Kecamatan</span>
-          <span id="quick-sppg-kec" class="font-bold text-white text-xs">-</span>
-        </div>
-        <div class="bg-paper p-2.5 rounded-lg border border-rule">
-          <span class="text-[10px] font-mono text-ink-muted block">Koordinat</span>
-          <span id="quick-sppg-coord" class="font-mono font-bold text-emerald-400 text-[11px]">-</span>
-        </div>
-      </div>
+  <!-- Legenda: kecil di kanan bawah, di atas atribusi -->
+  <div class="absolute z-20 right-2 bottom-12 sm:bottom-7 px-3 py-2 rounded-lg bg-paper-2/95 border border-rule shadow-xl" role="note" aria-label="Arti warna penanda">
+    <p class="text-[11px] text-ink-muted mb-1">Warna = status verifikasi data</p>
+    <ul class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-ink-2">
+      {statusCounts.map(([s]) => (
+        <li class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm" style={`background: ${statusInfo(s).marker}`} aria-hidden="true"></span>{statusInfo(s).label}</li>
+      ))}
+    </ul>
+  </div>
 
-      {incidentsEnabled && (
-        <div id="quick-incident-alert" class="p-2.5 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-300 text-[11px] mb-3 hidden">
-          <strong>Catatan Kejadian:</strong>
-          <p id="quick-incident-text" class="mt-0.5 text-xs text-rose-200"></p>
-        </div>
-      )}
-
-      <button id="quick-view-full-btn" class="btn-split w-full">
-        Lihat Detail Lokasi
+  <!-- Panel kontrol di samping peta. Di layar kecil terlipat secara bawaan agar peta tetap terlihat. -->
+  <aside id="map-panel" class="map-panel absolute z-20 top-2 left-2 right-2 sm:right-auto sm:w-85 lg:top-3 lg:left-3 flex flex-col glass" aria-label="Pencarian, filter, dan daftar titik">
+    <div class="flex items-center gap-2 p-2 pl-3">
+      <a href="/" class="flex items-center gap-2.5 min-w-0 flex-1 min-h-11 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent" aria-label="SIGMA-B: kembali ke beranda">
+        <img src="/img/SIGMA-B — Simbol koordinat.svg" alt="" class="w-8 h-8 shrink-0" width="32" height="32" />
+        <span class="min-w-0">
+          <h1 class="font-display text-lg leading-tight text-white truncate" style="view-transition-name: brand">SIGMA-B</h1>
+          <span id="active-marker-count" class="block text-[11px] text-ink-muted tabular-nums truncate">{sppgList.length} titik SPPG</span>
+        </span>
+      </a>
+      <button
+        id="map-panel-toggle"
+        type="button"
+        aria-controls="map-panel-body"
+        aria-expanded="false"
+        class="shrink-0 inline-flex items-center gap-1.5 min-h-11 px-3 rounded-lg border border-white/12 bg-paper/45 text-xs font-semibold text-ink-2 hover:border-rule-strong hover:text-ink transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      >
+        <svg class="w-4 h-4 transition-transform map-panel-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+        <span id="map-panel-toggle-label">Cari &amp; filter</span>
       </button>
     </div>
-  </div>
+
+    <div id="map-panel-body" class="map-panel-body flex-col min-h-0 border-t border-rule">
+      <div class="p-3 space-y-3">
+        <div class="search-wrap relative">
+          <label for="map-search-input" class="sr-only">Cari titik SPPG berdasarkan nama, kecamatan, atau alamat</label>
+          <input
+            type="search"
+            id="map-search-input"
+            autocomplete="off"
+            aria-controls="map-point-list"
+            placeholder="Cari nama, kecamatan, alamat"
+            class="search-field w-full min-h-11 text-sm pl-9 pr-3 py-2.5"
+          />
+          <svg class="w-4 h-4 text-ink-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+
+        <div class="map-panel-filters" role="group" aria-label="Filter peta">
+          <label for="map-select-wilayah" class="sr-only">Filter wilayah</label>
+          <select id="map-select-wilayah" data-dropdown="Wilayah" aria-label="Filter wilayah">
+            <option value="all" data-icon="list">Semua wilayah</option>
+            {wilayahCounts.map(([w, n]) => <option value={w} data-icon="pin">{shortWilayah(w)} ({n})</option>)}
+          </select>
+
+          <label for="map-select-status" class="sr-only">Filter status verifikasi data</label>
+          <select id="map-select-status" data-dropdown="Status verifikasi" aria-label="Filter status verifikasi data">
+            <option value="all" data-icon="list">Semua status</option>
+            {statusCounts.map(([s, n]) => <option value={s} data-dot={statusInfo(s).marker}>{statusInfo(s).label} ({n})</option>)}
+          </select>
+
+          {incidentsEnabled && (
+            <>
+              <label for="map-select-incident" class="sr-only">Filter laporan kejadian</label>
+              <select id="map-select-incident" data-dropdown="Laporan kejadian" aria-label="Filter laporan kejadian">
+                <option value="all">Semua titik SPPG</option>
+                <option value="has-incident">Ada laporan kejadian</option>
+                <option value="Keracunan">Hanya keracunan</option>
+                <option value="Keluhan">Hanya keluhan</option>
+                <option value="Gangguan Distribusi">Hanya kendala distribusi</option>
+              </select>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div class="flex items-baseline justify-between gap-2 px-3 pb-2 border-b border-rule">
+        <h2 class="text-xs font-semibold text-ink-2">Daftar titik</h2>
+        <button id="map-filter-reset" type="button" class="hidden text-xs text-accent underline underline-offset-2 min-h-11 -my-3 px-1 hover:text-ink focus-visible:outline-2 focus-visible:outline-accent rounded">Hapus filter</button>
+      </div>
+
+      <div class="map-panel-list min-h-0 overflow-y-auto overscroll-contain">
+        <ul id="map-point-list" class="divide-y divide-rule" aria-label="Titik SPPG sesuai filter"></ul>
+        <div id="map-list-empty" class="hidden p-4 text-center space-y-2">
+          <p class="text-xs text-ink-2">Tidak ada titik yang cocok.</p>
+          <button id="map-empty-reset" type="button" class="btn-split text-xs">Hapus filter</button>
+        </div>
+        <div id="map-list-more" class="hidden p-3 text-center">
+          <button id="map-list-more-btn" type="button" class="min-h-11 px-4 rounded-lg border border-white/12 bg-paper/45 text-xs font-semibold text-ink-2 hover:border-rule-strong hover:text-ink transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"></button>
+        </div>
+      </div>
+    </div>
+  </aside>
 </div>

@@ -79,8 +79,15 @@
 .lp-brand { display: inline-flex; align-items: center; gap: var(--sp-10); font-family: var(--font-display); font-weight: 400; font-size: var(--text-subheading); line-height: 1; text-decoration: none; }
 .lp-brand-mark { width: 32px; height: 32px; flex-shrink: 0; object-fit: contain; }
 .lp-nav { display: flex; align-items: center; gap: var(--sp-8); }
-.lp-nav-link { display: none; padding: var(--sp-12) var(--sp-10); color: var(--color-cream-muted); text-decoration: none; font-size: 16px; border-radius: var(--radius-xl); }
-.lp-nav-link:hover { color: var(--color-warm-cream); }
+.lp-nav-link { position: relative; display: none; padding: var(--sp-12) var(--sp-10); color: var(--color-cream-muted); text-decoration: none; font-size: 16px; border-radius: var(--radius-xl); transition: color 0.2s ease; }
+/* Hover/fokus: garis ember tumbuh dari kiri, menandai tautan yang akan dibuka. */
+.lp-nav-link::after {
+  content: ''; position: absolute; left: var(--sp-10); right: var(--sp-10); bottom: 6px; height: 2px;
+  border-radius: 2px; background: var(--color-ember-accent);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lp-nav-link:hover, .lp-nav-link:focus-visible { color: var(--color-warm-cream); }
+.lp-nav-link:hover::after, .lp-nav-link:focus-visible::after { transform: scaleX(1); }
 @media (min-width: 640px) { .lp-nav-link { display: inline-block; } }
 
 /* Tombol: .btn-split (buttons.css) untuk aksi utama; versi besar di hero dan kartu penutup. */
@@ -94,16 +101,27 @@
 .lp-btn-ghost:hover { background: rgb(255 237 215 / 0.06); }
 
 /* Garis scroll (Skiper 19): di belakang konten, kanan atas, menjulur ke bawah.
-   Ember gelap #8f3606 supaya teks cream yang melintasinya tetap > 6:1. */
+   Ember #b4460a, 30px: cukup terang untuk terlihat, dan teks cream di atasnya masih 4.6:1.
+   Teks sekunder (cream-muted) di atas garis turun di bawah 4.5:1, jadi teks di section diberi
+   halo walnut tipis yang menggelapkan garis tepat di sekitar huruf. */
 .lp-main { position: relative; overflow-x: clip; } /* garis sengaja menjulur ke kanan; jangan sampai halaman bisa digeser */
 .lp-main > section { position: relative; z-index: 1; }
-.lp-line {
-  position: absolute; z-index: 0; top: 40px; right: -14vw;
-  width: min(1278px, 95vw); height: auto;
-  pointer-events: none;
+/* Satu bayangan saja: tiap lapis blur menambah biaya gambar ulang teks saat garis bergerak. */
+.lp-main > section:not(.lp-outro) :is(p, dt, dd, h1, h2, li, figcaption) {
+  text-shadow: 0 0 5px var(--color-walnut-shadow);
 }
-/* Di layar lebar lingkaran garis digeser ke kanan supaya tidak menumpuk di atas judul. */
-@media (min-width: 900px) { .lp-line { right: -34vw; top: 90px; } }
+/* Di HP garis dibuat 150vw supaya menjulur sampai bagian bawah halaman, bukan habis di hero. */
+.lp-line {
+  position: absolute; z-index: 0; top: 40px; right: -75vw;
+  width: 150vw; height: auto;
+  pointer-events: none;
+  /* Layer sendiri: stroke-dashoffset yang berubah tiap frame hanya menggambar ulang garis,
+     bukan teks dan kartu di atasnya. */
+  will-change: transform;
+}
+/* Di layar lebar: cukup ke kanan agar lingkaran tidak menimpa judul, cukup ke kiri agar bagian
+   tengah garis (yang turun melewati section) tetap di dalam layar. */
+@media (min-width: 900px) { .lp-line { right: -18vw; top: 90px; width: min(1278px, 95vw); } }
 
 /* Hero (pola Hero 37): teks di tengah, lalu tiga panel bergaya layar yang saling tumpuk. */
 .lp-hero { padding: var(--sp-68) 0 var(--sp-45); }

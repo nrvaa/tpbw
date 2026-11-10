@@ -1,0 +1,159 @@
+/* Panel kontrol di samping peta (/peta). Di bawah lg panel terlipat secara bawaan supaya peta
+   tetap jadi isi utama layar; di lg ke atas terbuka secara bawaan. data-open diatur peta.astro. */
+@layer components {
+  .map-panel { max-height: calc(100dvh - 1rem); }
+  .map-panel-body { display: flex; }
+
+  /* Dibatasi 70dvh di HP supaya sepertiga bawah peta tetap terlihat saat panel terbuka. */
+  @media (max-width: 1023px) {
+    .map-panel:not([data-open='true']) .map-panel-body { display: none; }
+    .map-panel[data-open='true'] { max-height: 70dvh; }
+  }
+  @media (min-width: 1024px) {
+    .map-panel { max-height: calc(100dvh - 1.5rem); }
+    .map-panel[data-open='false'] .map-panel-body { display: none; }
+  }
+
+  .map-panel-chevron { transition: transform 0.45s cubic-bezier(0.34, 1.32, 0.5, 1); }
+  /* Ikut aria-expanded (langsung saat diklik), bukan data-open yang baru berubah setelah animasi. */
+  #map-panel-toggle[aria-expanded='true'] .map-panel-chevron { transform: rotate(180deg); }
+
+  /* Liquid glass: hanya di panel dan pemilih peta dasar (2 elemen), karena keduanya mengambang
+     di atas peta dan kaca membuat peta di belakangnya tetap terasa. Latar walnut 62% +
+     brightness 0.7 pada backdrop: di atas ubin peta paling terang pun teks cream tetap >= 8:1
+     dan teks muted >= 4.5:1. Kilau tepi atas dari inset shadow + ::before, tanpa SVG filter
+     (filter refraksi SVG berat dan hanya jalan di Chromium). */
+  .glass {
+    position: relative;
+    isolation: isolate;
+    background: rgb(16 9 4 / 0.62);
+    -webkit-backdrop-filter: blur(16px) saturate(170%) brightness(0.7);
+    backdrop-filter: blur(16px) saturate(170%) brightness(0.7);
+    border: 1px solid rgb(255 237 215 / 0.14);
+    border-radius: 1rem;
+    box-shadow:
+      inset 0 1px 0 rgb(255 237 215 / 0.22),
+      inset 0 -1px 0 rgb(0 0 0 / 0.35),
+      inset 1px 0 0 rgb(255 237 215 / 0.06),
+      0 24px 48px -20px rgb(0 0 0 / 0.75);
+  }
+  .glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      radial-gradient(120% 60% at 0% 0%, rgb(255 237 215 / 0.12), transparent 55%),
+      linear-gradient(180deg, rgb(255 237 215 / 0.05), transparent 30%);
+  }
+  /* Kontrol di dalam kaca ikut transparan supaya kaca terbaca sebagai satu permukaan. */
+  .glass .dd-trigger,
+  .glass .search-field { background: rgb(16 9 4 / 0.45); border-color: rgb(255 237 215 / 0.12); }
+  .glass .dd-trigger:hover { background: rgb(56 36 22 / 0.6); }
+  .glass .map-point:hover { background: rgb(255 237 215 / 0.07); }
+  .glass .map-point[aria-current='true'] { background: rgb(220 80 0 / 0.22); }
+
+  /* Tanpa dukungan backdrop-filter, atau pengguna minta transparansi dikurangi: latar padat. */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass { background: rgb(27 19 13 / 0.97); }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .glass { background: rgb(27 19 13 / 0.97); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  }
+
+  /* Penanda peta: satu elemen + ikon (sebelumnya tiga lapis div). Hover membesar lewat transform. */
+  .sppg-pin {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 2px solid #100904;
+    border-radius: var(--radius-lg); /* sama dengan rounded-lg lama (16px): penanda tetap bulat */
+    color: #100904;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .sppg-pin svg { width: 16px; height: 16px; }
+  .sppg-pin:hover { transform: scale(1.25); }
+
+  /* Daftar ikut membulat di sudut bawah panel, jadi latar hover baris terakhir tidak keluar sudut. */
+  .map-panel-list {
+    flex: 1 1 auto;
+    border-radius: 0 0 calc(1rem - 1px) calc(1rem - 1px);
+  }
+
+
+  .map-panel-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .map-panel-filters .dd { display: block; min-width: 0; }
+  .map-panel-filters .dd-trigger { width: 100%; min-height: 44px; }
+  .map-panel-filters .dd-value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+  .map-panel-filters .dd-menu { min-width: max(100%, 14rem); max-width: calc(100vw - 2rem); }
+  /* Panel 340px: menu kolom kanan dibuka rata kanan supaya tidak keluar panel. */
+  .map-panel-filters .dd:nth-of-type(even) .dd-menu { left: auto; right: 0; }
+  /* Filter ketiga (laporan kejadian, bila aktif) selebar panel, supaya tidak jadi 2 + 1 menggantung. */
+  .map-panel-filters .dd:nth-of-type(3) { grid-column: 1 / -1; }
+
+  /* Pemilih peta dasar di kanan atas peta; kontrol zoom Leaflet diletakkan di bawahnya. */
+  .map-tile-picker { top: 12px; right: 12px; }
+  .map-tile-picker { padding: 4px; }
+  .map-tile-picker .dd-trigger { min-height: 40px; border-color: transparent; background: transparent; }
+  .map-tile-picker .dd-menu { left: auto; right: 0; min-width: 12rem; }
+
+  .map-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.625rem 0.75rem;
+    text-align: left;
+    transition: background-color 0.15s ease;
+  }
+  .map-point:hover { background: var(--color-paper-hover); }
+  .map-point:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+  .map-point[aria-current='true'] { background: var(--color-paper-active); }
+  .map-point-dot { flex: none; width: 0.625rem; height: 0.625rem; margin-top: 0.3rem; border-radius: 2px; }
+}
+
+/* Scrollbar daftar: tipis, tanpa track, thumb cream transparan yang menjorok dari tepi.
+   Track diberi margin bawah supaya thumb berhenti sebelum sudut bulat panel.
+   Sengaja di luar @layer: aturan ::-webkit-scrollbar global (global.css) tidak ber-layer,
+   jadi versi ber-layer selalu kalah. */
+.map-panel-list::-webkit-scrollbar { width: 12px; }
+.map-panel-list::-webkit-scrollbar-track { background: transparent; margin: 6px 0 16px; }
+.map-panel-list::-webkit-scrollbar-thumb {
+  background: rgb(255 237 215 / 0.22);
+  background-clip: padding-box;
+  border: 4px solid transparent;
+  border-radius: 999px;
+}
+.map-panel-list::-webkit-scrollbar-thumb:hover { background-color: rgb(255 237 215 / 0.4); }
+.map-panel-list::-webkit-scrollbar-corner { background: transparent; }
+/* Firefox (tanpa ::-webkit-scrollbar) memakai properti standar. */
+@supports not selector(::-webkit-scrollbar) {
+  .map-panel-list { scrollbar-width: thin; scrollbar-color: rgb(255 237 215 / 0.25) transparent; }
+}
+
+/* Tombol reset posisi: kontrol Leaflet kustom, ukurannya sama dengan tombol zoom. */
+.leaflet-bar a.map-reset-ctl { display: grid; place-items: center; }
+.leaflet-bar a.map-reset-ctl svg { width: 16px; height: 16px; }
+.leaflet-bar a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 1px; }
+
+.leaflet-top.leaflet-right { top: 60px; }
+
+/* Crossfade ganti peta dasar (lihat peta.astro): opacity layer diubah Leaflet lewat setOpacity. */
+.leaflet-layer { transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .leaflet-layer { transition: none; }
+}
+
+/* Di bawah sm panel selebar layar; pemilih peta dasar dan zoom turun ke bawah header panel. */
+@media (max-width: 639px) {
+  .map-tile-picker { top: 72px; right: 8px; }
+  .leaflet-top.leaflet-right { top: 124px; }
+}
+
+/* /peta tertutup peta seluruhnya; background kontur (motion.css) tidak perlu dirender di sini. */
+html:has(#leaflet-map) body::before { display: none; }
